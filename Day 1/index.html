@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Darshan Tweet Layout</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://kit.fontawesome.com/5202a55442.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="outer-container">
+        <div class="profile-pic">
+            <img src="./Programming_with_Mosh.webp" alt="imag">
+        </div>
+        <div class="tweet-content">
+
+            <p class="username">@moshhamedani</p>
+            <p class="text">I'd love to teach you HTML/CSS!</p>
+            <div class="tweet-lrc">
+                <span class="stat">
+                    <i class="fa-regular fa-comment" onclick="comment()"></i>
+                    <!-- <img src="https://via.placeholder.com/20" alt="comment"> -->
+                    <p class="count"> 242</p>
+                </span>
+                <span class="stat">
+                    <i class="fa-solid fa-retweet" onclick="retweet()"></i>
+                    <p class="count"> 142</p>
+                </span>
+                <span class="stat">
+                    <i class="fa-regular fa-heart" onclick="liked()"></i>
+                    <p class="count"> 2.6K</p>
+                </span>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    function liked(){
+        alert("You Liked Tweet")
+    }
+    function comment(){
+        alert("Sorry You cannot make comment")
+    }
+    function retweet(){
+        alert("You did ReTweet")
+    }
+</script>
+</html>

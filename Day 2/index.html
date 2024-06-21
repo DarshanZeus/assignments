@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Darshan CSS Grid Layout</title>
+    <style>
+
+        body {
+            margin: 10px;
+            padding: 0;
+            display: grid;
+            height: 100vh;
+            grid-template-rows: auto 1fr auto;
+            grid-template-columns: 1fr;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-areas:
+                "header header header"
+                "sidebar content1 content1"
+                "sidebar content2 content3"
+                "footer footer footer";
+            grid-template-columns: 1fr 2fr 2fr;
+            grid-template-rows: auto 1fr 1fr auto;
+            grid-gap: 5px;                  
+            height: 100vh;
+        }
+        
+        .header {
+            grid-area: header;
+            background: linear-gradient(to right, #937eea , #937eea);
+            display: flex;
+            height: 100px;
+            align-items: center;
+            border: 1px solid black;
+            justify-content: center;
+        }
+
+        .sidebar {
+            grid-area: sidebar;
+            background: linear-gradient(#3addd5, #29a49d);
+            display: flex;
+            border: 1px solid black;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .content1 {
+            grid-area: content1;
+            background: linear-gradient(to bottom right, #846ee0, #3c88ee, #3dece7);
+            display: flex;
+            border: 1px solid black;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .content2 {
+            grid-area: content2;
+            background: linear-gradient(to bottom right, #846ee0, #3c88ee, #3dece7);
+            display: flex;
+            border: 1px solid black;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .content3 {
+            grid-area: content3;
+            background: linear-gradient(to bottom right, #846ee0, #3c88ee, #3dece7);
+            display: flex;
+            border: 1px solid black;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .footer {
+            grid-area: footer;
+            background: linear-gradient(to right, #937eea , #937eea);
+            display: flex;
+            border: 1px solid black;
+            height: 100px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        div {
+            color: white;
+            font-size: 24px;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">header</div>
+        <div class="sidebar">sidebar</div>
+        <div class="content1">Content-1</div>
+        <div class="content2">Content-2</div>
+        <div class="content3">Content-3</div>
+        <div class="footer">footer</div>
+    </div>
+</body>
+</html>

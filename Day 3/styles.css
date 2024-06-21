@@ -1,0 +1,235 @@
+*{
+    margin: 0px;
+    padding: 0px;
+}
+
+body{
+    background: #EEEEEE;
+    font-family: 'Quicksand', sans-serif;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+}
+.header{
+    color: #ffffff;
+    background-color: #232f3c;
+    height: 56px;
+    /* width: ; */
+    display: flex;
+    margin-left: -70px;
+    align-items: center;
+    border-bottom: #31B9E4 solid 2px;
+}
+
+.container{
+    display: grid;
+    grid-template-areas: 'a . . . . t . . . . .';
+}
+
+main{
+    width: 100%;
+    /* background-color: black; */
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+.login-main-component{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 550px;
+    width: 488px;
+    margin-top: 50px;
+    margin-bottom: 100px;
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    border-top: 4px solid #3AC7EC;
+    opacity: 1;
+    display: block;
+    position: relative;
+    padding: 32px;
+    border-radius: 4px;
+    gap: 24px;
+}
+
+.arrow{
+    
+    grid-area: a;
+    display: flex;
+    align-items: center;
+    color: #1F7A54; 
+}
+
+.login-title{
+    display: flex;
+    grid-area: t;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    /* letter-spacing: 0.6px; */
+
+}
+
+.radio-button-section{
+    margin-top: 34px;
+    margin-bottom: 24px;
+    font-weight: 500;
+    font-size: 16px;
+    display: grid;
+    grid-template-areas: 'r1 .r2 . . . . . . . . .';
+}
+.radio1{
+    grid-area: r1;
+    margin-right: 10px;
+    accent-color: #1F7A54;
+}
+.radio2{
+    grid-area: r2;
+    margin-right: 10px;
+    accent-color: #1F7A54;
+}
+
+input[type="radio"] {
+    -ms-transform: scale(1); /* IE 9 */
+    -webkit-transform: scale(1); /* Chrome, Safari, Opera */
+    transform: scale(1);
+}
+
+.dropdown-text{
+    font-family: 'Quicksand',sans-serif;
+    font-size: 12px;
+    color: #666666;
+}
+
+.form-field{
+    width: 100%;
+    border: 0px;
+    outline: 0;
+    font-size: 16px;
+    border-bottom: 2px solid #00000029;
+    font-family: 'Quicksand', sans-serif;
+}
+
+.forgot-password{
+    display: flex;
+    justify-content: right;
+    font-family: 'Quicksand';
+    font-size: 14px;
+    color: #1F7A54;
+    font-weight: 600;
+}
+
+.checkbox{
+    display: inline-block;
+    height: 20px;
+    line-height: 0;
+    margin-right: 8px;
+    order: 0;
+    position: relative;
+    vertical-align: bottom;
+    white-space: nowrap;
+    width: 20px;
+    flex-shrink: 0;
+}
+
+.checkbox-text{
+    font-family: 'Quicksand', sans-serif;
+    color: #222222;
+    font-size: 16px;
+    font-weight: 650;
+}
+input[type='checkbox'] {
+    accent-color: #1F7A54;
+}
+
+.login-button-div{
+    display: flex;
+    justify-content: center;
+}
+
+.login-button{
+    height: 40px;
+    width: 216px;
+    margin-top: 34px;
+    background: #3FD28B 0% 0% no-repeat padding-box;
+    border: 0px;
+    box-shadow: 0px 3px 5px #0000003D;
+    
+    /* border-radius: 5px; */
+}
+
+.dis{
+    margin-bottom: 36px;
+}
+.dis1{
+    margin-bottom: 56px;
+}
+.dis4{
+    margin-top: 33px;
+}
+.dis5{
+    margin-top: 26px;
+}
+
+
+footer{
+    height: 40px;
+    width: 1024px;
+    background: #E0E1E1 0% 0% no-repeat padding-box;
+    opacity: 1;
+}
+
+
+
+
+.user-box {
+    position: relative;
+}
+.user-box input {
+    width: 100%;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #666666;
+    border: none;
+    border-bottom: 2px solid #00000029;
+    outline: none;
+    background: transparent;
+}
+
+.user-box label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #666666;
+    pointer-events: none;
+    transition: 0.2s;
+}
+
+.user-box input:focus ~ label,
+.user-box input:valid ~ label {
+    transform: translateY(-20px);
+    font-size: 14px;
+    color: #666666;
+}
+
+
+
+
+.about{
+    display: grid;
+    font-weight: 700;
+    grid-template-areas: '. . . . . a c . . . . .';
+}
+.abt{
+    font-size: 14px;
+    color: #1F7A54;
+    grid-area: a;
+}
+.c-us{
+    font-size: 14px;
+    color: #1F7A54;
+    grid-area: c;
+}
