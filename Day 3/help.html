@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .navbar {
+            background-color: #2f2f3e;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar img {
+            width: 100px;
+        }
+
+        .navbar .menu {
+            display: flex;
+            align-items: center;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar .menu li {
+            margin: 0 10px;
+            color: white;
+        }
+
+        .navbar .menu li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .navbar .menu li .notification {
+            background-color: #4caf50;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+        }
+
+        .dashboard {
+            padding: 20px;
+        }
+
+        .dashboard h2 {
+            margin: 0;
+            color: #2f2f3e;
+        }
+
+        .courses {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .course {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 48%;
+            margin-bottom: 20px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .course img {
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        .course .details {
+            margin-top: 10px;
+        }
+
+        .course .details h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .course .details p {
+            margin: 5px 0;
+            color: gray;
+            font-size: 14px;
+        }
+
+        .course .details .star {
+            color: gold;
+            font-size: 20px;
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+
+        .course .details .expired {
+            color: red;
+            font-size: 12px;
+        }
+
+        .course .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .course .actions a {
+            text-decoration: none;
+            color: #2f2f3e;
+            font-size: 16px;
+        }
+
+        .course .actions .eye::before,
+        .course .actions .calendar::before,
+        .course .actions .chart::before {
+            content: "\1F441"; /* Unicode for eye */
+            margin-right: 5px;
+        }
+
+        .course .actions .calendar::before {
+            content: "\1F4C5"; /* Unicode for calendar */
+        }
+
+        .course .actions .chart::before {
+            content: "\1F4C8"; /* Unicode for chart */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <img src="logo.png" alt="Quantum Logo">
+        <ul class="menu">
+            <li>Dashboard</li>
+            <li>Content</li>
+            <li>Users</li>
+            <li>Reports</li>
+            <li>Admin</li>
+            <li>
+                <a href="#">🔔<span class="notification">2</span></a>
+                <a href="#">🔔<span class="notification">1</span></a>
+            </li>
+        </ul>
+    </div>
+    <div class="dashboard">
+        <h2>4 Courses</h2>
+        <div class="courses">
+            <div class="course">
+                <img src="course1.jpg" alt="Course 1">
+                <div class="details">
+                    <h3>Acceleration <span class="star">⭐</span></h3>
+                    <p>Physics | Grade 7+2</p>
+                    <p>4 Units | 18 Lessons | 24 Topics</p>
+                    <p>Mr. Frank's Class B</p>
+                    <p>50 Students | 21-Jan-2020 - 21-Aug-2020</p>
+                </div>
+                <div class="actions">
+                    <a href="#" class="eye">View</a>
+                    <a href="#" class="calendar">Calendar</a>
+                    <a href="#" class="chart">Stats</a>
+                </div>
+            </div>
+            <div class="course">
+                <img src="course2.jpg" alt="Course 2">
+                <div class="details">
+                    <h3>Displacement, Velocity and Speed <span class="star">⭐</span></h3>
+                    <p>Physics 2 | Grade 6+3</p>
+                    <p>2 Units | 15 Lessons | 20 Topics</p>
+                    <p>No Classes</p>
+                </div>
+                <div class="actions">
+                    <a href="#" class="eye">View</a>
+                    <a href="#" class="calendar">Calendar</a>
+                    <a href="#" class="chart">Stats</a>
+                </div>
+            </div>
+            <div class="course">
+                <img src="course3.jpg" alt="Course 3">
+                <div class="details">
+                    <h3>Introduction to Biology: Micro organisms and how they affect... <span class="star">⭐</span></h3>
+                    <p>Biology | Grade 4+1</p>
+                    <p>5 Units | 16 Lessons | 22 Topics</p>
+                    <p>All Classes</p>
+                    <p>300 Students</p>
+                </div>
+                <div class="actions">
+                    <a href="#" class="eye">View</a>
+                    <a href="#" class="calendar">Calendar</a>
+                    <a href="#" class="chart">Stats</a>
+                </div>
+            </div>
+            <div class="course">
+                <img src="course4.jpg" alt="Course 4">
+                <div class="details">
+                    <h3>Introduction to High School Mathematics <span class="star expired">Expired</span></h3>
+                    <p>Mathematics | Grade 8+3</p>
+                    <p>Mr. Frank's Class A</p>
+                    <p>44 Students | 14-Oct-2019 - 20-Oct-2020</p>
+                </div>
+                <div class="actions">
+                    <a href="#" class="eye">View</a>
+                    <a href="#" class="calendar">Calendar</a>
+                    <a href="#" class="chart">Stats</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
