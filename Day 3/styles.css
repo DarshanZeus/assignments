@@ -113,6 +113,7 @@ input[type="radio"] {
 .forgot-password{
     display: flex;
     justify-content: right;
+    margin-top: 5px;
     font-family: 'Quicksand';
     font-size: 14px;
     color: #1F7A54;
@@ -150,7 +151,7 @@ input[type='checkbox'] {
 .login-button{
     height: 40px;
     width: 216px;
-    margin-top: 34px;
+    margin-top: 32px;
     background: #3FD28B 0% 0% no-repeat padding-box;
     border: 0px;
     box-shadow: 0px 3px 5px #0000003D;
@@ -162,7 +163,7 @@ input[type='checkbox'] {
     margin-bottom: 36px;
 }
 .dis1{
-    margin-bottom: 56px;
+    margin-bottom: 50px;
 }
 .dis4{
     margin-top: 33px;
@@ -172,12 +173,12 @@ input[type='checkbox'] {
 }
 
 
-footer{
+/* footer{
     height: 40px;
     width: 100%;
     background: #E0E1E1 0% 0% no-repeat padding-box;
     opacity: 1;
-}
+} */
 
 
 
@@ -232,3 +233,95 @@ footer{
     color: #1F7A54;
     grid-area: c;
 }
+
+
+
+
+/* ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
+
+.about {
+    font-size: #1F7A54;
+    font-weight: 600;
+    margin-right: 9px;
+    text-align: center;
+    color: #1f7a54 ;
+}
+
+.contactus {
+    font-size: #1F7A54;
+    font-weight: 600;
+    margin-left: 9px;
+    text-align: center;
+    color: #1f7a54 ;
+}
+
+.footer {
+    margin-top: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #1f7a54;
+}
+
+.middleline {
+    width: 0px;
+    height: 24px;
+}
+
+.last-line {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    background: #e0e1e1 0% 0% no-repeat padding-box;
+   
+    margin-top: 16px;
+    height: 4rem;
+    width: auto;
+}
+
+.footer-logo {
+    height: 24px;
+    width: 90px;
+}
+
+.pipe {
+    margin: 0 16px;
+    width: 0rem;
+    height: 24px;
+    border: .1rem solid #0000001f;
+    opacity: 1;
+}
+
+.f1 {
+    text-align: left;
+    font-family: "Quicksand", sans-serif;
+    letter-spacing: 0rem;
+    color: #616161;
+    opacity: 1;
+    font-size: 1.2rem;
+}
+
+.copyright {
+    width: 12.9rem;
+    height: 1.5rem;
+    margin-right: .8rem;
+}
+
+.zeus {
+    width: 13.1rem;
+    margin-right: 1.1rem;
+    font-weight: bold;
+}
+
+.rights {
+    width: 10.6rem;
+    height: 1.5rem;
+}
+
+.footer-container {
+    text-align: center;
+    margin-top: auto;
+}
+
