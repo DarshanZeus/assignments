@@ -1,0 +1,121 @@
+@media screen and (max-width: 950px) {
+  .navbar .navbar-options {
+    display: none;
+    visibility: hidden;
+  }
+
+  .navbar .buttons-container .hamburger-icon {
+    display: block;
+    visibility: visible;
+    margin-right: 2.4rem;
+    &:hover {
+      filter: brightness(0) invert(1);
+    }
+  }
+  .blueline1 {
+    display: block;
+    visibility: visible;
+  }
+
+  .navbar .buttons-container .buttonend {
+    margin-right: 3.2rem;
+  }
+
+  // .container {
+  //   grid-template-rows: auto;
+  // }
+}
+
+@media screen and (min-width: 950px) {
+  .navbar .navbar-options {
+    display: block;
+    visibility: visible;
+  }
+
+  .blueline1 {
+    display: none;
+    visibility: hidden;
+  }
+  .navbar .buttons-container .hamburger-icon {
+    display: none;
+    visibility: hidden;
+    margin-right: 2.4rem;
+  }
+
+  .navbar .buttons-container .buttonend {
+    margin-right: 3.2rem;
+  }
+
+  .container {
+    grid-template-rows: auto;
+  }
+}
+
+@media screen and (max-width: 1023px) {
+  .content #card-container {
+    grid-template-columns: 1fr;
+  }
+}
+@media screen and (min-width: 1023px) {
+  .opacity {
+    opacity: 0.4;
+  }
+}
+// @media screen and (min-width: 1660px) {
+//   .content .card-container {
+//     grid-template-columns: 1fr 1fr 1fr;
+//   }
+// }
+
+// @media screen and (min-width: 2000px) {
+//   .content .card-container {
+//     grid-template-columns: 1fr 1fr 1fr 1fr;
+//   }
+// }
+
+@media screen and (max-width: 890px) {
+  .html {
+    font-size: 65%;
+  }
+}
+
+@media only screen and (max-width: 620px) {
+  html {
+    font-size: 40%;
+  }
+}
+
+@media only screen and (max-width: 520px) {
+  html {
+    font-size: 35%;
+  }
+}
+
+@media only screen and (max-width: 350px) {
+  html {
+    font-size: 28%;
+  }
+}
+
+@media only screen and (max-width: 280px) {
+  html {
+    font-size: 23%;
+  }
+}
+
+@media only screen and (max-width: 190px) {
+  html {
+    font-size: 20%;
+  }
+}
+@media only screen and (max-width: 150px) {
+  html {
+    font-size: 17%;
+  }
+}
+
+@media only screen and (max-width: 110px) {
+  html {
+    font-size: 10%;
+  }
+}

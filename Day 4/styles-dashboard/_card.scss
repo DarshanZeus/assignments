@@ -1,0 +1,369 @@
+#card-container {
+  display: grid;
+  grid-gap: 2.4rem;
+  grid-template-columns: 1fr 1fr;
+  justify-content: center;
+  align-items: center;
+  margin-top: 24px;
+  flex-wrap: wrap;
+  .card {
+    position: relative;
+    width: 47.6rem;
+    // width: 100%;
+    height: 24.6rem;
+    background: #ffffff 0% 0% no-repeat padding-box;
+    border-radius: 0.2rem;
+    opacity: 1;
+    .expired-label {
+      width: 5.2rem;
+      text-align: center;
+      height: 1.6rem;
+      background-color: #ffe4e6;
+      @include fontstyle($mainfont, 1rem, bold, #d80000, 1);
+      padding: 0.4rem 0.7rem 0.2rem 0.5rem;
+    }
+    .card-flex-container {
+      position: relative;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: row;
+      .card-img {
+        width: 13.2rem;
+        height: 15.7rem;
+        margin-top: 2.4rem;
+        margin-left: 2.4rem;
+        background: transparent 
+        // url("img/imageMask.png")
+         0% 0% no-repeat
+          padding-box;
+        border-radius: 0.2rem;
+        opacity: 1;
+      }
+
+      .img3 {
+        margin-top: 0.3rem;
+      }
+      .course-details {
+        display: flex;
+        letter-spacing: 0rem;
+        color: #1f7a54;
+        opacity: 1;
+        margin-top: 0.7rem;
+
+        .type {
+          height: 1.5rem;
+          text-align: left;
+          @include fontstyle($mainfont, 1.2rem, 600, #666666, 1);
+          letter-spacing: 0rem;
+          margin-right: 0.8rem;
+        }
+
+        .pipe1 {
+          width: 0.1rem;
+          height: 1.2rem;
+          background: #000000 0% 0% no-repeat padding-box;
+          opacity: 0.12;
+          margin-bottom: 0.1rem;
+          margin-top: 0.2rem;
+        }
+
+        .grade {
+          margin-left: 0.9rem;
+          @include fontstyle($mainfont, 1.2rem, 600, #666666, 1);
+          width: 4.8rem;
+          height: 1.6rem;
+          text-align: left;
+          letter-spacing: 0rem;
+        }
+
+        .extra-count {
+          // margin-left: 0.2rem;
+          @include fontstyle($mainfont, 1.2rem, 600, #1f7a54, 1);
+          width: 1.3rem;
+          height: 1.6rem;
+          text-align: left;
+          letter-spacing: 0rem;
+        }
+      }
+      .course-lengthdetails {
+        display: flex;
+        margin-top: 0.7rem;
+        font-size: 1.2rem;
+        .unit-detail {
+          margin-right: 0.6rem;
+        }
+
+        .lessons-detail {
+          margin-right: 0.8rem;
+        }
+
+        .count {
+          height: 1.5rem;
+          text-align: left;
+          @include fontstyle($mainfont, 1.2rem, 700, #222222, 1);
+          letter-spacing: 0rem;
+        }
+
+        .unit {
+          width: 2.9rem;
+          height: 1.5rem;
+          @include fontstyle($mainfont, 1.2rem, 500, #666666, 1);
+          text-align: left;
+          letter-spacing: 0rem;
+        }
+
+        .lessons {
+          width: 4.5rem;
+          height: 1.5rem;
+          @include fontstyle($mainfont, 1.2rem, 500, #666666, 1);
+          text-align: left;
+          letter-spacing: 0rem;
+        }
+
+        .topics {
+          width: 3.5rem;
+          height: 1.5rem;
+          @include fontstyle($mainfont, 1.2rem, 500, #666666, 1);
+          text-align: left;
+          letter-spacing: 0rem;
+        }
+      }
+      .card-content {
+        display: flex;
+        margin-left: 1.6rem;
+        margin-top: 2.4rem;
+        flex-direction: column;
+
+        .card-heading1 {
+          width: 9.4rem;
+          height: 2rem;
+          text-align: left;
+          @include fontstyle($mainfont, 1.6rem, 600, #222222, 1);
+          letter-spacing: 0rem;
+          padding: 0;
+          margin: 0;
+        }
+
+        .card-heading2 {
+          text-align: left;
+          @include fontstyle($mainfont, 1.6rem, 600, #222222, 1);
+          letter-spacing: 0rem;
+          padding: 0;
+          margin: 0;
+          width: 25rem;
+          height: 4.1rem;
+        }
+
+        .card-heading3 {
+          text-align: left;
+          @include fontstyle($mainfont, 1.6rem, 600, #222222, 1);
+          letter-spacing: 0rem;
+          padding: 0;
+          margin: 0;
+          width: 26rem;
+          height: 4.3rem;
+        }
+      }
+
+      .card-content1 {
+        display: flex;
+        margin-left: 1.6rem;
+        flex-direction: column;
+        margin-top: 0.3rem;
+        .card-heading4 {
+          text-align: left;
+          @include fontstyle($mainfont, 1.6rem, 600, #222222, 1);
+          letter-spacing: 0rem;
+          padding: 0;
+          margin: 0;
+          width: 26rem;
+          height: 4rem;
+        }
+      }
+
+      .inputContainer1 {
+        width: 26.4rem;
+        height: 2.7rem;
+        margin-top: 1.6rem;
+        padding-bottom: 0.5rem;
+        position: relative;
+        .customInput1 {
+          padding-bottom: 0.5rem;
+          width: 100%;
+          height: 2rem;
+          @include fontstyle($mainfont, 1.6rem, 600, #222222, 1);
+          padding: 0;
+          margin-bottom: 0.4rem;
+          margin-left: 0;
+          background-color: transparent;
+          border: none;
+          height: 2rem;
+          text-align: left;
+          letter-spacing: 0rem;
+          outline: none;
+          transition: border-color 0.3s ease;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+          background-size: 3rem 2.5rem;
+          // background-image: url("../quantum screen assets/quantum screen assets/icons/arrow-down.svg");
+          background-image: url("../icons/arrow-down.svg");
+          background-position: right center;
+          background-repeat: no-repeat;
+          padding-right: 2rem;
+          &:focus,
+          &:not(:placeholder-shown) {
+            border-color: #000;
+          }
+        }
+
+        .customInput2 {
+          padding-bottom: 0.5rem;
+          width: 100%;
+          height: 2rem;
+          @include fontstyle($mainfont, 1.6rem, 600, #222222, 1);
+          padding: 0;
+          margin-bottom: 0.4rem;
+          margin-left: 0;
+          // margin-right: 11.5rem;
+          background-color: transparent;
+          border: none;
+          height: 2rem;
+          text-align: left;
+          letter-spacing: 0rem;
+          outline: none;
+          transition: border-color 0.3s ease;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+          background-image: url("../icons/arrow-down.svg");
+          background-size: 3rem 2.5rem;
+          background-position: right center;
+          background-repeat: no-repeat;
+          padding-right: 2rem;
+          &:focus,
+          &:not(:placeholder-shown) {
+            border-color: #000;
+          }
+        }
+
+        .option {
+          padding-left: 0;
+          margin-left: 0;
+        }
+      }
+      .time-details {
+        display: flex;
+
+        .student {
+          height: 1.5rem;
+          text-align: left;
+          @include fontstyle($mainfont, 1.2rem, 600, #666666, 1);
+          letter-spacing: 0rem;
+          margin-right: 0.8rem;
+        }
+
+        .pipe1 {
+          width: 0.1rem;
+          height: 1.2rem;
+          background: #000000 0% 0% no-repeat padding-box;
+          opacity: 0.12;
+          margin-bottom: 0.1rem;
+          margin-top: 0.2rem;
+        }
+        .date {
+          @include fontstyle($mainfont, 1.2rem, 600, #666666, 1);
+          height: 1.5rem;
+          text-align: left;
+          letter-spacing: 0rem;
+          margin-left: 0.8rem;
+        }
+      }
+      .star {
+        margin-top: 2.45rem;
+        margin-right: 1.6rem;
+        .brightstar {
+          width: 2.6rem;
+          height: 2.6rem;
+        }
+      }
+
+      .star1 {
+        margin-top: 0.3rem;
+        margin-right: 1.6rem;
+        .brightstar1 {
+          width: 2.6rem;
+          height: 2.6rem;
+          filter: grayscale(100%);
+        }
+      }
+    }
+    .inputUnderlinecard {
+      bottom: 0;
+      left: 0;
+      width: 42.8rem;
+      margin-left: 2.4rem;
+      margin-right: 2.4rem;
+      margin-top: 1.6rem;
+      height: 0.1rem;
+      opacity: 0.12;
+      background: #000000 0% 0% no-repeat padding-box;
+    }
+    .fourbtn-container {
+      display: flex;
+      height: 4rem;
+      margin-left: 4.8rem;
+      margin-right: 4.8rem;
+      margin-bottom: 0.9rem;
+      .showicon {
+        margin-right: 10.1rem;
+        width: 2.2rem;
+        height: 2.4rem;
+        padding-top: 1.6rem;
+        text-align: left;
+        font-size: 2.4rem;
+        font: normal normal normal 2.4rem/3.1rem Material-Design-Iconic-Font;
+        letter-spacing: 0rem;
+        color: #1f7a54;
+        opacity: 1;
+        font: normal normal normal 2.4rem/2.9rem Material-Design-Iconic-Font;
+      }
+
+      .calendericon {
+        width: 1.8rem;
+        margin-right: 10.1rem;
+        padding-top: 1.6rem;
+        height: 2rem;
+        // opacity: 1;
+        font: normal normal normal 2.4rem/2.9rem Material-Design-Iconic-Font;
+      }
+
+      .gradeicon {
+        width: 1.8rem;
+        height: 2rem;
+        margin-right: 10.1rem;
+        padding-top: 1.6rem;
+        font: normal normal normal 2.4rem/2.9rem Material-Design-Iconic-Font;
+      }
+
+      .reporticon {
+        width: 2.5rem;
+        padding-top: 1.5rem;
+        height: 2.5rem;
+        text-align: left;
+        font-size: 2.4rem;
+        font: normal normal normal 2.4rem/2.9rem Material-Design-Iconic-Font;
+        letter-spacing: 0rem;
+        color: #1f7a54;
+        opacity: 1;
+      }
+    }
+    .disabled {
+      opacity: 0.4;
+    }
+    .transparent {
+      opacity: 0.4;
+    }
+  }
+}

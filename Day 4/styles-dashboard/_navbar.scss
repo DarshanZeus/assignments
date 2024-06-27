@@ -1,0 +1,119 @@
+.navbar {
+  @include flexcontainer(space-between);
+  background: transparent
+  url("../images/header\ pattern\ svg.svg");
+  // url("");
+  background-color: #25313f;
+  background-blend-mode: overlay;
+  height: 5.6rem;
+  margin: 0;
+  padding: 0;
+  .header_logo {
+    top: 1.1rem;
+    padding-left: 2.4rem;
+    width: auto;
+    height: 3.6rem;
+    margin: 0;
+  }
+  .navbar-options {
+    height: 5.6rem;
+    width: 100%;
+    border-radius: 0.2rem;
+    opacity: 1;
+    .radio-options {
+      height: 5.6rem;
+      float: right;
+      display: flex;
+      .radio {
+        flex: 1 1 auto;
+        text-align: center;
+        .nav-option {
+          display: none;
+        }
+        .option-name {
+          position: relative;
+          cursor: pointer;
+          @include flexcontainer(center);
+          padding: 0 0.4rem;
+          height: 5.6rem;
+          margin-right: 3.2rem;
+          @include fontstyle($mainfont, 1.4rem, 500, #3fd28b, 1);
+          letter-spacing: 0px;
+          transition: all 0.15s ease-in-out;
+          .option1 {
+            height: 18px;
+            text-align: center;
+            opacity: 1;
+          }
+          &:after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0.45rem;
+            background: #ffffff 0% 0% no-repeat padding-box;
+            transform-origin: center bottom;
+            transform: scaleY(0);
+            transition: transform 0.15s ease-in-out;
+          }
+        }
+
+        input:checked + .option-name {
+          color: #fff;
+          &:after {
+            transform: scaleY(1);
+          }
+        }
+      }
+    }
+  }
+  .buttons-container {
+    @include flexcontainer(center);
+    flex-direction: row;
+    margin: 0;
+    padding: 0;
+    float: right;
+
+    .button {
+      margin: 0;
+      padding: 0;
+      margin-right: 3.2rem;
+    }
+
+    .buttonend {
+      margin: 0;
+      padding: 0;
+      margin-right: 2.4rem;
+    }
+
+    .notify-img {
+      width: 2.8rem;
+      margin: 0;
+      padding: 0;
+      height: 2.8rem;
+      text-align: left;
+      letter-spacing: -0.06rem;
+      color: #3fd28b;
+      opacity: 1;
+    }
+
+    .announcement-img {
+      width: 2.4rem;
+      height: 2.8rem;
+    }
+
+    .account-img {
+      width: 3.5rem;
+      height: 3.5rem;
+      border-radius: 50%;
+      border: 2px solid #3fd28b ;
+    }
+    .hamburger-icon {
+      width: 3.5rem;
+      height: 3.5rem;
+      display: none;
+      visibility: hidden;
+    }
+  }
+}

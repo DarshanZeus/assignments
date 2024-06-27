@@ -1,0 +1,56 @@
+@import "./variables.scss";
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap");
+
+@mixin flexcontainer($justify) {
+  display: flex;
+  justify-content: $justify;
+  align-items: center;
+  text-align: center;
+}
+@mixin fontstyle($font-family, $size, $weight, $color, $opacity) {
+  font-family: $font-family, sans-serif;
+  font-size: $size;
+
+  font-weight: $weight;
+  color: $color;
+  opacity: $opacity;
+}
+
+html {
+  font-size: 62.5%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  flex: 1;
+}
+
+.footer-container {
+  text-align: center;
+  margin-top: auto;
+}
+.opacity {
+  opacity: 1;
+}
+.blueline1 {
+  width: auto;
+  height: 0.2rem;
+  background: #31b9e4 0% 0% no-repeat padding-box;
+  opacity: 1;
+}
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: "Quicksand", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #eeeeee;
+  overflow-x: hidden;
+}
+@import "./_navbar";
+@import "./_content.scss";
+@import "./_footer.scss";
+@import "./_mediaqueries.scss";
