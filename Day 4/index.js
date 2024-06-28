@@ -196,13 +196,20 @@ if (announceIcon) {
             AnnounceData.forEach((announce) => {
                 createAnnouncement(announce);
             });
-            if (announcements)
-                announcements.innerHTML += `<div class="announce-buttons"><button type="button" class="show-button">Show All</button>
-        <div class="btncenterline"></div>
-        <button type="button" class="create-button">create new</button>
-        </div>`;
-        })
-            .catch((error) => console.error("Error fetching Notification Data:", error));
+            if (announcements){
+                announcements.innerHTML += 
+                `<div class="announce-buttons">
+                    <button type="button" class="show-button">
+                        SHOW ALL
+                    </button>
+                    <div class="btncenterline"></div>
+                    <button type="button" class="create-button">
+                        CREATE NEW
+                    </button>
+                </div>`;
+            }
+        }).catch((error) => console.error("Error fetching Notification Data:", error));
+        
         if (announcements)
             (announcements === null || announcements === void 0 ? void 0 : announcements.style.display) == "none"
                 ? (announcements.style.display = "block")

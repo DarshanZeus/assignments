@@ -1,0 +1,406 @@
+.nav-option-container {
+    width: 28rem;
+    //   height: 28.8rem;
+    display: none;
+    justify-content: space-evenly;
+    align-items: center;
+    position: absolute;
+    top: 6rem;
+    right: 1.6rem;
+    margin-left: auto;
+    background: #ffffff 0% 0% no-repeat padding-box;
+    box-shadow: 0px 1.3rem 2rem #0000003d;
+    border-radius: 0.2rem;
+    opacity: 1;
+    z-index: 80;
+    overflow-x: hidden;
+    transition: 0.5s;
+  }
+  
+  .nav-option-content {
+    display: flex;
+    justify-content: center;
+    //   align-items: center;
+    flex-direction: column;
+    justify-content: space-evenly;
+  }
+  
+  .menu-option {
+    color: #1f7a54;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 1.4rem;
+    transition: 0.3s;
+    text-transform: uppercase;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    padding-left: 1.6rem;
+    &:hover {
+      background-color: #f3f3f3;
+    }
+  }
+  .flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 2.4rem;
+  }
+  .arrow-down {
+    accent-color: #1f7a54;
+    color: #1f7a54;
+  }
+  .submenu {
+    display: none;
+    color: #1f7a54;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 1.4rem;
+    transition: 0.3s;
+    text-transform: uppercase;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    margin-left: 1.6rem;
+    transform: translateY(0%);
+  }
+  
+  // notifications icon csss
+  .notifications {
+    position: absolute;
+    top: 5.6rem;
+    right: 18.8rem;
+    max-height: 58rem;
+    @include flexcontainer(center);
+    flex-direction: column;
+    background: #ffffee 0% 0% no-repeat padding-box;
+    z-index: 80;
+    overflow-y: auto;
+    box-shadow: 0px 1.3rem 2rem #0000003d;
+    border-radius: 0.2rem;
+  
+    &::-webkit-scrollbar {
+      width: 0.6rem;
+      opacity: 0.38;
+    }
+  
+    &::-webkit-scrollbar-thumb {
+      height: 32.7rem;
+      background-color: #0000003d;
+      border-radius: 0.5rem;
+    }
+  
+    &::-webkit-scrollbar-track {
+      background-color: #ffffee; /* Color of the scrollbar track */
+      height: 53.4rem;
+    }
+    .notify-container {
+      width: 32rem;
+      height: 100%;
+      opacity: 1;
+      padding: 1.6rem;
+      .notify-firstline {
+        @include flexcontainer(center);
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: start;
+        .notify-description {
+          text-align: left;
+          @include fontstyle($mainfont, 1.4rem, 600, #222222, 1);
+          letter-spacing: 0px;
+          margin-bottom: 0.8rem;
+        }
+  
+        .notify-readStatus {
+          width: 1.5rem;
+          height: 1.8rem;
+          margin-left: 0.8rem;
+          .readicon {
+            width: 1.6rem;
+            height: 1.6rem;
+            text-align: left;
+            @include fontstyle(
+              "Material-Design-Iconic-Font",
+              1.8rem,
+              500,
+              #1f7a54,
+              1
+            );
+            letter-spacing: 0px;
+          }
+          .dndicon {
+            width: 1.8rem;
+            height: 1.8rem;
+            text-align: left;
+            @include fontstyle(
+              "Material-Design-Iconic-Font",
+              1.8rem,
+              500,
+              #1f7a54,
+              1
+            );
+            letter-spacing: 0px;
+          }
+        }
+      }
+      .notify-class {
+        height: 1.5rem;
+        @include flexcontainer(center);
+        text-align: left;
+        justify-content: start;
+        text-align: left;
+        @include fontstyle($mainfont, 1.2rem, 600, #222222, 1);
+        letter-spacing: 0px;
+  
+        margin-bottom: 0.8rem;
+      }
+      .lowoptitle {
+        // opacity: 0.6;
+        color: #6e6e6e;
+        @include fontstyle($mainfont, 1.2rem, 500, #6e6e6e, 1);
+        margin-right: 0.5rem;
+      }
+      .notify-emptyClass {
+      }
+  
+      .notify-course {
+        height: 1.5rem;
+        @include flexcontainer(center);
+        text-align: left;
+        justify-content: start;
+        text-align: left;
+        @include fontstyle($mainfont, 1.2rem, 600, #222222, 1);
+        letter-spacing: 0px;
+  
+        margin-bottom: 0.8rem;
+      }
+      .notify-emptycourse {
+      }
+      .notify-dateTime {
+        text-align: right;
+        @include fontstyle($mainfont, 1.2rem, 500, #6e6e6e, 1);
+        letter-spacing: 0px;
+      }
+    }
+    .notify-buttons {
+      position: sticky;
+      bottom: 0;
+  
+      @include flexcontainer(center);
+    }
+    .show-button {
+      padding: 0;
+      text-transform: uppercase;
+      width: 100%;
+      height: 4.8rem;
+      background: #ffffff 0% 0% no-repeat padding-box;
+      border: none;
+      box-shadow: 0px 0.1rem 0.6rem #0000003d;
+      border-radius: 0rem 0rem 0.2rem 0.2rem;
+      text-align: center;
+      @include fontstyle($mainfont, 1.4rem, 600, #1f7a54, 1);
+      letter-spacing: -0.35px;
+    }
+  }
+  
+  /////////////////////announcement css/////////////
+  .announcements {
+    position: absolute;
+    top: 5.6rem;
+    right: 13.6rem;
+    max-height: 58rem;
+    @include flexcontainer(center);
+    flex-direction: column;
+    background: #ffffee 0% 0% no-repeat padding-box;
+    z-index: 80;
+    overflow-y: auto;
+    box-shadow: 0px 1.3rem 2rem #0000003d;
+    border-radius: 0.2rem;
+  
+    &::-webkit-scrollbar {
+      width: 0.6rem;
+      opacity: 0.38;
+    }
+  
+    &::-webkit-scrollbar-thumb {
+      height: 32.7rem;
+      background-color: #0000003d;
+      border-radius: 0.5rem;
+    }
+  
+    &::-webkit-scrollbar-track {
+      background-color: #ffffee; /* Color of the scrollbar track */
+      height: 53.4rem;
+    }
+    .announce-container {
+      width: 32rem;
+      height: 100%;
+      opacity: 1;
+      padding: 1.6rem;
+      .announce-PA {
+        @include flexcontainer(center);
+        text-align: left;
+        justify-content: start;
+        text-align: left;
+        @include fontstyle($mainfont, 1.2rem, 600, #222222, 1);
+        letter-spacing: 0px;
+        height: 1.5rem;
+        margin-bottom: 0.8rem;
+      }
+      .announce-firstline {
+        @include flexcontainer(center);
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: start;
+        .announce-description {
+          text-align: left;
+          @include fontstyle($mainfont, 1.4rem, 600, #222222, 1);
+          letter-spacing: 0px;
+          margin-bottom: 0.8rem;
+        }
+  
+        .announce-readStatus {
+          width: 1.5rem;
+          height: 1.8rem;
+          margin-left: 0.8rem;
+          .readicon {
+            width: 1.6rem;
+            height: 1.6rem;
+            text-align: left;
+            @include fontstyle(
+              "Material-Design-Iconic-Font",
+              1.8rem,
+              500,
+              #1f7a54,
+              1
+            );
+            letter-spacing: 0px;
+          }
+          .dndicon {
+            width: 1.8rem;
+            height: 1.8rem;
+            text-align: left;
+            @include fontstyle(
+              "Material-Design-Iconic-Font",
+              1.8rem,
+              500,
+              #1f7a54,
+              1
+            );
+            letter-spacing: 0px;
+          }
+        }
+      }
+      .announce-class {
+        height: 1.5rem;
+        @include flexcontainer(center);
+        text-align: left;
+        justify-content: start;
+        text-align: left;
+        @include fontstyle($mainfont, 1.2rem, 600, #222222, 1);
+        letter-spacing: 0px;
+  
+        margin-bottom: 0.8rem;
+      }
+      .lowoptitle {
+        // opacity: 0.6;
+        color: #6e6e6e;
+        @include fontstyle($mainfont, 1.2rem, 500, #6e6e6e, 1);
+        margin-right: 0.5rem;
+      }
+      .announce-emptyClass {
+      }
+  
+      .announce-course {
+        height: 1.5rem;
+        @include flexcontainer(center);
+        text-align: left;
+        justify-content: start;
+        text-align: left;
+        @include fontstyle($mainfont, 1.2rem, 600, #222222, 1);
+        letter-spacing: 0px;
+  
+        margin-bottom: 0.8rem;
+      }
+      .announce-emptycourse {
+      }
+      .announce-lastline {
+        @include flexcontainer(center);
+        justify-content: space-between;
+        .announce-lastline-files {
+          @include flexcontainer(center);
+          flex-direction: row;
+        }
+        .paperclip-icon {
+          width: 1rem;
+          height: 1.2rem;
+          text-align: left;
+          @include fontstyle(
+            "Material-Design-Iconic-Font",
+            1.2rem,
+            600,
+            #6e6e6e,
+            1
+          );
+          filter: invert(40%) sepia(1%) saturate(4453%) hue-rotate(0deg)
+            brightness(112%) contrast(87%);
+          margin-right: 0.4rem;
+          letter-spacing: 0px;
+        }
+        .announce-fileatteched {
+          text-align: left;
+          @include fontstyle($mainfont, 1.2rem, 600, #6e6e6e, 1);
+          letter-spacing: 0px;
+        }
+      }
+      .announce-dateTime {
+        text-align: right;
+        @include fontstyle($mainfont, 1.2rem, 600, #6e6e6e, 1);
+        letter-spacing: 0px;
+      }
+    }
+    .announce-buttons {
+      position: sticky;
+      bottom: 0;
+      display: grid;
+      grid-template-columns: 1fr 0rem 1fr;
+      grid-template-rows: 1fr;
+      box-shadow: 0px 0.1rem 0.6rem #0000003d;
+      border-radius: 0rem 0rem 0.2rem 0.2rem;
+      // @include flexcontainer(center);
+      // flex-direction: row;
+      background: #ffffff 0% 0% no-repeat padding-box;
+      .show-button {
+        padding: 0;
+        text-transform: uppercase;
+        grid-column: 1/2;
+        // width: 49;
+        height: 4.8rem;
+        border: none;
+        text-align: center;
+        @include fontstyle($mainfont, 1.4rem, 600, #1f7a54, 1);
+        letter-spacing: -0.35px;
+      }
+      .btncenterline {
+        width: 0px;
+        height: 30px;
+        grid-column: 2/3;
+        background-color: #0000001f;
+        border: 1px solid #0000001f;
+        opacity: 1;
+      }
+      .create-button {
+        padding: 0;
+        text-transform: uppercase;
+        grid-column: 3/-1;
+        // width: 50%;
+        height: 4.8rem;
+        background: #ffffff 0% 0% no-repeat padding-box;
+        border: none;
+        // box-shadow: 0px 0.1rem 0.6rem #0000003d;
+        // border-radius: 0rem 0rem 0.2rem 0.2rem;
+        text-align: center;
+        @include fontstyle($mainfont, 1.4rem, 600, #1f7a54, 1);
+        letter-spacing: -0.35px;
+      }
+    }
+  }
+  
