@@ -3,9 +3,11 @@
   flex-direction: column;
   margin: 2.4rem;
 
+  z-index: 0;
   .green-rectangle {
     height: 6.4rem;
     width: 100%;
+    z-index: 0;
     background: #8ddc97 0% 0% no-repeat padding-box;
     border-radius: 0.2rem;
     opacity: 1;

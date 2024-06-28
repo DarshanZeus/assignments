@@ -96,11 +96,22 @@
       letter-spacing: -0.06rem;
       color: #3fd28b;
       opacity: 1;
+      &:hover {
+        filter: brightness(0) invert(1);
+        // width: 3rem;
+        // height: 3rem;
+      }
     }
 
     .announcement-img {
       width: 2.4rem;
       height: 2.8rem;
+      &:hover {
+        filter: brightness(0) invert(1);
+        // width: 2.8rem;
+        // height: 3rem;
+        // margin-left: -3rem;
+      }
     }
 
     .account-img {
@@ -108,12 +119,19 @@
       height: 3.5rem;
       border-radius: 50%;
       border: 2px solid #3fd28b ;
+      &:hover {
+        // filter: brightness(0) invert(1);
+        border: 2px solid #ffffff
+      }
     }
     .hamburger-icon {
       width: 3.5rem;
       height: 3.5rem;
       display: none;
       visibility: hidden;
+      &:hover {
+        filter: brightness(0) invert(1);
+      }
     }
   }
 }
