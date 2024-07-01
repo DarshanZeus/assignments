@@ -22,7 +22,6 @@ function createCard(course) {
     const cardContent = document.createElement("div");
     cardContent.classList.add("card-flex-container");
     cardContent.innerHTML = `
-  
         <img class="card-img img${course.courseId - 1}"
             src="${course.image}"
             alt="course image" />
@@ -171,6 +170,106 @@ function createCard(course) {
 
 
 
+//////////////////////////////////////////////////////////////////////////////////////////
+/// MENU HAMBURGER ///////////////////////////////////////////////////////////////////////
+
+const menuOptioncontainer =  document.createElement("div");
+menuOptioncontainer.classList.add("nav-option-container");
+menuOptioncontainer.innerHTML = `
+    <div class="nav-option-content">
+  <a href="#" class="menu-option option1">DASHBOARD</a>
+  <a href="#" class="menu-option option2"><div class="flex">CONTENT
+  <img src="./icons/arrow-down.svg" class="arrow-down" alt="arrow down"/>
+  </div>
+  <div class="submenu">COURSE CATALOG</div>
+  </a>
+  <a href="#" class="menu-option option3"><div class="flex">USERS
+  <img src="./icons/arrow-down.svg" class="arrow-down" alt="arrow down"/>
+   </div>
+  <div class="submenu">COURSE CATALOG</div></a>
+  <a href="#" class="menu-option option4"><div class="flex">REPORTS
+  <img src="./icons/arrow-down.svg" class="arrow-down" alt="arrow down"/>
+   </div>
+  <div class="submenu">COURSE CATALOG</div></a>
+  <a href="#" class="menu-option option5"><div class="flex">ADMIN
+  <img src="./icons/arrow-down.svg" class="arrow-down" alt="arrow down"/>
+   </div>
+  <div class="submenu">COURSE CATALOG</div></a>
+  </div>
+`
+
+menuOptioncontainer.style.display = "none";
+document.body.appendChild(menuOptioncontainer);
+const hamburgerIcon = document.querySelector(".hamburger");
+if (hamburgerIcon){
+    hamburgerIcon.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if(notifications)
+            notifications.style.display = "none";
+        if(announcements)
+            announcements.style.display = "none";
+        if(menuOptioncontainer.style.display === "none")
+            menuOptioncontainer.style.display = "block";
+        else
+            menuOptioncontainer.style.display = "none";
+    })
+}
+
+const menuoption = document.querySelectorAll(".menu-option");
+menuoption.forEach((menu) => {
+    const clickedSubMenu = menu.querySelector(".submenu");
+    const clickedSubMenuImg = menu.querySelector(".menu-option img");
+    
+    if (menu && clickedSubMenu) {
+        menu.addEventListener("click", (e) => {
+            e.stopPropagation();
+            // const arrowIcon = document.querySelector(".arrow-down");
+            // arrowIcon.classList.add("rotate180");
+            if(clickedSubMenu) {
+                if(clickedSubMenu){
+                    if (clickedSubMenu.style.display === "none"){
+                        clickedSubMenu.style.display = "block";
+                        clickedSubMenuImg.classList.add("rotate180")
+                    }
+                    else{
+                        clickedSubMenu.style.display = "none"
+                        clickedSubMenuImg.classList.remove("rotate180")
+                    }
+                }
+                if(menuOptioncontainer.style.display === "none")
+                    clickedSubMenu.style.display = "none";
+            }
+        });
+    }
+});
+
+
+document.body.addEventListener("click", (e) => {
+    if(hamburgerIcon){
+        if(!menuOptioncontainer.contains(e.target) && !hamburgerIcon.contains(e.target) ){
+            menuOptioncontainer.style.display = "none";
+            menuoption.forEach((menu) => {
+                const submenu = menu.querySelector(".submenu");
+                if(submenu){
+                    submenu.style.display = "none";
+                }
+            });
+        }
+    }
+    if (notifications) {
+        if (!(notifications === null || notifications === void 0 ? void 0 : notifications.contains(event.target))) {
+            notifications.style.display = "none";
+        }
+    }
+    if (announcements) {
+        if (!(announcements === null || announcements === void 0 ? void 0 : announcements.contains(event.target))) {
+            announcements.style.display = "none";
+        }
+    }
+});
+
+
+
 
 /////////////////////////////////////////////////////////////////////////////////////
 ///// ANNOUNCEMENT /////////////////////////////////
@@ -183,9 +282,9 @@ const announceIcon = document.querySelector(".Announcement");
 if (announceIcon) {
     announceIcon.addEventListener("click", (e) => {
         e.stopPropagation();
-        // if (notifications)
-        //     notifications.style.display = "none";
-        // menuOptioncontainer.style.display = "none";
+        if (notifications)
+            notifications.style.display = "none";
+        menuOptioncontainer.style.display = "none";
         if (announcements) {
             announcements.innerHTML = "";
         }
@@ -219,13 +318,21 @@ if (announceIcon) {
 function createAnnouncement(announcement) {
     const announcecontainer = document.createElement("div");
     announcecontainer.classList.add("announce-container");
+    
     if (announcements) {
         announcements.appendChild(announcecontainer);
     }
+    announcement.readStatus
+        ? announcecontainer.classList.add("announce-read")
+        : announcecontainer.classList.add("announce-unread");
     announcecontainer.innerHTML = `
+    
+
   <div class="announce-PA"><p class='lowoptitle'>PA:</p>${announcement.PA}</div>
     <div class="announce-firstline">
           <div class="announce-description">${announcement.Description}</div>
+
+
           <div class="announce-readStatus">${announcement.readStatus
         ? `
               <img class="readicon" src="./icons/correct.png" alt="announcement Read" />
@@ -253,6 +360,112 @@ function createAnnouncement(announcement) {
           
           `;
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//// NOTIFICATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// document.body.addEventListener("click", (event) => {
+//     if (hamburgerIcon) {
+//         if (!menuOptioncontainer.contains(event.target) &&
+//             !hamburgerIcon.contains(event.target)) {
+//             menuOptioncontainer.style.display = "none";
+//             menuoption.forEach((menu) => {
+//                 const submenu = menu.querySelector(".submenu");
+//                 if (submenu) {
+//                     submenu.style.display = "none";
+//                 }
+//             });
+//         }
+//     }
+//     if (notifications) {
+//         if (!(notifications === null || notifications === void 0 ? void 0 : notifications.contains(event.target))) {
+//             notifications.style.display = "none";
+//         }
+//     }
+//     if (announcements) {
+//         if (!(announcements === null || announcements === void 0 ? void 0 : announcements.contains(event.target))) {
+//             announcements.style.display = "none";
+//         }
+//     }
+// });
+const notifications = document.querySelector(".notifications");
+if (notifications) {
+    notifications.style.display = "none";
+}
+const notifyIcon = document.querySelector(".notification");
+if (notifyIcon) {
+    notifyIcon.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (announcements) {
+            announcements.style.display = "none";
+        }
+        menuOptioncontainer.style.display = "none";
+        if (notifications) {
+            notifications.innerHTML = "";
+        }
+        fetch("./json/notification-data.json")
+            .then((response) => response.json())
+            .then((NotifyData) => {
+            // console.log(cardData);
+            NotifyData.forEach((notification) => {
+                createNotification(notification);
+            });
+            if (notifications)
+                notifications.innerHTML += `<div class="notify-buttons"><button type="button" class="show-button">Show All</button>
+        </div>`;
+        })
+            .catch((error) => console.error("Error fetching Notification Data:", error));
+        if (notifications)
+            (notifications === null || notifications === void 0 ? void 0 : notifications.style.display) == "none"
+                ? (notifications.style.display = "block")
+                : (notifications.style.display = "none");
+    });
+}
+function createNotification(notification) {
+    const notifycontainer = document.createElement("div");
+    notifycontainer.classList.add("notify-container");
+    if (notifications) {
+        notifications.appendChild(notifycontainer);
+    }
+    notification.readStatus
+        ? notifycontainer.classList.add("notify-unread")
+        : notifycontainer.classList.add("notify-read");
+    notifycontainer.innerHTML = `
+    <div class="notify-firstline">
+          <div class="notify-description">${notification.Description}</div>
+          <div class="notify-readStatus">${notification.readStatus
+        ? `
+              <img class="readicon" src="./icons/correct.png" alt="Notification Read" />
+            `
+        : `
+              <img class="dndicon" src="./icons/dnd.png" alt="Notification not read" />
+            `}</div>
+          </div>
+          ${notification.class !== ""
+        ? `<div class="notify-class"><p class='lowoptitle'>Class:</p>${notification.class}</div>`
+        : `<div class="notify-emptyClass"></div>`}
+          ${notification.Course !== ""
+        ? `<div class="notify-course"><p class='lowoptitle'>Course:</p>${notification.Course}</div>`
+        : `<div class="notify-emptycourse"></div>`}
+          <div class="notify-dateTime">${notification.Date_Time}</div> 
+          
+          `;
+}
+
+// (".arrow-down").click(function(){
+//     (this).toggleClass("rotate")  ; 
+// })
+
+// const arrowIcon = document.querySelector(".arrow-down");
+// if (arrowIcon) {
+//     arrowIcon.addEventListener("click", (e) => {
+//         e.stopPropagation();
+//         arrowIcon.classList.add("rotate180");
+//     })
+// }
+
 
 export {};
 

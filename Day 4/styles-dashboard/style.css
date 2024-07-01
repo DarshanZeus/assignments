@@ -1017,6 +1017,12 @@ body {
 .arrow-down {
   accent-color: #1f7a54;
   color: #1f7a54;
+  height: 3rem;
+  width: 3rem;
+}
+
+.rotate180 {
+  transform: rotate(180deg);
 }
 
 .submenu {
@@ -1027,8 +1033,7 @@ body {
   font-size: 1.4rem;
   transition: 0.3s;
   text-transform: uppercase;
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
+  margin-top: 3rem;
   margin-left: 1.6rem;
   transform: translateY(0%);
 }
@@ -1067,6 +1072,7 @@ body {
   height: 100%;
   opacity: 1;
   padding: 1.6rem;
+  border-bottom: solid rgba(34, 34, 34, 0.1215686275) 1px;
 }
 .notifications .notify-container .notify-firstline {
   display: flex;
@@ -1166,6 +1172,12 @@ body {
   opacity: 1;
   letter-spacing: 0px;
 }
+.notifications .notify-read {
+  background-color: #ffffee;
+}
+.notifications .notify-unread {
+  background-color: #ffffff;
+}
 .notifications .notify-buttons {
   position: sticky;
   bottom: 0;
@@ -1202,7 +1214,7 @@ body {
   align-items: center;
   text-align: center;
   flex-direction: column;
-  background: #ffffee 0% 0% no-repeat padding-box;
+  background: #ffffff 0% 0% no-repeat padding-box;
   z-index: 80;
   overflow-y: auto;
   box-shadow: 0px 1.3rem 2rem rgba(0, 0, 0, 0.2392156863);
@@ -1226,6 +1238,8 @@ body {
   height: 100%;
   opacity: 1;
   padding: 1.6rem;
+  background-color: #ffffff;
+  border-bottom: solid rgba(34, 34, 34, 0.1215686275) 1px;
 }
 .announcements .announce-container .announce-PA {
   display: flex;
@@ -1378,7 +1392,14 @@ body {
   opacity: 1;
   letter-spacing: 0px;
 }
+.announcements .announce-unread {
+  background-color: #FFFFEE;
+}
+.announcements .announce-read {
+  background-color: #ffffff;
+}
 .announcements .announce-buttons {
+  height: 4.8rem;
   position: sticky;
   bottom: 0;
   display: grid;
