@@ -1,0 +1,15 @@
+C:\Users\darshan.mahankar\OneDrive - zeuslearning.com\Desktop\Assignments\day 6\bin\Debug\net8.0\day 6.exe
+C:\Users\darshan.mahankar\OneDrive - zeuslearning.com\Desktop\Assignments\day 6\bin\Debug\net8.0\day 6.deps.json
+C:\Users\darshan.mahankar\OneDrive - zeuslearning.com\Desktop\Assignments\day 6\bin\Debug\net8.0\day 6.runtimeconfig.json
+C:\Users\darshan.mahankar\OneDrive - zeuslearning.com\Desktop\Assignments\day 6\bin\Debug\net8.0\day 6.dll
+C:\Users\darshan.mahankar\OneDrive - zeuslearning.com\Desktop\Assignments\day 6\bin\Debug\net8.0\day 6.pdb
+C:\Users\darshan.mahankar\OneDrive - zeuslearning.com\Desktop\Assignments\day 6\obj\Debug\net8.0\day 6.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\darshan.mahankar\OneDrive - zeuslearning.com\Desktop\Assignments\day 6\obj\Debug\net8.0\day 6.AssemblyInfoInputs.cache
+C:\Users\darshan.mahankar\OneDrive - zeuslearning.com\Desktop\Assignments\day 6\obj\Debug\net8.0\day 6.AssemblyInfo.cs
+C:\Users\darshan.mahankar\OneDrive - zeuslearning.com\Desktop\Assignments\day 6\obj\Debug\net8.0\day 6.csproj.CoreCompileInputs.cache
+C:\Users\darshan.mahankar\OneDrive - zeuslearning.com\Desktop\Assignments\day 6\obj\Debug\net8.0\day 6.sourcelink.json
+C:\Users\darshan.mahankar\OneDrive - zeuslearning.com\Desktop\Assignments\day 6\obj\Debug\net8.0\day 6.dll
+C:\Users\darshan.mahankar\OneDrive - zeuslearning.com\Desktop\Assignments\day 6\obj\Debug\net8.0\refint\day 6.dll
+C:\Users\darshan.mahankar\OneDrive - zeuslearning.com\Desktop\Assignments\day 6\obj\Debug\net8.0\day 6.pdb
+C:\Users\darshan.mahankar\OneDrive - zeuslearning.com\Desktop\Assignments\day 6\obj\Debug\net8.0\day 6.genruntimeconfig.cache
+C:\Users\darshan.mahankar\OneDrive - zeuslearning.com\Desktop\Assignments\day 6\obj\Debug\net8.0\ref\day 6.dll
