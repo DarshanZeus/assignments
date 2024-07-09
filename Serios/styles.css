@@ -1,0 +1,16 @@
+*{
+    margin: 0px;
+    padding: 0px;
+}
+
+
+
+
+
+.canvas{
+    height: max-content;
+    width: 100%;
+    /* background: #000; */
+    color: aqua;
+    border: 1px solid black;
+}
