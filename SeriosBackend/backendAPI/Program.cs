@@ -32,11 +32,7 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
-
-
 app.UseHttpsRedirection();
-
-
 
 app.UseRouting();
 
@@ -59,24 +55,39 @@ var summaries = new[]
 
 app.MapGet("/userDetail", () =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
+    var forecast =  Enumerable.Range(1, 20).Select(index =>
         new userDetail
         (   
-            1,
-            summaries[Random.Shared.Next(summaries.Length)],
-            summaries[Random.Shared.Next(summaries.Length)],
-            summaries[Random.Shared.Next(summaries.Length)],
-            summaries[Random.Shared.Next(summaries.Length)],
-            summaries[Random.Shared.Next(summaries.Length)],
-            Random.Shared.Next(100000000, 999999999),
-            summaries[Random.Shared.Next(summaries.Length)],
-            summaries[Random.Shared.Next(summaries.Length)],
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(1000, 1000000),
-            Random.Shared.Next(1000, 1000000),
-            Random.Shared.Next(1000, 1000000),
-            Random.Shared.Next(1000, 1000000),
-            Random.Shared.Next(1000, 1000000)
+            // index,
+            // summaries[Random.Shared.Next(summaries.Length)],
+            // summaries[Random.Shared.Next(summaries.Length)],
+            // summaries[Random.Shared.Next(summaries.Length)],
+            // summaries[Random.Shared.Next(summaries.Length)],
+            // summaries[Random.Shared.Next(summaries.Length)],
+            // Random.Shared.Next(100000000, 999999999),
+            // summaries[Random.Shared.Next(summaries.Length)],
+            // summaries[Random.Shared.Next(summaries.Length)],
+            // DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+            // Random.Shared.Next(1000, 1000000),
+            // Random.Shared.Next(1000, 1000000),
+            // Random.Shared.Next(1000, 1000000),
+            // Random.Shared.Next(1000, 1000000),
+            // Random.Shared.Next(1000, 1000000)
+        index, 
+        "john.doe@example.com", 
+        "John Doe", 
+        "USA", 
+        "California", 
+        "Los Angeles", 
+        1234567890, 
+        "123 Main St", 
+        "Apt 4B", 
+        DateOnly.FromDateTime(DateTime.Now.AddDays(index)), 
+        50000, 
+        52000, 
+        54000, 
+        56000, 
+        58000
         ))
         .ToArray();
     return forecast;

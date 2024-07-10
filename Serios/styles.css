@@ -14,3 +14,60 @@
     color: aqua;
     border: 1px solid black;
 }
+
+.topBar{
+    text-size:1rem;
+    margin: 1rem;
+    width: 100vb;
+    display: grid;
+    grid-template-areas: 'x x x x x b1 b2 a a a a a ';
+    gap: 2rem;
+    
+}
+
+.button{
+    height: 3rem;
+    width: 9rem;
+    margin: 1rem;
+    padding: 2rem;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 10%;
+    box-shadow: 0px 0px 5px 5px  rgb(160, 160, 160);
+}
+.button:hover{
+    background: #252525;
+    color: aqua;
+}
+
+.upload{
+    grid-area: b1;
+}
+
+.insert{
+    grid-area: b2;
+}
+/* body{
+    overflow: auto;
+} */
+.canvas-div-sup{
+    width: 150%;
+    /* overflow: auto; */
+}
+
+.canvas-div{
+    /* width: 150%; */
+    margin: 1rem;
+    border: 0.2rem solid #000;
+    border-right: 0.3rem #000 solid;
+    overflow: auto;
+}
+
+/* .canvas{
+    font-weight: 100;
+} */
