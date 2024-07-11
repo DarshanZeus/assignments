@@ -11,16 +11,18 @@
     height: max-content;
     width: 100%;
     /* background: #000; */
+    /* z-index: 0; */
     color: aqua;
     border: 1px solid black;
 }
 
 .topBar{
-    text-size:1rem;
+    display: static;
+    font-size:1rem;
     margin: 1rem;
     width: 100vb;
     display: grid;
-    grid-template-areas: 'x x x x x b1 b2 a a a a a ';
+    grid-template-areas: 'x x x x x b1 b2 b3 a a a a a ';
     gap: 2rem;
     
 }
@@ -41,8 +43,10 @@
     box-shadow: 0px 0px 5px 5px  rgb(160, 160, 160);
 }
 .button:hover{
-    background: #252525;
-    color: aqua;
+    background: #F3FEB8;
+    color: #FF4C4C;
+    border-color: #FF4C4C;
+    box-shadow: 0px 0px 5px 5px  #ff4c4cb3;
 }
 
 .upload{
@@ -52,21 +56,47 @@
 .insert{
     grid-area: b2;
 }
+
+.delete{
+    grid-area: b3;
+}
 /* body{
     overflow: auto;
 } */
 .canvas-div-sup{
-    width: 150%;
+    /* width: 150%; */
     /* overflow: auto; */
 }
 
 .canvas-div{
-    /* width: 150%; */
+    width: max-content;
     margin: 1rem;
     border: 0.2rem solid #000;
     border-right: 0.3rem #000 solid;
-    overflow: auto;
+    /* overflow: auto; */
 }
+
+.ipBox{
+    border: 0px;
+    position: absolute;
+    /* z-index: 1; */
+    /* left:208px;
+    top:273px; */
+    width:205px;
+    height:30px;
+    text-align: center;
+    background-color: #F3FEB8;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 16px;
+}
+
+.ipBox:focus{
+    /* border-radius: 0%; */
+    border: #F3FEB8;
+    outline-color: #F3FEB8; 
+    background-color: #F3FEB8;
+}
+/* .ipBox: */
 
 /* .canvas{
     font-weight: 100;

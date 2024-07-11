@@ -55,7 +55,7 @@ var summaries = new[]
 
 app.MapGet("/userDetail", () =>
 {
-    var forecast =  Enumerable.Range(1, 20).Select(index =>
+    var data =  Enumerable.Range(1, 27).Select(index =>
         new userDetail
         (   
             // index,
@@ -90,15 +90,15 @@ app.MapGet("/userDetail", () =>
         58000
         ))
         .ToArray();
-    return forecast;
+    return data;
 })
-.WithName("GetWeatherForecast")
+.WithName("GetWholeData")
 .WithOpenApi();
 
 app.Run();
 
 // record userDetail()
-record WeatherForecast(string? Summary, DateOnly Date, int TemperatureC, string? Summar)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+// record WeatherForecast(string? Summary, DateOnly Date, int TemperatureC, string? Summar)
+// {
+//     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+// }
