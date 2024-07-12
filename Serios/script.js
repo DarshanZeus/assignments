@@ -279,6 +279,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             })
 
+
+
+            
+            const element = document.getElementById("canvasDiv");
+            let x = element.scrollHeight;
+            let y = element.scrollWidth;
+            console.log(x,y);
+
+            element.addEventListener("scroll",  (e) => {
+                e.preventDefault();
+                console.log("hi");
+            });
+
         })
         .catch(error => {
             console.error('Error:', error);
