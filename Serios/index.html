@@ -25,18 +25,28 @@
         </div>
     </div>
     
-    <div class="canvas-div">
-        <div id="canvasDiv" class="canvas-div-sup">
-            <canvas id="canvas" height="1080" width="3300" class="canvas"></canvas>
+    <div class="canvasDivDiv">
+        <div id="canvasDiv" class="canvasDiv">
+            <div class="canvasTopDiv">
+                <canvas id="canvasTop" height="40" width="4400" class="canvasTop"></canvas>
+            </div>
+            
+            <div class="canvasLeftDiv">
+                <canvas id="canvasLeft" height="880" width="40" class="canvasLeft"></canvas>
+            </div>
+            
+            <div class="canvasD">
+                <canvas id="canvas" height="880" width="4400" class="canvas"></canvas>
+            </div>
+            
+
+
             <input type="hidden" class="ipBox" id="ipBox"/>
             
         </div>
         
     </div>
     
-    <!-- <div id="canvasMain"></div> -->
-    <!-- <button onclick="readystatechange"></button> -->
-    <script type="module" src="./script.js"></script>
     <script type="module" src="./index.js"></script>
     
 </body>

@@ -124,9 +124,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 var ly= Math.min(startCellsY,endCellsY);
                 var hx= Math.max(startCellsX,endCellsX);
                 var hy= Math.max(startCellsY,endCellsY);
-                for (var i = 0; i < tableData.length; i++) {
+
+                
+                for (var i = ly; i <= hy; i++) {
                     // console.log(tableData.length)
-                    for (var j = 0; j < colArray.length; j++) {
+                    for (var j = lx; j <= hx; j++) {
                         // console.log(i,j)
                         if(lx<=j && j<=hx && ly<=i && i<=hy){
                             drawBorder(j * columnWidth, i * rowHeight, columnWidth, rowHeight,3);
@@ -137,6 +139,20 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                     }
                 }
+
+                // for (var i = 0; i < tableData.length; i++) {
+                //     // console.log(tableData.length)
+                //     for (var j = 0; j < colArray.length; j++) {
+                //         // console.log(i,j)
+                //         if(lx<=j && j<=hx && ly<=i && i<=hy){
+                //             drawBorder(j * columnWidth, i * rowHeight, columnWidth, rowHeight,3);
+                //             ctxx.fillStyle = "#ffffff";
+                //             ctxx.fillRect(j * columnWidth, i * rowHeight, columnWidth-1, rowHeight-1);
+
+
+                //         }
+                //     }
+                // }
                 // ctx.clearRect(0, 0, canvas.width, canvas.height);
                 // var ct = canvas.getContext("2d");
                 // drawGrid();
