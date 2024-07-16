@@ -134,8 +134,6 @@ document.addEventListener("DOMContentLoaded", function () {
                             drawBorder(j * columnWidth, i * rowHeight, columnWidth, rowHeight,3);
                             ctxx.fillStyle = "#F3FEB8";
                             ctxx.fillRect(j * columnWidth, i * rowHeight, columnWidth-1, rowHeight-1);
-
-
                         }
                     }
                 }

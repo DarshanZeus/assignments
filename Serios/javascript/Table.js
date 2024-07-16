@@ -1,7 +1,8 @@
-class Table {
+export default class Table {
     canvas = document.getElementById("canvas");
     canvasTop = document.getElementById("canvasTop");
     canvasLeft = document.getElementById("canvasLeft");
+    canvasDiv = document.getElementById("canvasDiv");
 
     ctxCanvas = canvas.getContext("2d");
     ctxCanvasTop = canvasTop.getContext("2d");
@@ -24,6 +25,8 @@ class Table {
     tableWidth = 4440;
     tableHeight = 8000;
     data = [ [ ] ];
+    startX = 0;
+    startY = 0;
     // var tableHeight = canvas.height;
 
     ipBox = document.getElementById("ipBox");
@@ -38,34 +41,69 @@ class Table {
             console.error("Could not get context for canvas");
             return;
         }
-        this.ctxCanvas.font = "16px Arial bold";
+        this.ctxCanvas.font = "14px Arial";
         this.ctxCanvas.textAlign = "center";
         this.ctxCanvas.textBaseline = "middle";
         this.ctxCanvas.lineWidth = 2;
+
+        this.ctxCanvasTop.font = "16px Roman bold";
+        this.ctxCanvasTop.textAlign = "center";
+        this.ctxCanvasTop.textBaseline = "middle";
+        this.ctxCanvasTop.lineWidth = 2;
+
+        this.ctxCanvasLeft.font = "16px Roman bold";
+        this.ctxCanvasLeft.textAlign = "center";
+        this.ctxCanvasLeft.textBaseline = "middle";
+        this.ctxCanvasLeft.lineWidth = 2;
         
         // console.log("beginned");
         // drawGrid();
-
-
-
+            // await this.data = getTableData();
+        this.scrollXaxis();
         
-            axios.get("http://localhost:5003/userDetail")
-            .then((response) => {
-                console.log(response.data);
-                this.drawTableData(response.data);
-                
-            })
-            .catch(
-                (error) => {
-                    console.error("Error:", error);
-                }
-            );
-        // });
+    }
+
+    scrollXaxis(){
+        this.canvasDiv.addEventListener("scroll", (e) => {
+            console.log(this.canvasDiv.clientHeight);
+        });
+    }
+
+    async loadData(startX = 0 , startY = 0){
+        this.startX=startX;
+        this.startY=startY;
+        await axios.get("http://localhost:5003/userDetail")
+        .then((response) => {
+            this.data = response.data;
+            console.log(response.data);
+            this.drawTableData();
+        })
+        .catch(
+            (error) => {
+                console.error("Error:", error);
+            }
+        );
     }
 
     drawBorder(ctx, xPos, yPos, width, height, thickness = 1, color='#FF4C4C') {
         ctx.fillStyle=color;
         ctx.fillRect(xPos - (thickness), yPos - (thickness), width + (thickness * 2), height + (thickness * 2));
+    }
+
+    convertToTitle(columnNumber) {
+        let res = '';
+        while (columnNumber > 0) {
+            let r = columnNumber % 26;
+            let q = parseInt(columnNumber / 26);
+            if (r === 0) {
+                r = 26;
+                q--;
+            }
+    
+            res = String.fromCharCode(64 + r) + res;
+            columnNumber = q;
+        }
+        return res;
     }
 
     drawTopHeadingsGrid(){
@@ -107,14 +145,52 @@ class Table {
         // this.ctxCanvas.fillRect(0,0,this.tableWidth,this.tableHeight);
     }
 
-    drawTableData(tableData, startX = 0 , startY = 0 ) {
+    drawTableHeading(startX = 0 , startY = 0){
+        this.startX=startX;
+        this.startY=startY;
+
+        this.ctxCanvasTop.clearRect(0, 0, this.canvasTop.width, this.canvasTop.height);
+        this.drawTopHeadingsGrid();
+        this.ctxCanvasTop.fillStyle = "rgba(0,0,0,1)";
+        var start = startY;
+        var end = startY + 21;
+
+        for (var j = 0; start < end; j++, start++) {
+            this.ctxCanvasTop.fillText(
+                // this.data[this.startX][this.startY],
+                this.convertToTitle(start+1),
+                j * this.columnWidth + this.columnWidth / 2,
+                this.rowHeight / 2
+            );
+        }
+
+        this.ctxCanvasLeft.clearRect(0, 0, this.canvasLeft.width, this.canvasLeft.height);
+        this.drawLeftHeadingsGrid();
+        this.ctxCanvasLeft.fillStyle = "rgba(0,0,0,1)";
+        start = startX;
+        end = startX + 23;
+
+        for (var j = 0; start < end; j++, start++) {
+            this.ctxCanvasLeft.fillText(
+                // this.data[this.startX][this.startY],
+                start + 1,
+                20,
+                j * this.rowHeight + this.rowHeight / 2
+            );
+        }
+    }
+
+    drawTableData(startX = 0 , startY = 0) {
         this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.drawGrid();
-        this.data=tableData;
         this.ctxCanvas.fillStyle = "rgba(0,0,0,1)";
-        for (var i = 0; i < tableData.length; i++,startX++) {
+        this.startX=startX;
+        this.startY=startY;
+        // this.data=tableData;
+        // console.log(this.data);
+        for (var i = 0; this.startX < this.data.length; i++,this.startX++) {
             // ctx.fillText(columnHeaders[i], columnWidth * i + columnWidth / 2, rowHeight / 2);
-            for (var j = 0; j < tableData[0].length; j++,startY++) {
+            for (var j = 0; this.startY < this.data[0].length; j++,this.startY++) {
 
                 // if(startCellsX<=i && i<=endCellsX && startCellsY<=j && j<=endCellsY){
                 //     console.log(startCellsX,startCellsY)
@@ -124,25 +200,21 @@ class Table {
                 // }
                 // // console.log(i,j);
                 // ctx.fillStyle = "rgba(0,0,0,1)";
-                if(startX>tableData.length || startY>tableData/length) break;
+                // console.log(i,j,this.data[this.startX][this.startY]);
+                // if(startX>=tableData.length || startY>=tableData[0].length) break;
                 this.ctxCanvas.fillText(
-                    tableData[startX][startY],
+                    this.data[this.startX][this.startY],
                     j * this.columnWidth + this.columnWidth / 2,
                     i * this.rowHeight + this.rowHeight / 2
                 );
             }
+            this.startY=startY;
         }
     }
+
+
+    // this.canvas.addEvent
+    
+
+    
 }
-
-const table = new Table();
-table.drawTopHeadingsGrid();
-table.drawLeftHeadingsGrid();
-table.drawGrid();
-
-table.drawTableData(table.data,3,3);
-// let year = date.getFullYear();
-
-// const myCar = new Car("Ford", 2014);
-// document.getElementById("demo").innerHTML =
-//   "My car is " + myCar.age(year) + " years old.";
