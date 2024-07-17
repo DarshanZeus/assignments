@@ -1,6 +1,17 @@
 *{
     margin: 0px;
     padding: 0px;
+    border: 0px;
+}
+
+#canvas{
+    margin: 0px;
+    padding: 0px;
+    border: 2px  solid red;
+}
+
+.canvasRow{
+    display: flex;
 }
 
 
@@ -42,7 +53,7 @@
     }
     
     .canvasD{
-        display: inline-block;
+        display: grid;
         grid-column: 2;
         grid-row: 2;
         height: auto;

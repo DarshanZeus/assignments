@@ -3,13 +3,14 @@ export default class Table {
     canvasTop = document.getElementById("canvasTop");
     canvasLeft = document.getElementById("canvasLeft");
     canvasDiv = document.getElementById("canvasDiv");
+    canvasD = document.getElementById("canvasD");
 
-    ctxCanvas = canvas.getContext("2d");
-    ctxCanvasTop = canvasTop.getContext("2d");
-    ctxCanvasLeft = canvasLeft.getContext("2d");
+    ctxCanvas = this.canvas.getContext("2d");
+    ctxCanvasTop = this.canvasTop.getContext("2d");
+    ctxCanvasLeft = this.canvasLeft.getContext("2d");
 
     
-    ctxCanvas = canvas.getContext("2d");
+    ctxCanvas = this.canvas.getContext("2d");
     // var ctxx = canvas.getContext("2d");
     
     // Define the table dimensions
@@ -59,13 +60,39 @@ export default class Table {
         // console.log("beginned");
         // drawGrid();
             // await this.data = getTableData();
-        this.scrollXaxis();
+        // this.scrollXaxis();
         
     }
 
     scrollXaxis(){
         this.canvasDiv.addEventListener("scroll", (e) => {
-            console.log(this.canvasDiv.clientHeight);
+            // console.log(this.canvasDiv.scrollHeight,this.canvasD.clientHeight,document.documentElement.scrollHeight);
+            
+            
+            // console.log(this.canvasDiv.scrollTop,this.canvasD.clientHeight,this.canvasDiv.scrollHeight);
+            if(this.canvasDiv.scrollTop + 880 >= this.canvasDiv.scrollHeight){
+                console.log("add down");
+                const canvas1 = document.createElement("canvas");
+                canvas1.id = "canvas";
+                canvas1.height = 880;
+                canvas1.width = 4400;
+                if(canvasD) canvasD.appendChild(canvas1);
+                else console.log("nahi dikh raha")
+                // const tableInstance = new Table();
+            }
+            console.log(this.canvasDiv.clientWidth);
+            console.log(this.canvasDiv.scrollLeft, this.canvasDiv.scrollWidth)
+
+            if(this.canvasDiv.scrollLeft + this.canvasDiv.clientWidth >= this.canvasDiv.scrollWidth){
+                console.log("add right");
+                const canvas1 = document.createElement("canvas");
+                canvas1.id = "canvas";
+                canvas1.height = 880;
+                canvas1.width = 4400;
+                if(canvasD) canvasD.appendChild(canvas1);
+                else console.log("nahi dikh raha")
+                // const tableInstance = new Table();
+            }
         });
     }
 
