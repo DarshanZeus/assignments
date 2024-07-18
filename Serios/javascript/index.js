@@ -23,8 +23,8 @@ async function loadTableData(tableInstance, x = 0, y = 0) {
 }
 
 
-async function createTableInstance() {
-    const tableInstance = new Table();
+async function createTableInstance(mainCanvasName = `canvas`) {
+    const tableInstance = new Table(mainCanvasName);
     tableInstance.drawGrid();
     tableInstance.drawTopHeadingsGrid();
     tableInstance.drawLeftHeadingsGrid();
@@ -32,67 +32,92 @@ async function createTableInstance() {
     return tableInstance;
 }
 
-function loadCanvases(arrCanvas){
+async function loadCanvases(arrCanvas){
 
     const canvasDiv = document.getElementById("canvasDiv");
     const canvasD = document.getElementById("canvasD");
 
-    const canvas1 = document.createElement("canvas");
-    const canvasRow = document.createElement("div");
+    let canvasRow = document.createElement("div");
     canvasRow.classList.add("canvasRow", `canvasRow${arrCanvas.length}`);
 
-    canvas1.id = "canvas";
+    let canvas1 = document.createElement("canvas");
+    canvas1.id = `canvas${arrCanvas.length}`;
     canvas1.height = 880;
-    canvas1.width = 4400;
+    canvas1.width = 3900;
     // canvasD.appendChild(canvas1);
     canvasRow.appendChild(canvas1);
     canvasD.appendChild(canvasRow);
+
+    let table = await createTableInstance(`canvas${arrCanvas.length}`);
     arrCanvas.push(canvas1);
+
+
+
+
+
+
+    ///////////////////////////////////////////////////////
+    // canvasRow = document.createElement("div");
+    // canvasRow.classList.add("canvasRow", `canvasRow${arrCanvas.length}`);
+
+    // canvas1 = document.createElement("canvas");
+    // canvas1.id = `canvas${arrCanvas.length}`;
+    // canvas1.height = 880;
+    // canvas1.width = 3900;
+
+    // canvasRow.appendChild(canvas1);
+    // canvasD.appendChild(canvasRow);
+    
+    // table = await createTableInstance(`canvas${arrCanvas.length}`);
+    // arrCanvas.push(canvas1);
 
 
 
     
     //////////////////////////////////////////////////////
-    canvasDiv.addEventListener("scroll", (e) => {
-        // console.log(canvasDiv.scrollHeight,canvasD.clientHeight,document.documentElement.scrollHeight);
+    // canvasDiv.addEventListener("scroll", async (e) => {
+    //     // console.log(canvasDiv.scrollHeight,canvasD.clientHeight,document.documentElement.scrollHeight);
         
         
-        // console.log(canvasDiv.scrollTop,canvasD.clientHeight,canvasDiv.scrollHeight);
-        if(canvasDiv.scrollTop + 880 >= canvasDiv.scrollHeight){
-            console.log("add down");
+    //     // console.log(canvasDiv.scrollTop,canvasD.clientHeight,canvasDiv.scrollHeight);
+    //     if(canvasDiv.scrollTop + 880 >= canvasDiv.scrollHeight){
+    //         console.log("add down");
 
-            const canvasRow = document.createElement("div");
-            canvasRow.classList.add("canvasRow", `canvasRow${arrCanvas.length}`);
+    //         const canvasRow = document.createElement("div");
+    //         canvasRow.classList.add("canvasRow", `canvasRow${arrCanvas.length}`);
 
-            const canvas1 = document.createElement("canvas");
-            canvas1.id = "canvas";
-            canvas1.height = 880;
-            canvas1.width = 4400;
+    //         const canvas1 = document.createElement("canvas");
+    //         canvas1.id = `canvas${arrCanvas.length}`;
+    //         canvas1.height = 880;
+    //         canvas1.width = 3900;
 
-            canvasRow.appendChild(canvas1);
-            canvasD.appendChild(canvasRow);
-            arrCanvas.push(canvas1);
-            // const tableInstance = new Table();
-        }
-        // console.log(canvasDiv.clientWidth);
-        // console.log(canvasDiv.scrollLeft, canvasDiv.scrollWidth)
+    //         canvasRow.appendChild(canvas1);
+    //         canvasD.appendChild(canvasRow);
+            
+    //         // const table = await createTableInstance(`canvas${arrCanvas.length}`);
+    //         arrCanvas.push(canvas1);
+    //         // const tableInstance = new Table();
+    //     }
+    //     // console.log(canvasDiv.clientWidth);
+    //     // console.log(canvasDiv.scrollLeft, canvasDiv.scrollWidth)
 
-        if(canvasDiv.scrollLeft + canvasDiv.clientWidth >= canvasDiv.scrollWidth){
-            console.log("add right");
-            const canvas1 = document.createElement("canvas");
-            console.log(Math.floor(canvasDiv.scrollTop/880));
-            const canvasRow = document.querySelector(`.canvasRow${Math.floor(canvasDiv.scrollTop/880)}`);
-            canvas1.id = "canvas";
-            canvas1.height = 880;
-            canvas1.width = 4400;
+    //     if(canvasDiv.scrollLeft + canvasDiv.clientWidth >= canvasDiv.scrollWidth){
+    //         console.log("add right");
+    //         const canvas1 = document.createElement("canvas");
+    //         console.log(Math.floor(canvasDiv.scrollTop/880));
+    //         const canvasRow = document.querySelector(`.canvasRow${Math.floor(canvasDiv.scrollTop/880)}`);
+    //         canvas1.id = "canvas";
+    //         canvas1.height = 880;
+    //         canvas1.width = 3900;
 
-            canvasRow.appendChild(canvas1);
-            // arrCanvas.push(canvas1);
-        }
+    //         canvasRow.appendChild(canvas1);
+    //         // arrCanvas.push(canvas1);
+    //     }
 
-        console.log(arrCanvas.length);
+    //     console.log(arrCanvas.length);
         
-    });
+    // });
+
 }
 // Usage example
 async function main() {
@@ -100,8 +125,8 @@ async function main() {
     // const table = await createTableInstance();
     // const canvasD = document.getElementById("canvasD");
     var arrCanvas = [];
-    loadCanvases(arrCanvas);
-    console.log(arrCanvas);
+    // loadCanvases(arrCanvas);
+    // console.log(arrCanvas);
     const table = await createTableInstance();
 
 }

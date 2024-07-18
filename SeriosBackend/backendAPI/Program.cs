@@ -61,9 +61,10 @@ app.MapGet("/userDetail", () =>
     // int[] list4 = new int[4] { 5, 4, 3, 2 };
 
     // int[][] lists = new int[][] {  list1 ,  list2 ,  list3 ,  list4  };
-    var data =  new string[][]
+    var data = new string[][]
 {
-    new string[] { "Email ID", "Name", "Country", "State", "City", "Telephone Number", "Address Line 1", "Address Line 2", "Date of Birth", "Gross Salary FY2019-20", "Gross Salary FY2020-21", "Gross Salary FY2021-22", "Gross Salary FY2022-23", "Gross Salary FY2023-24" },
+    new string[] { 
+        "Email ID", "Name", "Country", "State", "City", "Telephone Number", "Address Line 1", "Address Line 2", "Date of Birth", "Gross Salary FY2019-20", "Gross Salary FY2020-21", "Gross Salary FY2021-22", "Gross Salary FY2022-23", "Gross Salary FY2023-24" },
     new string[] { "ncooper@hotmail.com", "Kristen Robinson", "Jordan", "North Dakota", "West Valerieland", "(187)741-6224x24308", "2002 Seth Roads Suite 553", "Apt. 132", "1973-07-15", "92,890.00", "128,252.00", "123,602.00", "148,513.00", "78,362.00" },
     new string[] { "kevinsandoval@rubio.net", "Nicole Benson", "Iraq", "New Hampshire", "Christineberg", "518.587.0703x626", "816 Jill Prairie", "Apt. 872", "1993-01-10", "73,747.00", "33,049.00", "101,446.00", "75,494.00", "45,470.00" },
     new string[] { "felicia57@hotmail.com", "Anita Durham", "Costa Rica", "Nevada", "Garzaborough", "868.545.7698x4073", "119 Baker Junctions Suite 423", "Suite 992", "1975-10-05", "97,402.00", "35,078.00", "134,635.00", "54,250.00", "124,625.00" },

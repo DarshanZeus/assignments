@@ -4,54 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Excel Clone</title>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js">
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
     <div class="main-page">
         <div class="topBar">
-            <button class="upload button">
-                Upload CSV File
-            </button>
-
-            <button class="insert button">
-                Add Row
-            </button>
-
-            <button class="delete button">
-                Delete Row
-            </button>
+            <button class="upload button">Upload CSV File</button>
+            <button class="insert button">Add Row</button>
+            <button class="delete button">Delete Row</button>
         </div>
     </div>
     
     <div class="canvasDivDiv">
         <div id="canvasDiv" class="canvasDiv">
             <div class="canvasTopDiv">
-                <canvas id="canvasTop" height="40" width="4400" class="canvasTop"></canvas>
+                <canvas id="canvasTop" height="40" width="3900" class="canvasTop"></canvas>
             </div>
-            
             <div class="canvasLeftDiv">
                 <canvas id="canvasLeft" height="880" width="40" class="canvasLeft"></canvas>
             </div>
-            
             <div id="canvasD" class="canvasD">
-                
-                <!-- <canvas id="canvas" height="880" width="4400" class="canvas"></canvas> -->
-
-
+                <div class="canvasRow canvasRow0">
+                    <canvas id="canvas" height="880" width="3900"></canvas>
+                </div>
             </div>
-            
-
-
             <input type="hidden" class="ipBox" id="ipBox"/>
-            
         </div>
-        
     </div>
     
     <script type="module" src="./javascript/index.js"></script>
-    <!-- <script type="module" src="./javascript/api.js"></script> -->
-    
 </body>
 </html>
