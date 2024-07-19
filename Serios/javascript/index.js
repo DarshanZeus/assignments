@@ -16,20 +16,21 @@ import Table from "./Table.js";
 // document.getElementById("demo").innerHTML =
 //   "My car is " + myCar.age(year) + " years old.";
 
-async function loadTableData(tableInstance, x = 0, y = 0) {
-    await tableInstance.loadData(x,y);
-    tableInstance.drawTableHeading(x,y);
-    tableInstance.drawTableData(x,y);
-}
+// async function loadTableData(tableInstance, x = 0, y = 0) {
+//     await tableInstance.loadData(x,y);
+//     tableInstance.drawTableTopHeading(x,y);
+//     tableInstance.drawTableLeftHeading(x,y);
+//     tableInstance.drawTableData(x,y);
+// }
 
 
 async function createTableInstance(mainCanvasName = `canvas`) {
     const tableInstance = new Table(mainCanvasName);
-    tableInstance.drawGrid();
-    tableInstance.drawTopHeadingsGrid();
-    tableInstance.drawLeftHeadingsGrid();
-    await loadTableData(tableInstance);
-    return tableInstance;
+    // tableInstance.drawGrid();
+    // tableInstance.drawTopHeadingsGrid();
+    // tableInstance.drawLeftHeadingsGrid();
+    // await loadTableData(tableInstance);
+    // return tableInstance;
 }
 
 async function loadCanvases(arrCanvas){
