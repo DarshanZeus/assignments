@@ -31,6 +31,7 @@
 
 
 .canvasDiv{
+    position: relative;
     display: grid;
     grid-template-columns: 40px 1fr;
     grid-template-rows: 40px 1fr;
@@ -136,25 +137,33 @@
     overflow-x: auto; 
 } */
 
+.selectionDiv{
+    display: none;
+    position: absolute;
+    height: 100px;
+    width: 100px;
+    background: rgba(160, 160, 160, 0.229);
+}
 
 
 .ipBox{
-    border: 0px;
+    border: 1px black solid;
     position: absolute;
     /* z-index: 1; */
     /* left:208px;
     top:273px; */
-    width:205px;
-    height:30px;
+    /* width:205px; */
+    /* height:30px; */
     text-align: center;
-    background-color: #F3FEB8;
-    font-family: 'Times New Roman', Times, serif;
-    font-size: 16px;
+    background-color: #98b300;
+    font-family: 'Calibri', Times, serif;
+    font-size: 15px;
 }
 
 .ipBox:focus{
     /* border-radius: 0%; */
-    border: #F3FEB8;
+    border: none;
+    outline: none;
     outline-color: #F3FEB8; 
     background-color: #F3FEB8;
 }
