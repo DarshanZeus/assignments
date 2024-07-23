@@ -149,13 +149,14 @@
 .ipBox{
     border: 1px black solid;
     position: absolute;
+    display: none;
     /* z-index: 1; */
     /* left:208px;
     top:273px; */
     /* width:205px; */
     /* height:30px; */
     text-align: center;
-    background-color: #98b300;
+    background-color: #fff;
     font-family: 'Calibri', Times, serif;
     font-size: 15px;
 }
@@ -164,8 +165,8 @@
     /* border-radius: 0%; */
     border: none;
     outline: none;
-    outline-color: #F3FEB8; 
-    background-color: #F3FEB8;
+    /* outline-color: #fff;  */
+    background-color: #fff;
 }
 /* .ipBox: */
 
