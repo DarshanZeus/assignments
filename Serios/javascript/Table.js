@@ -109,6 +109,8 @@ export default class Table {
             return;
         }
 
+        // document.body.style.cursor = *cursor-url*;
+
         
 
         
@@ -144,6 +146,11 @@ export default class Table {
         this.selectionPointerDown = this.selectionPointerDown.bind(this);
         this.selectionPointerMove = this.selectionPointerMove.bind(this);
         this.selectionPointerUp = this.selectionPointerUp.bind(this);
+
+        this.drawWhiteSelectionBlock = this.drawWhiteSelectionBlock.bind(this);
+
+        this.mainCanvasKeyDown = this.mainCanvasKeyDown.bind(this);
+        this.mainCanvasKeyUp = this.mainCanvasKeyUp.bind(this);
 
         
         this.placeInputBox = this.placeInputBox.bind(this);
@@ -188,7 +195,6 @@ export default class Table {
         this.canvasDiv.addEventListener("scroll", (e) => {
             // console.log(this.canvasDiv.scrollHeight,this.canvasD.clientHeight,document.documentElement.scrollHeight);
             
-            
             // console.log(this.canvasDiv.scrollTop,this.canvasD.clientHeight,this.canvasDiv.scrollHeight);
             if(this.canvasDiv.scrollTop + 880 >= this.canvasDiv.scrollHeight){
                 console.log("add down");
@@ -221,6 +227,8 @@ export default class Table {
         this.canvas.addEventListener('pointermove', this.selectionPointerMove);
         this.canvas.addEventListener('pointerup', this.selectionPointerUp);
         this.canvas.addEventListener('pointerleave', this.selectionPointerUp);
+        document.addEventListener('keydown', this.mainCanvasKeyDown);
+        document.addEventListener('keyup', this.mainCanvasKeyUp);
         
         this.canvas.addEventListener('dblclick', this.placeInputBox);
 
@@ -236,6 +244,11 @@ export default class Table {
         this.canvasLeft.addEventListener('pointerup', this.resizeRowPointerUp);
         this.canvasLeft.addEventListener('pointerleave', this.resizeRowPointerUp);
         // this.deleteButton.addEventListener('click', this.handleDelete);
+
+        
+        this.canvasLeft.addEventListener('pointermove', this.resizeRowPointerMove);
+        this.canvasLeft.addEventListener('pointerup', this.resizeRowPointerUp);
+        this.canvasLeft.addEventListener('pointerleave', this.resizeRowPointerUp);
 
         
         // this.canvasTop.addEventListener("mousedown", (e) => {
@@ -553,8 +566,8 @@ export default class Table {
         this.ipBox.style.display = "none";
         // console.log(e.offsetX, e.offsetY);
         // this.selection = 1;
-        this.startCellsX = this.getColumnNumber(e.offsetX);
-        this.startCellsY = this.getRowNumber(e.offsetY);
+        // this.startCellsX = this.getColumnNumber(e.offsetX);
+        // this.startCellsY = this.getRowNumber(e.offsetY);
 
         const ipBoxCellX = this.startCellsX;
         const ipBoxCellY = this.startCellsY;
@@ -580,6 +593,44 @@ export default class Table {
         this.ipBox.value = this.data[this.startCellsY][this.startCellsX];
         console.log(this.data[this.startCellsY][this.startCellsX]);
         this.ipBox.focus();
+    }
+
+    mainCanvasKeyDown(e){
+        e.preventDefault()
+        if(e.shiftKey){
+            if(e.key === "ArrowUp"){
+                // console.log("U");
+                if(this.endCellsY !== -1) this.endCellsY = Math.max(0, this.endCellsY - 1);
+                this.selection = 1;
+                this.drawSelection();
+                this.selection = 0;
+            }
+            else if(e.key === "ArrowDown"){
+                // console.log("D");
+                if(this.endCellsY !== -1) this.endCellsY = Math.min(1048576, this.endCellsY + 1);
+                this.selection = 1;
+                this.drawSelection();
+                this.selection = 0;
+            }
+            else if(e.key === "ArrowLeft"){
+                // console.log("L");
+                if(this.endCellsX !== -1) this.endCellsX = Math.max(0, this.endCellsX - 1);
+                this.selection = 1;
+                this.drawSelection();
+                this.selection = 0;
+            }
+            else if(e.key === "ArrowRight"){
+                // console.log("R");
+                if(this.endCellsX !== -1) this.endCellsX = Math.min(16384, this.endCellsX + 1);
+                this.selection = 1;
+                this.drawSelection();
+                this.selection = 0;
+            }
+        }
+    }
+
+    mainCanvasKeyUp(e){
+
     }
 
     selectionPointerDown(e){
@@ -778,6 +829,7 @@ export default class Table {
                 selectionHeight
             );
             this.drawGrid();
+            this.drawWhiteSelectionBlock();
             this.drawTableData();
             this.ctxCanvas.lineWidth = 2;
             this.ctxCanvas.strokeStyle = "rgb(16,124,65)";
@@ -789,16 +841,7 @@ export default class Table {
             )
 
             
-            // ----------- White Space during Main Selection -------------
-            if(this.isSelectedRow === 0 && this.isSelectedCol === 0){
-                this.ctxCanvas.fillStyle = "#fff";
-                this.ctxCanvas.fillRect(
-                    this.startAbsX,
-                    this.startAbsY,
-                    this.columnWidth + (this.topSizeMap[this.startCellsX + 1] || 0),
-                    this.rowHeight + (this.leftSizeMap[this.startCellsY + 1] || 0)
-                );
-            }
+            
         }
         else{
             this.drawGrid();
@@ -837,6 +880,29 @@ export default class Table {
         //     this.endCellsX, 
         //     this.endCellsY
         // );
+    }
+
+    drawWhiteSelectionBlock(){
+        // ----------- White Space during Main Selection -------------
+        let leftSpace = 0;
+        let topSpace = 0;
+
+        for(let x = 0; x < this.startCellsX; ++x){
+            leftSpace += this.columnWidth + (this.topSizeMap[x + 1] || 0);
+        }
+        for(let y = 0; y < this.startCellsY; ++y){
+            topSpace += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
+        }
+
+        if(this.isSelectedRow === 0 && this.isSelectedCol === 0){
+            this.ctxCanvas.fillStyle = "#fff";
+            this.ctxCanvas.fillRect(
+                leftSpace,
+                topSpace,
+                this.columnWidth + (this.topSizeMap[this.startCellsX + 1] || 0),
+                this.rowHeight + (this.leftSizeMap[this.startCellsY + 1] || 0)
+            );
+        }
     }
 
     drawSelectionDiv() {
@@ -1005,6 +1071,12 @@ export default class Table {
                 selectionWidth,
                 this.canvasTop.height
             );
+            this.ctxCanvasTop.strokeRect(
+                leftSpace,
+                0,
+                selectionWidth,
+                this.canvasTop.height
+            );
         }
         
 
@@ -1019,9 +1091,17 @@ export default class Table {
             this.ctxCanvasTop.moveTo(cellPositionX + 0.5 ,0);
             this.ctxCanvasTop.lineTo(cellPositionX + 0.5 , this.canvasTop.height);
             
-            if(lx <= x && x < hx){
+            if(lx-1 == x){
+                this.ctxCanvasTop.lineWidth=5;
+                this.ctxCanvasTop.strokeStyle = "#107c41";
+            }
+            else if(x == hx){
+                this.ctxCanvasTop.lineWidth=3;
+                this.ctxCanvasTop.strokeStyle = "#107c41";
+            }
+            else if(lx <= x && x < hx){
                 this.ctxCanvasTop.lineWidth=1;
-                this.ctxCanvasTop.strokeStyle = "#fff";
+                this.ctxCanvasTop.strokeStyle = "#a0d8b9";
             }
             else if(lowX - 1 <= x && x <= highX){
                 this.ctxCanvasTop.lineWidth=1;
@@ -1245,7 +1325,7 @@ export default class Table {
             this.ctxCanvasTop.fillText(
                 this.convertToTitle(i + 1),
                 x + columnWidth / 2,
-                this.canvasTop.height / 2
+                this.canvasTop.height *3 / 4
             );
             x += columnWidth;
         }
