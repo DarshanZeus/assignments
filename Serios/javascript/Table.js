@@ -28,6 +28,10 @@ export default class Table {
     endCellsX = -1;
     endCellsY = -1;
 
+    isClickedOnTopHeadingCanvas = 0;
+    isClickedOnLeftHeadingCanvas = 0;
+    isClickedOnMainCanvas = 0;
+
     selection = 0;
     selectionTop = 0;
     selectionLeft = 0;
@@ -161,6 +165,11 @@ export default class Table {
         
         this.drawTopHeadingsGrid = this.drawTopHeadingsGrid.bind(this);
         this.drawTableTopHeading = this.drawTableTopHeading.bind(this);
+        
+        this.topHeadingPointerMove = this.topHeadingPointerMove.bind(this);
+        
+        this.windowPointerMove = this.windowPointerMove.bind(this);
+        this.windowPointerUp = this.windowPointerUp.bind(this);
 
         this.addEventListeners();
         this.drawGrid();
@@ -224,9 +233,9 @@ export default class Table {
 
     addEventListeners() {
         this.canvas.addEventListener("pointerdown", this.selectionPointerDown);
-        this.canvas.addEventListener('pointermove', this.selectionPointerMove);
-        this.canvas.addEventListener('pointerup', this.selectionPointerUp);
-        this.canvas.addEventListener('pointerleave', this.selectionPointerUp);
+        // this.canvas.addEventListener('pointermove', this.selectionPointerMove);
+        // this.canvas.addEventListener('pointerup', this.selectionPointerUp);
+        // this.canvas.addEventListener('pointerleave', this.selectionPointerUp);
         document.addEventListener('keydown', this.mainCanvasKeyDown);
         document.addEventListener('keyup', this.mainCanvasKeyUp);
         
@@ -234,21 +243,29 @@ export default class Table {
 
         
         this.canvasTop.addEventListener("pointerdown", this.resizeColumnPointerDown);
-        this.canvasTop.addEventListener('pointermove', this.resizeColumnPointerMove);
-        this.canvasTop.addEventListener('pointerup', this.resizeColumnPointerUp);
-        this.canvasTop.addEventListener('pointerleave', this.resizeColumnPointerUp);
+        this.canvasTop.addEventListener('pointermove', this.topHeadingPointerMove);
+        // this.canvasTop.addEventListener('pointerup', this.resizeColumnPointerUp);
+        // this.canvasTop.addEventListener('pointerleave', this.resizeColumnPointerUp);
 
 
         this.canvasLeft.addEventListener("pointerdown", this.resizeRowPointerDown);
-        this.canvasLeft.addEventListener('pointermove', this.resizeRowPointerMove);
-        this.canvasLeft.addEventListener('pointerup', this.resizeRowPointerUp);
-        this.canvasLeft.addEventListener('pointerleave', this.resizeRowPointerUp);
+        // this.canvasLeft.addEventListener('pointermove', this.resizeRowPointerMove);
+        // this.canvasLeft.addEventListener('pointerup', this.resizeRowPointerUp);
+        // this.canvasLeft.addEventListener('pointerleave', this.resizeRowPointerUp);
         // this.deleteButton.addEventListener('click', this.handleDelete);
 
         
-        this.canvasLeft.addEventListener('pointermove', this.resizeRowPointerMove);
-        this.canvasLeft.addEventListener('pointerup', this.resizeRowPointerUp);
-        this.canvasLeft.addEventListener('pointerleave', this.resizeRowPointerUp);
+        // this.canvasLeft.addEventListener('pointermove', this.resizeRowPointerMove);
+        // this.canvasLeft.addEventListener('pointerup', this.resizeRowPointerUp);
+        // this.canvasLeft.addEventListener('pointerleave', this.resizeRowPointerUp);
+        // document.addEventListener("pointerdown", (e)=>{
+        //     console.log('Viewport Coordinates:', e.clientX, e.clientY);
+        //     console.log('Screen Coordinates:', e.screenX, e.screenY);
+        // })
+        
+        window.addEventListener('pointermove', this.windowPointerMove);
+        window.addEventListener('pointerup', this.windowPointerUp);
+        window.addEventListener('pointerleave', this.windowPointerUp);
 
         
         // this.canvasTop.addEventListener("mousedown", (e) => {
@@ -354,6 +371,8 @@ export default class Table {
     }
 
     resizeColumnPointerDown(e){
+        this.isClickedOnTopHeadingCanvas = 1;
+
         this.startRowY = -1;
         this.endRowY = -1;
         this.rowSelection = 0;
@@ -398,11 +417,12 @@ export default class Table {
     }
 
     resizeColumnPointerMove(e){
+        let offset = this.canvasTop.getBoundingClientRect();
         if(this.selectionTop === 1){
             // Math.min((this.startTopX - e.offsetX),20);
             const newWidth = Math.max(
                 40 -  this.columnWidth,
-                e.offsetX - this.startTopX + this.prevSizeX
+                e.clientX - offset.x - this.startTopX + this.prevSizeX
             )
             // + (this.topSizeMap[this.startCellsX + 1] || 0)
             ;
@@ -413,7 +433,8 @@ export default class Table {
             this.drawTableTopHeading();
         }
         if(this.colSelection === 1){
-            let clickX = this.getColumnNumber(e.offsetX);
+            console.log(e.clientY ,offset.x);
+            let clickX = this.getColumnNumber(e.clientX - offset.x);
             this.endColX = clickX;
             this.endCellsX = this.endColX;
             this.ctxCanvasTop.clearRect(0, 0, this.canvasTop.width, this.canvasTop.height);
@@ -430,12 +451,13 @@ export default class Table {
     }
 
     resizeColumnPointerUp(e){
+        let offset = this.canvasTop.getBoundingClientRect();
         if(this.selectionTop === 1){
             // console.log(e.offsetX);
             // (this.topSizeMap[this.startCellsX + 1] || 0)
             const newWidth = Math.max(
                 40 -  this.columnWidth,
-                e.offsetX - this.startTopX + this.prevSizeX
+                e.clientX - offset.x - this.startTopX + this.prevSizeX
             )
             ;
             this.topSizeMap[this.moveStartX + 1] = newWidth ;
@@ -457,6 +479,8 @@ export default class Table {
     }
 
     resizeRowPointerDown(e){
+        this.isClickedOnLeftHeadingCanvas = 1;
+
         this.startColX = -1;
         this.endColX = -1;
         this.colSelection = 0;
@@ -509,10 +533,12 @@ export default class Table {
     }
 
     resizeRowPointerMove(e){
+        let offset = this.canvas.getBoundingClientRect();
+
         if(this.selectionLeft === 1){
             const newHeight = Math.max(
                 10 - this.rowHeight,
-                e.offsetY - this.startLeftY + this.prevSizeY
+                e.clientY - offset.y - this.startLeftY + this.prevSizeY
             )
             ;
 
@@ -523,7 +549,7 @@ export default class Table {
             this.drawTableLeftHeading();
         }
         if(this.rowSelection === 1){
-            let clickY = this.getRowNumber(e.offsetY);
+            let clickY = this.getRowNumber(e.clientY - offset.y);
             this.endRowY = clickY;
             this.endCellsY = this.endRowY;
             this.ctxCanvasLeft.clearRect(0, 0, this.canvasLeft.width, this.canvasLeft.height);
@@ -596,7 +622,7 @@ export default class Table {
     }
 
     mainCanvasKeyDown(e){
-        e.preventDefault()
+        // e.preventDefault()
         if(e.shiftKey){
             if(e.key === "ArrowUp"){
                 // console.log("U");
@@ -634,6 +660,8 @@ export default class Table {
     }
 
     selectionPointerDown(e){
+        this.isClickedOnMainCanvas = 1;
+
         this.startColX = -1;
         this.endColX = -1;
         this.colSelection = 0;
@@ -700,9 +728,13 @@ export default class Table {
         if( this.selection === 1){
             // this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
         // this.drawGrid();
-            this.endCellsX = this.getColumnNumber(e.offsetX);
-            this.endCellsY = this.getRowNumber(e.offsetY);
-            
+            let offset = this.canvas.getBoundingClientRect();
+            this.endCellsX = this.getColumnNumber(e.clientX - offset.x);
+            this.endCellsY = this.getRowNumber(e.clientY - offset.y);
+            // console.log(e.offsetX,e.offsetY);
+            // console.log('Viewport Coordinates:', e.clientX, e.clientY);
+            // console.log('Screen Coordinates:', e.screenX, e.screenY);
+            // console.log(x);
             
             this.drawSelection();
             this.ctxCanvas.fillStyle = "#fff";
@@ -728,9 +760,71 @@ export default class Table {
 
     }
 
+    windowPointerMove(e){
+        if(this.isClickedOnLeftHeadingCanvas === 1){
+            this.resizeRowPointerMove(e);
+        }
+        else if(this.isClickedOnMainCanvas === 1){
+            // if( this.selection === 1){
+            //     // this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            // // this.drawGrid();
+            //     let offset = this.canvas.getBoundingClientRect();
+            //     this.endCellsX = this.getColumnNumber(e.clientX - offset.x);
+            //     this.endCellsY = this.getRowNumber(e.clientY - offset.y);
+            //     // console.log(e.offsetX,e.offsetY);
+            //     // console.log('Viewport Coordinates:', e.clientX, e.clientY);
+            //     // console.log('Screen Coordinates:', e.screenX, e.screenY);
+            //     // console.log(x);
+                
+            //     this.drawSelection();
+            //     this.ctxCanvas.fillStyle = "#fff";
+                
+            //     // this.ctxCanvas.fillRect(
+            //     //     this.startAbsX,
+            //     //     this.startAbsY,
+            //     //     this.columnWidth +(this.topSizeMap[this.startCellsX + 1] || 0),
+            //     //     this.rowHeight + (this.topSizeMap[this.startCellsY ] || 0)
+            //     // );
+    
+            //     // this.drawGrid();
+            //     // this.drawTableData();
+            // }
+            this.selectionPointerMove(e);
+        }
+        else if(this.isClickedOnTopHeadingCanvas === 1){
+            this.resizeColumnPointerMove(e);
+        }
+
+        // console.log(this.isClickedOnLeftHeadingCanvas, this.isClickedOnMainCanvas, this.isClickedOnTopHeadingCanvas);
+
+    }
+    windowPointerUp(e){
+        this.selection = 0;
+
+        this.resizeRowPointerUp(e);
+        this.resizeColumnPointerUp(e);
+        this.selectionPointerUp(e);
+
+        this.isClickedOnLeftHeadingCanvas = 0;
+        this.isClickedOnMainCanvas = 0;
+        this.isClickedOnTopHeadingCanvas = 0;
+    }
+    
+
+    topHeadingPointerMove(e){
+        if(this.isIntersectRegionTop(e.offsetX)){
+            this.canvasTop.style.cursor = "ew-resize";
+        }
+        else{
+            this.canvasTop.style.cursor = "s-resize";
+        }
+    }
+
+
+
     drawSelection() {
         // console.log("selection");
-        if(this.selection === 1){
+        if(this.selection === 1 && this.startCellsX != -1){
 
             let selectionLeftSpace = 0;
             // this.canvasLeft.width;

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
+    
     <div class="main-page">
         <div class="topBar">
             <button class="upload button">Upload CSV File</button>
@@ -17,10 +18,16 @@
     </div>
     
     <div class="canvasDivDiv">
+        
         <div id="canvasDiv" class="canvasDiv">
             
             <div class="selectionDiv" id="selectionDiv"></div>
+            
             <div class="canvasTopDiv">
+                
+                <div class="triangleSelectAll" id="triangleSelectAll">
+                    <div class="triangleRightDown" id="triangleRightDown"></div>
+                </div>
                 <canvas id="canvasTop" height="40" width="3900" class="canvasTop"></canvas>
             </div>
             <div class="canvasLeftDiv">
@@ -36,6 +43,7 @@
             <!-- <div class="selectionDiv" id="selectionDiv"></div> -->
         </div>
     </div>
+    
     
     <script type="module" src="./javascript/index.js"></script>
     <!-- <script type="module" src="./script.js"></script> -->
