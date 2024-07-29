@@ -3,13 +3,6 @@ export default class Table {
     canvasDiv = document.getElementById("canvasDiv");
     canvasD = document.getElementById("canvasD");
 
-    
-
-    
-    // ctxCanvas = this.canvas.getContext("2d");
-    // var ctxx = canvas.getContext("2d");
-    
-    // Define the table dimensions
 
     canvas ;
     canvasTop = document.getElementById("canvasTop");
@@ -22,6 +15,11 @@ export default class Table {
     // ctxCanvasLeft ;
     columnWidth = 150;
     rowHeight = 20;
+
+    minCountRow = 0;
+    minCountCol = 0;
+    maxCountRow = 1048576;
+    maxCountCol = 16384;
 
     startCellsX = -1;
     startCellsY = -1;
@@ -93,6 +91,7 @@ export default class Table {
 
         this.ipBox = document.getElementById("ipBox");
         this.selectionDiv = document.getElementById("selectionDiv");
+        this.dottedVerticalLineDiv = document.getElementById("dottedVerticalLineDiv");
         // console.log(this.ipBox);
 
 
@@ -113,13 +112,7 @@ export default class Table {
             return;
         }
 
-        // document.body.style.cursor = *cursor-url*;
-
-        
-
-        
-
-        
+        // document.body.style.cursor = *cursor-url*;       
         
         
         
@@ -167,6 +160,7 @@ export default class Table {
         this.drawTableTopHeading = this.drawTableTopHeading.bind(this);
         
         this.topHeadingPointerMove = this.topHeadingPointerMove.bind(this);
+        this.leftHeadingPointerMove = this.leftHeadingPointerMove.bind(this);
         
         this.windowPointerMove = this.windowPointerMove.bind(this);
         this.windowPointerUp = this.windowPointerUp.bind(this);
@@ -249,7 +243,7 @@ export default class Table {
 
 
         this.canvasLeft.addEventListener("pointerdown", this.resizeRowPointerDown);
-        // this.canvasLeft.addEventListener('pointermove', this.resizeRowPointerMove);
+        this.canvasLeft.addEventListener('pointermove', this.leftHeadingPointerMove);
         // this.canvasLeft.addEventListener('pointerup', this.resizeRowPointerUp);
         // this.canvasLeft.addEventListener('pointerleave', this.resizeRowPointerUp);
         // this.deleteButton.addEventListener('click', this.handleDelete);
@@ -431,9 +425,19 @@ export default class Table {
             this.ctxCanvasTop.clearRect(0, 0, this.canvasTop.width, this.canvasTop.height);
             this.drawTopHeadingsGrid();
             this.drawTableTopHeading();
+
+            
+            // console.log(this.dottedVerticalLineDiv.style.left);
+            // console.log(e.clickX);
+            // console.log(this.dottedVerticalLineDiv.style.display);
+            // console.log(this.dottedVerticalLineDiv.style.top);
+            // console.log(this.dottedVerticalLineDiv.style.height);
+            
+
+
         }
         if(this.colSelection === 1){
-            console.log(e.clientY ,offset.x);
+            // console.log(e.clientY ,offset.x);
             let clickX = this.getColumnNumber(e.clientX - offset.x);
             this.endColX = clickX;
             this.endCellsX = this.endColX;
@@ -452,6 +456,7 @@ export default class Table {
 
     resizeColumnPointerUp(e){
         let offset = this.canvasTop.getBoundingClientRect();
+        this.dottedVerticalLineDiv.style.display = "none";
         if(this.selectionTop === 1){
             // console.log(e.offsetX);
             // (this.topSizeMap[this.startCellsX + 1] || 0)
@@ -622,37 +627,53 @@ export default class Table {
     }
 
     mainCanvasKeyDown(e){
-        // e.preventDefault()
+        e.preventDefault();
         if(e.shiftKey){
             if(e.key === "ArrowUp"){
                 // console.log("U");
-                if(this.endCellsY !== -1) this.endCellsY = Math.max(0, this.endCellsY - 1);
-                this.selection = 1;
-                this.drawSelection();
-                this.selection = 0;
+                if(this.endCellsY !== -1) this.endCellsY = Math.max(this.minCountRow, this.endCellsY - 1);
             }
             else if(e.key === "ArrowDown"){
                 // console.log("D");
-                if(this.endCellsY !== -1) this.endCellsY = Math.min(1048576, this.endCellsY + 1);
-                this.selection = 1;
-                this.drawSelection();
-                this.selection = 0;
+                if(this.endCellsY !== -1) this.endCellsY = Math.min(this.maxCountRow, this.endCellsY + 1);
             }
             else if(e.key === "ArrowLeft"){
                 // console.log("L");
-                if(this.endCellsX !== -1) this.endCellsX = Math.max(0, this.endCellsX - 1);
-                this.selection = 1;
-                this.drawSelection();
-                this.selection = 0;
+                if(this.endCellsX !== -1) this.endCellsX = Math.max(this.minCountCol, this.endCellsX - 1);
             }
             else if(e.key === "ArrowRight"){
                 // console.log("R");
-                if(this.endCellsX !== -1) this.endCellsX = Math.min(16384, this.endCellsX + 1);
-                this.selection = 1;
-                this.drawSelection();
-                this.selection = 0;
+                if(this.endCellsX !== -1) this.endCellsX = Math.min(this.maxCountCol, this.endCellsX + 1);
             }
         }
+        else if(e.key === "ArrowUp"){
+            // console.log("U");
+            this.startCellsY = Math.max(this.minCountRow, this.startCellsY - 1);
+            this.endCellsY = this.startCellsY;
+            this.endCellsX = this.startCellsX;
+        }
+        else if(e.key === "ArrowDown"){
+            // console.log("D");
+            this.startCellsY = Math.min(this.maxCountRow, this.startCellsY + 1);
+            this.endCellsY = this.startCellsY;
+            this.endCellsX = this.startCellsX;
+        }
+        else if(e.key === "ArrowLeft"){
+            // console.log("L");
+            this.startCellsX = Math.max(this.minCountCol, this.startCellsX - 1);
+            this.endCellsY = this.startCellsY;
+            this.endCellsX = this.startCellsX;
+        }
+        else if(e.key === "ArrowRight"){
+            // console.log("R");
+            this.startCellsX = Math.min(this.maxCountCol, this.startCellsX + 1);
+            this.endCellsY = this.startCellsY;
+            this.endCellsX = this.startCellsX;
+        }
+        this.selection = 1;
+        this.drawSelection();
+        this.selection = 0;
+        
     }
 
     mainCanvasKeyUp(e){
@@ -798,6 +819,7 @@ export default class Table {
         // console.log(this.isClickedOnLeftHeadingCanvas, this.isClickedOnMainCanvas, this.isClickedOnTopHeadingCanvas);
 
     }
+
     windowPointerUp(e){
         this.selection = 0;
 
@@ -810,9 +832,8 @@ export default class Table {
         this.isClickedOnTopHeadingCanvas = 0;
     }
     
-
     topHeadingPointerMove(e){
-        if(this.isIntersectRegionTop(e.offsetX)){
+        if(this.isIntersectRegionTop(e.offsetX) && this.isClickedOnTopHeadingCanvas === 0){
             this.canvasTop.style.cursor = "ew-resize";
         }
         else{
@@ -820,7 +841,15 @@ export default class Table {
         }
     }
 
-
+    leftHeadingPointerMove(e){
+        // console.log(this.isIntersectRegionLeft(e.offsetY));
+        if(this.isIntersectRegionLeft(e.offsetY) && this.isClickedOnLeftHeadingCanvas === 0){
+            this.canvasLeft.style.cursor = "ns-resize";
+        }
+        else{
+            this.canvasLeft.style.cursor = "w-resize";
+        }
+    }
 
     drawSelection() {
         // console.log("selection");
@@ -1061,12 +1090,6 @@ export default class Table {
         return textToBeShort.substring(0,length) + "...";
     }
 
-    drawBorder(ctx, xPos, yPos, width, height, thickness = 1, color='#FF4C4C') {
-        ctx.fillStyle=color;
-        thickness = 0;
-        ctx.fillRect(xPos - (thickness), yPos - (thickness), width + (thickness * 2), height + (thickness * 2));
-    }
-
     convertToTitle(columnNumber) {
         let res = '';
         while (columnNumber > 0) {
@@ -1124,6 +1147,7 @@ export default class Table {
         // tempCtx.strokeStyle = "rgb(200,200,200)";
         // tempCtx.stroke();
         // this.resetCanvasStroke(tempCtx);
+        
 
 
 
@@ -1389,6 +1413,7 @@ export default class Table {
     //         x += (this.columnWidth / 2) + (this.topSizeMap[j+1]/2  || 0);
     //     }
     // }
+
     drawTableTopHeading() {
         // this.ctxCanvasTop.clearRect(0, 0, this.canvasTop.width, this.canvasTop.height);
         
@@ -1429,7 +1454,6 @@ export default class Table {
         
         // this.ctxCanvasTop.stroke();
     }
-
 
     drawTableLeftHeading(startX = 0 , startY = 0){
         // console.log("leftdata");

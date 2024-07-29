@@ -220,3 +220,13 @@
     /* border-radius: 200%; */
     /* background: #0f0; */
 }
+
+.dottedVerticalLineDiv{
+    position: absolute;
+    /* display: none; */
+    /* top: 10px;
+    left: 10px; */
+    border-left: dashed 2px #0f703b;
+    height: 100px;
+    width: 0px;
+}
