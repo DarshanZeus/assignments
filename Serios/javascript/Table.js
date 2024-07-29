@@ -151,6 +151,7 @@ export default class Table {
 
         
         this.placeInputBox = this.placeInputBox.bind(this);
+        this.ipBoxKeyDown = this.ipBoxKeyDown.bind(this);
 
         this.drawSelection = this.drawSelection.bind(this);
         this.drawSelectionDiv = this.drawSelectionDiv.bind(this);
@@ -230,8 +231,8 @@ export default class Table {
         // this.canvas.addEventListener('pointermove', this.selectionPointerMove);
         // this.canvas.addEventListener('pointerup', this.selectionPointerUp);
         // this.canvas.addEventListener('pointerleave', this.selectionPointerUp);
-        document.addEventListener('keydown', this.mainCanvasKeyDown);
-        document.addEventListener('keyup', this.mainCanvasKeyUp);
+        window.addEventListener('keydown', this.mainCanvasKeyDown);
+        window.addEventListener('keyup', this.mainCanvasKeyUp);
         
         this.canvas.addEventListener('dblclick', this.placeInputBox);
 
@@ -260,6 +261,8 @@ export default class Table {
         window.addEventListener('pointermove', this.windowPointerMove);
         window.addEventListener('pointerup', this.windowPointerUp);
         window.addEventListener('pointerleave', this.windowPointerUp);
+
+        this.ipBox.addEventListener("keypress", this.ipBoxKeyDown);
 
         
         // this.canvasTop.addEventListener("mousedown", (e) => {
@@ -342,8 +345,8 @@ export default class Table {
     isIntersectRegionTop(clickX){
         let pixelCount = 0;
 
-        for(let i = 0; pixelCount - this.columnWidth < this.tableWidth ; ++i){
-            pixelCount+= (this.topSizeMap[i] || this.columnWidth);
+        for(let i = 1; pixelCount - this.columnWidth < this.tableWidth ; ++i){
+            pixelCount+= this.columnWidth + (this.topSizeMap[i] || 0);
             // console.log(i,pixelCount);
             if(((pixelCount-10) <= clickX) && (clickX <= (pixelCount + 10))) return true;
 
@@ -356,7 +359,7 @@ export default class Table {
         let pixelCount = 0;
 
         for(let i = 0; pixelCount - this.rowHeight < this.tableHeight ; ++i){
-            pixelCount+= (this.leftSizeMap[i] || this.rowHeight);
+            pixelCount+= this.rowHeight + (this.leftSizeMap[i] || 0);
             // console.log(i,pixelCount);
             if(((pixelCount-2) <= clickY) && (clickY <= (pixelCount + 2))) return true;
         }
@@ -365,6 +368,14 @@ export default class Table {
     }
 
     resizeColumnPointerDown(e){
+        // if(this.ipBox.style.display != "none"){
+        //     console.log(ipBox.value);
+        //     this.data[this.startCellsY][this.startCellsX] = ipBox.value;
+        //     this.ipBox.value = "";
+        
+            this.ipBox.style.display = "none";
+        // }
+
         this.isClickedOnTopHeadingCanvas = 1;
 
         this.startRowY = -1;
@@ -383,6 +394,26 @@ export default class Table {
             this.startTopX = e.offsetX;
             this.selectionTop = 1;
             this.prevSizeX = (this.topSizeMap[this.moveStartX + 1] || 0);
+
+            let selectionLeftSpace = 0;
+            for(let x = 0; x < this.moveStartX; ++x){
+                selectionLeftSpace += this.columnWidth + (this.topSizeMap[x + 1] || 0);
+            }
+            let selectionWidth = this.columnWidth + (this.topSizeMap[this.moveStartX + 1] || 0);
+
+            this.ctxCanvas.lineWidth = 2;
+            this.ctxCanvas.strokeStyle = "rgb(16,124,65)";
+            this.ctxCanvas.strokeRect(
+                selectionLeftSpace - 1 ,
+                -2,
+                selectionWidth + 2,
+                this.canvas.height + 4
+            );
+
+            // console.log(selectionLeftSpace - 1 ,
+            //     0,
+            //     selectionWidth + 2,
+            //     this.canvas.height);
         }
         else{
             let clickX = this.getColumnNumber(e.offsetX);
@@ -421,17 +452,12 @@ export default class Table {
             // + (this.topSizeMap[this.startCellsX + 1] || 0)
             ;
             this.topSizeMap[this.moveStartX + 1] = newWidth;
+
+            this.dottedVerticalLineDiv.style.display = "block";
             
             this.ctxCanvasTop.clearRect(0, 0, this.canvasTop.width, this.canvasTop.height);
             this.drawTopHeadingsGrid();
             this.drawTableTopHeading();
-
-            
-            // console.log(this.dottedVerticalLineDiv.style.left);
-            // console.log(e.clickX);
-            // console.log(this.dottedVerticalLineDiv.style.display);
-            // console.log(this.dottedVerticalLineDiv.style.top);
-            // console.log(this.dottedVerticalLineDiv.style.height);
             
 
 
@@ -456,7 +482,6 @@ export default class Table {
 
     resizeColumnPointerUp(e){
         let offset = this.canvasTop.getBoundingClientRect();
-        this.dottedVerticalLineDiv.style.display = "none";
         if(this.selectionTop === 1){
             // console.log(e.offsetX);
             // (this.topSizeMap[this.startCellsX + 1] || 0)
@@ -465,6 +490,7 @@ export default class Table {
                 e.clientX - offset.x - this.startTopX + this.prevSizeX
             )
             ;
+            this.prevSizeX = 0;
             this.topSizeMap[this.moveStartX + 1] = newWidth ;
             // console.log(newWidth);
             this.selectionTop = 0;
@@ -477,6 +503,9 @@ export default class Table {
             this.selection = 1;
             this.drawSelection();
             this.selection = 0;
+            
+            this.dottedVerticalLineDiv.style.display = "none";
+            // console.log(this.dottedVerticalLineDiv.style.display);
             // if(this.selection === 1) this.drawSelection();
             console.log(this.topSizeMap);
         }
@@ -484,6 +513,14 @@ export default class Table {
     }
 
     resizeRowPointerDown(e){
+
+        // if(this.ipBox.style.display != "none"){
+        //     console.log(ipBox.value);
+        //     this.data[this.startCellsY][this.startCellsX] = ipBox.value;
+        //     this.ipBox.value = "";
+            this.ipBox.style.display = "none";
+        // }
+
         this.isClickedOnLeftHeadingCanvas = 1;
 
         this.startColX = -1;
@@ -626,9 +663,39 @@ export default class Table {
         this.ipBox.focus();
     }
 
+    ipBoxKeyDown(e){
+        if(e.key === "Enter"){
+            // console.log(ipBox.value);
+            this.data[this.startCellsY][this.startCellsX] = ipBox.value;
+            this.ipBox.style.display = "none";
+            this.ipBox.value = "";
+            this.startCellsY = Math.min(this.maxCountRow, this.startCellsY + 1);
+            this.endCellsY = this.startCellsY;
+            this.endCellsX = this.startCellsX;
+        }
+        
+
+        this.selection = 1;
+        this.drawSelection();
+        this.selection = 0;
+    }
+
     mainCanvasKeyDown(e){
-        e.preventDefault();
+        // e.preventDefault();
+        // if(this.ipBox.style.display != "none"){
+        //     console.log(ipBox.value);
+        //     this.data[this.startCellsY][this.startCellsX] = ipBox.value;
+            
+        //     this.ipBox.value = "";
+        // }
+        this.endColX = -1;
+        this.startColX = -1;
+        this.endRowY = -1;
+        this.startRowY = -1;
+
+
         if(e.shiftKey){
+            
             if(e.key === "ArrowUp"){
                 // console.log("U");
                 if(this.endCellsY !== -1) this.endCellsY = Math.max(this.minCountRow, this.endCellsY - 1);
@@ -645,30 +712,47 @@ export default class Table {
                 // console.log("R");
                 if(this.endCellsX !== -1) this.endCellsX = Math.min(this.maxCountCol, this.endCellsX + 1);
             }
+            this.ipBox.style.display = "none";
         }
         else if(e.key === "ArrowUp"){
             // console.log("U");
             this.startCellsY = Math.max(this.minCountRow, this.startCellsY - 1);
             this.endCellsY = this.startCellsY;
             this.endCellsX = this.startCellsX;
+            this.ipBox.style.display = "none";
         }
         else if(e.key === "ArrowDown"){
             // console.log("D");
             this.startCellsY = Math.min(this.maxCountRow, this.startCellsY + 1);
             this.endCellsY = this.startCellsY;
             this.endCellsX = this.startCellsX;
+            this.ipBox.style.display = "none";
         }
         else if(e.key === "ArrowLeft"){
             // console.log("L");
             this.startCellsX = Math.max(this.minCountCol, this.startCellsX - 1);
             this.endCellsY = this.startCellsY;
             this.endCellsX = this.startCellsX;
+            this.ipBox.style.display = "none";
         }
         else if(e.key === "ArrowRight"){
             // console.log("R");
             this.startCellsX = Math.min(this.maxCountCol, this.startCellsX + 1);
             this.endCellsY = this.startCellsY;
             this.endCellsX = this.startCellsX;
+            this.ipBox.style.display = "none";
+        }
+        else if(e.key === "Enter" && this.ipBox.style.display === "none"){
+            // if(this.ipBox.style.display != "none"){
+            //     console.log(ipBox.value);
+            //     this.data[this.startCellsY][this.startCellsX] = ipBox.value;
+            //     this.ipBox.style.display = "none";
+            //     this.ipBox.value = "";
+            // }
+            this.startCellsY = Math.min(this.maxCountRow, this.startCellsY + 1);
+            this.endCellsY = this.startCellsY;
+            this.endCellsX = this.startCellsX;
+            this.ipBox.style.display = "none";
         }
         this.selection = 1;
         this.drawSelection();
@@ -677,7 +761,12 @@ export default class Table {
     }
 
     mainCanvasKeyUp(e){
-
+        if(this.ipBox.style.display != "none"){
+            // console.log(ipBox.value,this.ipBox.style.display);
+            this.data[this.startCellsY][this.startCellsX] = ipBox.value;
+            // this.ipBox.style.display = "none";
+            // this.ipBox.value = "";
+        }
     }
 
     selectionPointerDown(e){
@@ -706,6 +795,13 @@ export default class Table {
         this.startCellsY = this.getRowNumber(e.offsetY);
         this.endCellsX = this.startCellsX;
         this.endCellsY = this.startCellsY;
+
+        if(this.ipBox.style.display != "none"){
+            console.log(ipBox.value);
+            this.data[this.startCellsY][this.startCellsX] = ipBox.value;
+            this.ipBox.value = "";
+            this.ipBox.style.display = "none";
+        }
 
         const ipBoxCellX = this.startCellsX;
         const ipBoxCellY = this.startCellsY;
@@ -833,21 +929,25 @@ export default class Table {
     }
     
     topHeadingPointerMove(e){
-        if(this.isIntersectRegionTop(e.offsetX) && this.isClickedOnTopHeadingCanvas === 0){
-            this.canvasTop.style.cursor = "ew-resize";
-        }
-        else{
-            this.canvasTop.style.cursor = "s-resize";
+        if(this.isClickedOnTopHeadingCanvas === 0){
+            if(this.isIntersectRegionTop(e.offsetX)){
+                this.canvasTop.style.cursor = "ew-resize";
+            }
+            else{
+                this.canvasTop.style.cursor = "s-resize";
+            }
         }
     }
 
     leftHeadingPointerMove(e){
         // console.log(this.isIntersectRegionLeft(e.offsetY));
-        if(this.isIntersectRegionLeft(e.offsetY) && this.isClickedOnLeftHeadingCanvas === 0){
-            this.canvasLeft.style.cursor = "ns-resize";
-        }
-        else{
-            this.canvasLeft.style.cursor = "w-resize";
+        if(this.isClickedOnLeftHeadingCanvas === 0){
+            if(this.isIntersectRegionLeft(e.offsetY)){
+                this.canvasLeft.style.cursor = "ns-resize";
+            }
+            else{
+                this.canvasLeft.style.cursor = "w-resize";
+            }
         }
     }
 
@@ -902,45 +1002,39 @@ export default class Table {
 
 
             // ----------- Left Heading Canvas Selection -------------
-            this.ctxCanvasLeft.clearRect(0, 0, this.canvasLeft.width, this.canvasLeft.height);
-            this.ctxCanvasLeft.fillStyle = "#caead8";
-            this.ctxCanvasLeft.fillRect(
-                0,
-                selectionTopSpace,
-                this.canvasLeft.width,
-                selectionHeight
-            );
+            // this.ctxCanvasLeft.clearRect(0, 0, this.canvasLeft.width, this.canvasLeft.height);
+            // this.ctxCanvasLeft.fillStyle = "#caead8";
+            // this.ctxCanvasLeft.fillRect(
+            //     0,
+            //     selectionTopSpace,
+            //     this.canvasLeft.width,
+            //     selectionHeight
+            // );
+            // console.log(1234);
             this.drawLeftHeadingsGrid();
             this.drawTableLeftHeading();
-            this.ctxCanvasLeft.lineWidth = 2;
-            this.ctxCanvasLeft.strokeStyle = "rgb(16,124,65)";
-            this.ctxCanvasLeft.strokeRect(
-                this.canvasLeft.width - 1,
-                selectionTopSpace - 1,
-                2,
-                selectionHeight + 2
-            )
+            
 
 
             // ----------- Top Heading Canvas Selection -------------
-            this.ctxCanvasTop.clearRect(0, 0, this.canvasTop.width, this.canvasTop.height);
-            this.ctxCanvasTop.fillStyle = "#caead8";
-            this.ctxCanvasTop.fillRect(
-                selectionLeftSpace,
-                0,
-                selectionWidth,
-                this.canvasTop.height
-            );
+            // this.ctxCanvasTop.clearRect(0, 0, this.canvasTop.width, this.canvasTop.height);
+            // this.ctxCanvasTop.fillStyle = "#caead8";
+            // this.ctxCanvasTop.fillRect(
+            //     selectionLeftSpace,
+            //     0,
+            //     selectionWidth,
+            //     this.canvasTop.height
+            // );
             this.drawTopHeadingsGrid();
             this.drawTableTopHeading();
-            this.ctxCanvasTop.lineWidth = 2;
-            this.ctxCanvasTop.strokeStyle = "rgb(16,124,65)";
-            this.ctxCanvasTop.strokeRect(
-                selectionLeftSpace - 1 ,
-                this.canvasTop.height - 1,
-                selectionWidth + 2,
-                2
-            )
+            // this.ctxCanvasTop.lineWidth = 2;
+            // this.ctxCanvasTop.strokeStyle = "rgb(16,124,65)";
+            // this.ctxCanvasTop.strokeRect(
+            //     selectionLeftSpace - 1 ,
+            //     this.canvasTop.height - 1,
+            //     selectionWidth + 2,
+            //     2
+            // )
 
             // ----------- Main Canvas Selection -------------
             this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -951,7 +1045,7 @@ export default class Table {
                 selectionWidth,
                 selectionHeight
             );
-            this.drawGrid();
+            // this.drawGrid();
             this.drawWhiteSelectionBlock();
             this.drawTableData();
             this.ctxCanvas.lineWidth = 2;
@@ -1133,6 +1227,30 @@ export default class Table {
     }
 
     drawTopHeadingsGrid() {
+        let selectionLeftSpace = 0;
+        let selectionWidth = 0;
+        let lx= Math.min(this.startCellsX,this.endCellsX);
+        let hx= Math.max(this.startCellsX,this.endCellsX);
+
+        for(let x = 0; x < lx; ++x){
+            selectionLeftSpace += this.columnWidth + (this.topSizeMap[x + 1] || 0);
+        }
+        for(let x = lx; x <= hx ; ++x){
+            selectionWidth += this.columnWidth + (this.topSizeMap[x + 1] || 0);
+        }
+
+
+        this.ctxCanvasTop.clearRect(0, 0, this.canvasTop.width, this.canvasTop.height);
+        this.ctxCanvasTop.fillStyle = "#caead8";
+        this.ctxCanvasTop.fillRect(
+            selectionLeftSpace,
+            this.canvasTop.height / 2,
+            selectionWidth,
+            this.canvasTop.height
+        );
+
+
+        
         // console.log('called top grid')
         // let tempCtx = this.canvasTop.getContext("2d");
         // tempCtx.clearRect(0, 0, this.canvasTop.width, this.canvasTop.height);
@@ -1165,35 +1283,41 @@ export default class Table {
         // this.ctxCanvasTop.stroke();
         // this.ctxCanvasTop.restore();
         // this.resetCanvasStroke(this.ctxCanvasTop);
-        let lx = Math.min(this.startColX, this.endColX);
-        let hx = Math.max(this.startColX, this.endColX);
+
+        let offset = this.canvasTop.getBoundingClientRect();
+
+        lx = Math.min(this.startColX, this.endColX);
+        hx = Math.max(this.startColX, this.endColX);
 
         
         let lowX = Math.min(this.startCellsX,this.endCellsX);
         let highX = Math.max(this.startCellsX,this.endCellsX);
 
+        
+
         if(this.startColX != -1 && this.endColX != -1){
-            let leftSpace = 0;
-            let selectionWidth = 0;
+            // let leftSpace = 0;
+            // let selectionWidth = 0;
             
-            for(let x = 0; x < lx; ++x){
-                leftSpace += this.columnWidth + (this.topSizeMap[x + 1] || 0);
-            }
-            for(let x = lx; x <= hx; ++x){
-                selectionWidth += this.columnWidth + (this.topSizeMap[x + 1] || 0);
-            }
+            
+            // for(let x = 0; x < lx; ++x){
+            //     leftSpace += this.columnWidth + (this.topSizeMap[x + 1] || 0);
+            // }
+            // for(let x = lx; x <= hx; ++x){
+            //     selectionWidth += this.columnWidth + (this.topSizeMap[x + 1] || 0);
+            // }
             this.ctxCanvasTop.fillStyle = "#107c41";
             this.ctxCanvasTop.fillRect(
-                leftSpace,
-                0,
+                selectionLeftSpace,
+                this.canvasTop.height / 2,
                 selectionWidth,
-                this.canvasTop.height
+                this.canvasTop.height / 2
             );
             this.ctxCanvasTop.strokeRect(
-                leftSpace,
-                0,
+                selectionLeftSpace,
+                this.canvasTop.height / 2,
                 selectionWidth,
-                this.canvasTop.height
+                this.canvasTop.height / 2
             );
         }
         
@@ -1202,16 +1326,17 @@ export default class Table {
 
         let cellPositionX = 0;
         for(let x = 0; cellPositionX <= this.canvasTop.width; x++){
-            // if()
+            
             cellPositionX += this.columnWidth + (this.topSizeMap[x+1] || 0);
             this.ctxCanvasTop.save();
             this.ctxCanvasTop.beginPath();
-            this.ctxCanvasTop.moveTo(cellPositionX + 0.5 ,0);
+            this.ctxCanvasTop.moveTo(cellPositionX + 0.5 ,this.canvasTop.height / 2);
             this.ctxCanvasTop.lineTo(cellPositionX + 0.5 , this.canvasTop.height);
             
             if(lx-1 == x){
                 this.ctxCanvasTop.lineWidth=5;
                 this.ctxCanvasTop.strokeStyle = "#107c41";
+                
             }
             else if(x == hx){
                 this.ctxCanvasTop.lineWidth=3;
@@ -1220,17 +1345,27 @@ export default class Table {
             else if(lx <= x && x < hx){
                 this.ctxCanvasTop.lineWidth=1;
                 this.ctxCanvasTop.strokeStyle = "#a0d8b9";
+                
             }
             else if(lowX - 1 <= x && x <= highX){
+                
                 this.ctxCanvasTop.lineWidth=1;
                 this.ctxCanvasTop.strokeStyle = "#a0d8b9";
             }
             else{
                 this.ctxCanvasTop.lineWidth=1;
                 this.ctxCanvasTop.strokeStyle = "#ccc";
+                
+            }
+            if(x === this.moveStartX) {
+                // console.log(9821,100, offset.y);
+                this.dottedVerticalLineDiv.style.top = `${this.canvasTop.height}px`;
+                this.dottedVerticalLineDiv.style.height = `${this.canvas.height}px`;
+                this.dottedVerticalLineDiv.style.left = `${cellPositionX + offset.x}px`;
             }
             this.ctxCanvasTop.stroke();
             this.ctxCanvasTop.restore();
+            
         }
 
         this.ctxCanvasTop.save();
@@ -1241,25 +1376,16 @@ export default class Table {
         this.ctxCanvasTop.strokeStyle = "#555";
         this.ctxCanvasTop.stroke();
         this.ctxCanvasTop.restore();
-        
-        // fillRect()
 
-        // leftSpace = 0;
-        // selectionWidth = 0;
-        // for(let x = 0; x < this.startColX; ++x){
-        //     leftSpace += this.columnWidth + (this.topSizeMap[x + 1] || 0);
-        // }
-        // for(let x = this.startColX; x <= this.endColX; ++x){
-        //     selectionWidth += this.columnWidth + (this.topSizeMap[x + 1] || 0);
-        // }
-        // this.ctxCanvasTop.fillStyle = "#ff0000";
-        // this.ctxCanvasTop.fillRect(
-        //     leftSpace,
-        //     0,
-        //     selectionWidth,
-        //     this.ctxCanvasTop.height
-        // );
-        // console.log(selectionWidth);
+        this.ctxCanvasTop.lineWidth = 2;
+        this.ctxCanvasTop.strokeStyle = "rgb(16,124,65)";
+        this.ctxCanvasTop.strokeRect(
+            selectionLeftSpace - 1 ,
+            this.canvasTop.height - 1,
+            selectionWidth + 2,
+            2
+        )
+        
     }
 
     drawLeftHeadingsGrid(){
@@ -1272,29 +1398,55 @@ export default class Table {
         // }
         // this.ctxCanvasLeft.strokeStyle = "rgb(200,200,200)";
         // this.ctxCanvasLeft.stroke();
-        let ly = Math.min(this.startRowY, this.endRowY);
-        let hy = Math.max(this.startRowY, this.endRowY);
+
+        let ly= Math.min(this.startCellsY,this.endCellsY);
+        let hy= Math.max(this.startCellsY,this.endCellsY);
+
+        let selectionTopSpace = 0;
+        let selectionHeight = 0; 
+
+        for(let y = 0; y < ly; ++y){
+            selectionTopSpace += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
+        }
+        for(let y = ly; y <= hy; ++y){
+            selectionHeight += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
+        }
+
+        this.ctxCanvasLeft.clearRect(0, 0, this.canvasLeft.width, this.canvasLeft.height);
+        this.ctxCanvasLeft.fillStyle = "#caead8";
+        this.ctxCanvasLeft.fillRect(
+            0,
+            selectionTopSpace,
+            this.canvasLeft.width,
+            selectionHeight
+        );
+
+
+
+        ly = Math.min(this.startRowY, this.endRowY);
+        hy = Math.max(this.startRowY, this.endRowY);
         let lowY = Math.min(this.startCellsY,this.endCellsY);
         let highY = Math.max(this.startCellsY,this.endCellsY);
 
         if(this.startRowY != -1 && this.endRowY != -1){
-            let topSpace = 0;
-            let selectionHeight = 0;
+            // let topSpace = 0;
+            // let selectionHeight = 0;
             
-            for(let y = 0; y < ly; ++y){
-                topSpace += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
-            }
-            for(let y = ly; y <= hy; ++y){
-                selectionHeight += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
-            }
+            // for(let y = 0; y < ly; ++y){
+            //     topSpace += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
+            // }
+            // for(let y = ly; y <= hy; ++y){
+            //     selectionHeight += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
+            // }
             this.ctxCanvasLeft.fillStyle = "#107c41";
             this.ctxCanvasLeft.fillRect(
                 0,
-                topSpace,
+                selectionTopSpace,
                 this.canvasLeft.width,
                 selectionHeight
             );
         }
+        
 
 
         let cellPositionY = 0;
@@ -1306,7 +1458,17 @@ export default class Table {
             this.ctxCanvasLeft.lineTo(this.canvasLeft.width, cellPositionY +0.5);
             // this.ctxCanvasLeft.lineWidth=1;
             // this.ctxCanvasLeft.strokeStyle = "rgb(200,200,200)";
-            if(ly <= y && y < hy){
+            
+
+            if(ly-1 == y){
+                this.ctxCanvasLeft.lineWidth=5;
+                this.ctxCanvasLeft.strokeStyle = "#107c41";
+            }
+            else if(y == hy){
+                this.ctxCanvasLeft.lineWidth=3;
+                this.ctxCanvasLeft.strokeStyle = "#107c41";
+            }
+            else if(ly <= y && y < hy){
                 this.ctxCanvasLeft.lineWidth=1;
                 this.ctxCanvasLeft.strokeStyle = "#fff";
             }
@@ -1339,6 +1501,15 @@ export default class Table {
         // this.ctxCanvas.strokeStyle = "#555";
         // this.ctxCanvas.stroke();
         // this.ctxCanvas.restore();
+        
+        this.ctxCanvasLeft.lineWidth = 2;
+        this.ctxCanvasLeft.strokeStyle = "rgb(16,124,65)";
+        this.ctxCanvasLeft.strokeRect(
+            this.canvasLeft.width - 1,
+            selectionTopSpace - 1,
+            2,
+            selectionHeight + 2
+        )
     }
 
     drawGrid() {

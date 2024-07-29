@@ -223,10 +223,10 @@
 
 .dottedVerticalLineDiv{
     position: absolute;
-    /* display: none; */
+    display: none;
     /* top: 10px;
     left: 10px; */
     border-left: dashed 2px #0f703b;
-    height: 100px;
+    /* height: 100px; */
     width: 0px;
 }
