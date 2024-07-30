@@ -26,6 +26,7 @@ import Table from "./Table.js";
 
 async function createTableInstance(mainCanvasName = `canvas`) {
     const tableInstance = new Table(mainCanvasName);
+    window.t = tableInstance
     // tableInstance.drawGrid();
     // tableInstance.drawTopHeadingsGrid();
     // tableInstance.drawLeftHeadingsGrid();

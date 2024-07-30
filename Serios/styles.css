@@ -226,7 +226,17 @@
     display: none;
     /* top: 10px;
     left: 10px; */
-    border-left: dashed 2px #0f703b;
+    border-left: dashed 2px #f00;
     /* height: 100px; */
-    width: 0px;
+    width: 100px;
+}
+
+.dottedHorizontalLineDiv{
+    position: absolute;
+    display: none;
+    /* top: 10px;
+    left: 10px; */
+    border-top: dashed 2px #0f703b;
+    /* height: 100px; */
+    height: 0px;
 }
