@@ -667,6 +667,10 @@ export default class Table {
     }
 
     placeInputBox(e){
+        let copyCutAnimationDiv = document.getElementById("copyCutAnimationDiv");
+        if(copyCutAnimationDiv) copyCutAnimationDiv.remove(); 
+        this.isCellsCopyCut = 0;
+        
         this.ipBox.style.display = "none";
         // console.log(e.offsetX, e.offsetY);
         // this.selection = 1;
@@ -794,37 +798,102 @@ export default class Table {
         this.drawSelection();
         this.selection = 0;
 
-        if(e.key === "Control"){ 
+        if(e.key === "Control" ){ 
             console.log("Hell");
             this.isCellsCopyCut = 1;
             // this.startMarchingAntsAnimation();
             
-            let copyCutAnimationDiv = document.createElement("div");
-            copyCutAnimationDiv.classList.add("copyCutAnimationDiv");
-            copyCutAnimationDiv.id = "copyCutAnimationDiv";
 
-            copyCutAnimationDiv.style.position = "absolute";
-            copyCutAnimationDiv.style.border = "black 2px solid";
+
+
+
+            let copyCutAnimationDiv = document.getElementById("copyCutAnimationDiv");
+            // console.log(copyCutAnimationDiv);
+            if(!copyCutAnimationDiv){
+                copyCutAnimationDiv = document.createElement("div");
+                copyCutAnimationDiv.classList.add("copyCutAnimationDiv");
+                copyCutAnimationDiv.id = "copyCutAnimationDiv";
+
+                copyCutAnimationDiv.style.position = "absolute";
+                copyCutAnimationDiv.style.display = "block";
+                copyCutAnimationDiv.style.pointerEvents = "none";
+
+                // copyCutAnimationDiv.style.border = "black 2px solid";
+
+                copyCutAnimationDiv.style.background = 
+                `linear-gradient(90deg, #f00 50%, #0ff 50%), 
+                linear-gradient(90deg, #f00 50%, #0ff 50%), 
+                linear-gradient(0deg, #f00 50%, #0ff 50%), 
+                linear-gradient(0deg, #f00 50%, #0ff 50%)`;
+
+                copyCutAnimationDiv.style.backgroundRepeat = 
+                `repeat-x, repeat-x, repeat-y, repeat-y`;
+                
+                copyCutAnimationDiv.style.backgroundSize = `7px 2px, 7px 2px, 2px 7px, 2px 7px`;
+                copyCutAnimationDiv.style.padding = `10px`;
+                copyCutAnimationDiv.style.animation = `border-dance 4s infinite linear`;
+
+
+            }
 
             this.copyCutStartX = this.startCellsX;
             this.copyCutStartY = this.startCellsY;
             this.copyCutEndX = this.endCellsX;
             this.copyCutEndY = this.endCellsY;
 
-            copyCutAnimationDiv.style.top = `${100}px`;
-            copyCutAnimationDiv.style.left = `${100}px`;
-            copyCutAnimationDiv.style.width = `${100}px`;
-            copyCutAnimationDiv.style.height = `${100}px`;
+            let selectionLeftSpace = 0;
+            let selectionTopSpace = 0; 
 
+            let lx= Math.min(this.startCellsX,this.endCellsX);
+            let ly= Math.min(this.startCellsY,this.endCellsY);
+            let hx= Math.max(this.startCellsX,this.endCellsX);
+            let hy= Math.max(this.startCellsY,this.endCellsY);
             
+            for(let x = 0; x < lx; ++x){
+                selectionLeftSpace += this.columnWidth + (this.topSizeMap[x + 1] || 0);
+            }
+            for(let y = 0; y < ly; ++y){
+                selectionTopSpace += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
+            }
 
+            let selectionHeight = 0;
+            let selectionWidth = 0;
+
+            for(let x = lx; x <= hx ; ++x){
+                selectionWidth += this.columnWidth + (this.topSizeMap[x + 1] || 0);
+            }
+            for(let y = ly; y <= hy; ++y){
+                selectionHeight += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
+            }
+
+            copyCutAnimationDiv.style.top = `${selectionTopSpace + this.canvasTop.height}px`;
+            copyCutAnimationDiv.style.left = `${selectionLeftSpace + this.canvasLeft.width}px`;
+            copyCutAnimationDiv.style.width = `${selectionWidth}px`;
+            copyCutAnimationDiv.style.height = `${selectionHeight}px`;
+
+            // copyCutAnimationDiv.style.backgroundPosition = 
+            // `
+            // 0px 0px, 
+            // 200px 100px, 
+            // 0px 100px, 
+            // 200px 0px;
+            // `;
+            const style = document.createElement('style');
+            const keyframes = `
+            @keyframes border-dance {
+            0% {
+                background-position: 0px 0px, 100px ${selectionHeight-2}px, 0px 100px, ${selectionWidth-2}px 0px;
+            }
+            100% {
+                background-position: 100px 0px, 0px ${selectionHeight-2}px, 0px 0px, ${selectionWidth-2}px 100px;
+            }
+            }`;
+            style.textContent = keyframes;
+            document.head.appendChild(style);
+            console.log(style);
             
 
             this.canvasDiv.append(copyCutAnimationDiv);
-
-
-
-
         }
         
     }
