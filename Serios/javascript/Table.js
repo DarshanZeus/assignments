@@ -329,6 +329,23 @@ export default class Table {
         //     console.log(this.topSizeMap);
     
         // });
+        document.addEventListener('paste', function(e) {
+            console.log(e);
+            // e.clipboardData contains the data that is about to be pasted.
+            if (e.clipboardData.types.indexOf('text/html') > -1) {
+              var oldData = e.clipboardData.getData('text/html');
+              var newData = '<b>Ha Ha!</b> ' + oldData;
+              console.log(oldData);
+              console.log(newData);
+          
+              // Since we are canceling the paste operation, we need to manually
+              // paste the data into the document.
+              pasteClipboardData(newData);
+          
+              // This is necessary to prevent the default paste action.
+              e.preventDefault();
+            }
+          });
     }
 
     getColumnNumber(clickX) {
