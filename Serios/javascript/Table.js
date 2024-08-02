@@ -45,6 +45,7 @@ export default class Table {
     data = Array.from({ length: 100 }, () => Array(100).fill());;
     
     isCellsCopyCut = 0;
+    isCutFlag = 0;
     copyCutData = [];
     copyCutStartX = -1;
     copyCutStartY = -1;
@@ -869,7 +870,17 @@ export default class Table {
                 // this.handlePaste();
                 this.getClipboardData();
             }
+            else if(e.key === 'x' || e.key === 'X'){
+                this.copyCutStartX = this.startCellsX;
+                this.copyCutStartY = this.startCellsY;
+                this.copyCutEndX = this.endCellsX;
+                this.copyCutEndY = this.endCellsY;
+                this.isCellsCopyCut = 1;
+                this.isCutFlag = 1;
+                this.handleCopy();
+            }
         }
+        
         
     }
 
@@ -900,8 +911,6 @@ export default class Table {
         this.selection = 1;
         this.drawSelection();
         this.selection = 0;
-        
-        
     }
 
     handleCopy(){
@@ -1257,9 +1266,15 @@ export default class Table {
             }
         }
     }
-
-    drawSelection() {
+    lastTime = 0;
+    drawSelection(timeStamp) {
         // console.log("selection");
+        const deltaTime = timeStamp - this.lastTime;
+        this.lastTime = timeStamp;
+
+
+
+
         if(this.selection === 1 && this.startCellsX != -1){
 
             let selectionLeftSpace = 0;
@@ -1374,6 +1389,11 @@ export default class Table {
             this.drawGrid();
             this.drawTableData();
         }
+
+        // console.log(deltaTime);
+        // selectionAnimation = 
+        // requestAnimationFrame(this.drawSelection(1));
+        
 
         // this.ctxCanvas.fillRect(
         //     this.startAbsX,
