@@ -42,10 +42,10 @@ export default class Table {
 
     tableWidth = 3900;
     tableHeight = 880;
-    data = [ [ ] ];
+    data = Array.from({ length: 100 }, () => Array(100).fill());;
     
     isCellsCopyCut = 0;
-    copyCutData = [ [ ] ];
+    copyCutData = [];
     copyCutStartX = -1;
     copyCutStartY = -1;
     copyCutEndX = -1;
@@ -82,15 +82,15 @@ export default class Table {
     topSizeMap = new Object();
     leftSizeMap = new Object();
 
-    // ipBox = document.getElementById("ipBox");
     ipBox;
     selectionDiv;
+    copyCutAnimationDiv;
 
     
 
 
     constructor(mainCanvasName) {
-        console.log("called constructer", window.devicePixelRatio);
+        console.log("Window Device Pixel Ratio", window.devicePixelRatio);
 
 
         this.canvas = document.getElementById(`${mainCanvasName}`);
@@ -99,8 +99,8 @@ export default class Table {
 
         this.ipBox = document.getElementById("ipBox");
         this.selectionDiv = document.getElementById("selectionDiv");
-        // this.dottedVerticalLineDiv = document.getElementById("dottedVerticalLineDiv");
-        // this.dottedHorizontalLineDiv = document.getElementById("dottedHorizontalLineDiv");
+        this.dottedVerticalLineDiv = document.getElementById("dottedVerticalLineDiv");
+        this.dottedHorizontalLineDiv = document.getElementById("dottedHorizontalLineDiv");
         // console.log(this.ipBox);
 
 
@@ -155,7 +155,7 @@ export default class Table {
 
         this.drawWhiteSelectionBlock = this.drawWhiteSelectionBlock.bind(this);
 
-        this.startMarchingAntsAnimation = this.startMarchingAntsAnimation.bind(this);
+        // this.startMarchingAntsAnimation = this.startMarchingAntsAnimation.bind(this);
 
         this.mainCanvasKeyDown = this.mainCanvasKeyDown.bind(this);
         this.mainCanvasKeyUp = this.mainCanvasKeyUp.bind(this);
@@ -163,6 +163,9 @@ export default class Table {
         
         this.placeInputBox = this.placeInputBox.bind(this);
         this.ipBoxKeyDown = this.ipBoxKeyDown.bind(this);
+        this.copyToClipboard = this.copyToClipboard.bind(this);
+        this.handleCopy = this.handleCopy.bind(this);
+        this.handlePaste = this.handlePaste.bind(this);
 
         this.drawSelection = this.drawSelection.bind(this);
         this.drawSelectionDiv = this.drawSelectionDiv.bind(this);
@@ -382,6 +385,32 @@ export default class Table {
         return false;
     }
 
+    createCopyCutAnimationDiv(){
+        this.copyCutAnimationDiv = document.createElement("div");
+        this.copyCutAnimationDiv.classList.add("copyCutAnimationDiv");
+        this.copyCutAnimationDiv.id = "copyCutAnimationDiv";
+
+        this.copyCutAnimationDiv.style.position = "absolute";
+        this.copyCutAnimationDiv.style.display = "block";
+        this.copyCutAnimationDiv.style.pointerEvents = "none";
+
+        // copyCutAnimationDiv.style.border = "black 2px solid";
+
+        this.copyCutAnimationDiv.style.background = 
+        `linear-gradient(90deg, #217346 70%, #fff 30%), 
+        linear-gradient(90deg, #217346 70%, #fff 30%), 
+        linear-gradient(0deg, #217346 70%, #fff 30%), 
+        linear-gradient(0deg, #217346 70%, #fff 30%)`;
+
+        this.copyCutAnimationDiv.style.backgroundRepeat = 
+        `repeat-x, repeat-x, repeat-y, repeat-y`;
+        
+        this.copyCutAnimationDiv.style.backgroundSize = `6px 2px, 6px 2px, 2px 6px, 2px 6px`;
+        this.copyCutAnimationDiv.style.padding = `10px`;
+        this.copyCutAnimationDiv.style.animation = `border-dance 4s infinite linear`;
+
+    }
+
     resizeColumnPointerDown(e){
         // if(this.ipBox.style.display != "none"){
         //     console.log(ipBox.value);
@@ -411,9 +440,9 @@ export default class Table {
             
             this.moveStartX = this.getColumnNumber(e.clientX - offset.x - 10);
             this.startTopX = e.clientX - offset.x;
-            // console.log(this.startTopX);
             this.selectionTop = 1;
             this.prevSizeX = (this.topSizeMap[this.moveStartX + 1] || 0);
+
 
             let selectionLeftSpace = 0;
             for(let x = 0; x < this.moveStartX; ++x){
@@ -463,21 +492,33 @@ export default class Table {
 
     resizeColumnPointerMove(e){
         // console.log("hell");
-        console.log(e.clientX, e.clientY)
+        // console.log(e.clientX, e.clientY)
         let offset = this.canvasTop.getBoundingClientRect();
-        console.log(this.selectionTop);
+        // console.log(this.selectionTop);
         if(this.selectionTop === 1){
             // Math.min((this.startTopX - e.offsetX),20);
             const newWidth = Math.max(
                 40 -  this.columnWidth,
                 e.clientX - offset.x - this.startTopX + this.prevSizeX
-            )
+            );
             
             // + (this.topSizeMap[this.startCellsX + 1] || 0)
             ;
             this.topSizeMap[this.moveStartX + 1] = newWidth;
 
-            // this.dottedVerticalLineDiv.style.display = "block";
+            // this.dottedVerticalLineDiv = document.getElementById("dottedVerticalLineDiv");
+            // if(!this.dottedVerticalLineDiv){
+            //     this.dottedVerticalLineDiv = document.createElement("div");
+            //     this.dottedVerticalLineDiv.classList.add("dottedVerticalLineDiv");
+            //     this.dottedVerticalLineDiv.id = "dottedVerticalLineDiv";
+            //     this.dottedVerticalLineDiv.style.position = `absolute`;
+            //     this.dottedVerticalLineDiv.style.borderLeft = `dashed 2px #f00`;
+            //     this.dottedVerticalLineDiv.style.pointerEvents = `none`;
+            //     this.dottedVerticalLineDiv.style.width = `0px`;
+            // }
+
+            this.dottedVerticalLineDiv.style.display = "block";
+            // this.canvasDiv.append(this.dottedVerticalLineDiv);
             
             this.ctxCanvasTop.clearRect(0, 0, this.canvasTop.width, this.canvasTop.height);
             this.drawTopHeadingsGrid();
@@ -505,40 +546,40 @@ export default class Table {
     resizeColumnPointerUp(e){
         
         let offset = this.canvasTop.getBoundingClientRect();
+        // this.dottedVerticalLineDiv.style.display = `none`;
+        // if(this.dottedVerticalLineDiv) this.dottedVerticalLineDiv.remove();
         if(this.selectionTop === 1){
-            
+            let x = e.clientX;
+            x -= offset.x;
+            x -= this.startTopX;
+            x += this.prevSizeX;
             const newWidth = Math.max(
-                40 -  this.columnWidth,
-                e.clientX - offset.x - this.startTopX + this.prevSizeX
+                40 -  this.columnWidth,x
             );
-            console.log(
-                e.clientX , 
-                offset.x , 
-                this.startTopX , 
-                this.prevSizeX
-            );
+            
             this.prevSizeX = 0;
             this.topSizeMap[this.moveStartX + 1] = newWidth ;
             
             this.selectionTop = 0;
             
-            console.log("A", e.clientX,e.clientY);
+            // console.log("A", e.clientX,e.clientY);
 
             this.ctxCanvasTop.clearRect(0, 0, this.canvasTop.width, this.canvasTop.height);
             this.drawTopHeadingsGrid();
             this.drawTableTopHeading();
-            this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            
-            console.log("B", e.clientX,e.clientY)
 
+            this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.selection = 1;
             this.drawSelection();
             this.selection = 0;
+            this.ipBox.focus();
             
-            // this.dottedVerticalLineDiv.style.display = "none";
+            this.dottedVerticalLineDiv.style.display = "none";
+            // console.log(this.moveStartX,this.moveStartY);
             
-
+            this.moveStartX = -1;
             console.log(this.topSizeMap);
+            this.resetDivSel();
         }
         else this.colSelection = 0;
     }
@@ -568,6 +609,20 @@ export default class Table {
             this.selectionLeft = 1;
             this.prevSizeY = (this.leftSizeMap[this.moveStartY + 1] || 0);
             // console.log("hel")
+            let selectionTopSpace = 0;
+            for(let y = 0; y < this.moveStartY; ++y){
+                selectionTopSpace += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
+            }
+            let selectionHeight = this.rowHeight + (this.leftSizeMap[this.moveStartY + 1] || 0);
+
+            this.ctxCanvas.lineWidth = 2;
+            this.ctxCanvas.strokeStyle = "rgb(16,124,65)";
+            this.ctxCanvas.strokeRect(
+                -2,
+                selectionTopSpace,
+                this.canvas.width,
+                selectionHeight
+            );
         }
         else{
             let clickY = this.getRowNumber(e.offsetY);
@@ -617,7 +672,7 @@ export default class Table {
 
             this.leftSizeMap[this.moveStartY + 1] =  newHeight;
 
-            // this.dottedHorizontalLineDiv.style.display = "block";
+            this.dottedHorizontalLineDiv.style.display = "block";
 
             this.ctxCanvasLeft.clearRect(0, 0, this.canvasLeft.width, this.canvasLeft.height);
             this.drawLeftHeadingsGrid();
@@ -659,9 +714,10 @@ export default class Table {
             this.drawSelection();
             this.selection = 0;
 
-            // this.dottedHorizontalLineDiv.style.display = "none";
+            this.dottedHorizontalLineDiv.style.display = "none";
 
             console.log(this.leftSizeMap);
+            this.resetDivSel();
         }
         else this.rowSelection = 0;
     }
@@ -698,6 +754,7 @@ export default class Table {
         this.ipBox.style.left = `${ipBoxX + 1}px`;
         
         this.ipBox.style.display = "block";
+        if(this.data[this.startCellsY][this.startCellsX])
         this.ipBox.value = this.data[this.startCellsY][this.startCellsX];
         console.log(this.data[this.startCellsY][this.startCellsX]);
         this.ipBox.focus();
@@ -798,154 +855,165 @@ export default class Table {
         this.drawSelection();
         this.selection = 0;
 
-        if(e.key === "Control" ){ 
-            console.log("Hell");
-            this.isCellsCopyCut = 1;
-            // this.startMarchingAntsAnimation();
-            
+        if(e.ctrlKey){ 
+            if(e.key === 'C' || e.key === 'c'){
+
+                this.copyCutStartX = this.startCellsX;
+                this.copyCutStartY = this.startCellsY;
+                this.copyCutEndX = this.endCellsX;
+                this.copyCutEndY = this.endCellsY;
+                this.isCellsCopyCut = 1;
+                this.handleCopy();
+            }
+            else if(e.key === 'v' || e.key === 'V'){
+                // this.handlePaste();
+                this.getClipboardData();
+            }
+        }
+        
+    }
+
+    handlePaste(){
+        let lx = Math.min(this.startCellsX,this.endCellsX);
+        let ly = Math.min(this.startCellsY,this.endCellsY);
+        let transfromToMatrixHelper = this.copyCutData.split('\n');
+        this.copyCutData = [];
+        for(let rowIndex = 0; rowIndex + 1 < transfromToMatrixHelper.length ; ++rowIndex){
+            let temp = transfromToMatrixHelper[rowIndex].split("	");
+            this.copyCutData.push(temp);
+        }
+        // return;
+        this.startCellsX = lx;
+        this.startCellsY = ly;
+        if(this.copyCutData.length) this.endCellsY = ly + this.copyCutData.length - 1;
+        this.endCellsX = lx;
+        if(this.copyCutData[0]) this.endCellsX = lx + this.copyCutData[0].length - 1;
 
 
+        for(let j = 0; j < this.copyCutData.length ; ++j){
+            for(let i = 0; i < this.copyCutData[0].length ; ++i){
+                this.data[j + ly][i + lx] = this.copyCutData[j][i];
+            }
+        }
 
+        this.drawGrid();
+        this.selection = 1;
+        this.drawSelection();
+        this.selection = 0;
+        
+        
+    }
 
-            let copyCutAnimationDiv = document.getElementById("copyCutAnimationDiv");
+    handleCopy(){
+        if(this.isCellsCopyCut === 0) return;
+
+        let copyCutAnimationDiv = document.getElementById("copyCutAnimationDiv");
             // console.log(copyCutAnimationDiv);
-            if(!copyCutAnimationDiv){
-                copyCutAnimationDiv = document.createElement("div");
-                copyCutAnimationDiv.classList.add("copyCutAnimationDiv");
-                copyCutAnimationDiv.id = "copyCutAnimationDiv";
-
-                copyCutAnimationDiv.style.position = "absolute";
-                copyCutAnimationDiv.style.display = "block";
-                copyCutAnimationDiv.style.pointerEvents = "none";
-
-                // copyCutAnimationDiv.style.border = "black 2px solid";
-
-                copyCutAnimationDiv.style.background = 
-                `linear-gradient(90deg, #f00 50%, #0ff 50%), 
-                linear-gradient(90deg, #f00 50%, #0ff 50%), 
-                linear-gradient(0deg, #f00 50%, #0ff 50%), 
-                linear-gradient(0deg, #f00 50%, #0ff 50%)`;
-
-                copyCutAnimationDiv.style.backgroundRepeat = 
-                `repeat-x, repeat-x, repeat-y, repeat-y`;
-                
-                copyCutAnimationDiv.style.backgroundSize = `7px 2px, 7px 2px, 2px 7px, 2px 7px`;
-                copyCutAnimationDiv.style.padding = `10px`;
-                copyCutAnimationDiv.style.animation = `border-dance 4s infinite linear`;
-
-
-            }
-
-            this.copyCutStartX = this.startCellsX;
-            this.copyCutStartY = this.startCellsY;
-            this.copyCutEndX = this.endCellsX;
-            this.copyCutEndY = this.endCellsY;
-
-            let selectionLeftSpace = 0;
-            let selectionTopSpace = 0; 
-
-            let lx= Math.min(this.startCellsX,this.endCellsX);
-            let ly= Math.min(this.startCellsY,this.endCellsY);
-            let hx= Math.max(this.startCellsX,this.endCellsX);
-            let hy= Math.max(this.startCellsY,this.endCellsY);
-            
-            for(let x = 0; x < lx; ++x){
-                selectionLeftSpace += this.columnWidth + (this.topSizeMap[x + 1] || 0);
-            }
-            for(let y = 0; y < ly; ++y){
-                selectionTopSpace += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
-            }
-
-            let selectionHeight = 0;
-            let selectionWidth = 0;
-
-            for(let x = lx; x <= hx ; ++x){
-                selectionWidth += this.columnWidth + (this.topSizeMap[x + 1] || 0);
-            }
-            for(let y = ly; y <= hy; ++y){
-                selectionHeight += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
-            }
-
-            copyCutAnimationDiv.style.top = `${selectionTopSpace + this.canvasTop.height}px`;
-            copyCutAnimationDiv.style.left = `${selectionLeftSpace + this.canvasLeft.width}px`;
-            copyCutAnimationDiv.style.width = `${selectionWidth}px`;
-            copyCutAnimationDiv.style.height = `${selectionHeight}px`;
-
-            // copyCutAnimationDiv.style.backgroundPosition = 
-            // `
-            // 0px 0px, 
-            // 200px 100px, 
-            // 0px 100px, 
-            // 200px 0px;
-            // `;
-            const style = document.createElement('style');
-            const keyframes = `
-            @keyframes border-dance {
-            0% {
-                background-position: 0px 0px, 100px ${selectionHeight-2}px, 0px 100px, ${selectionWidth-2}px 0px;
-            }
-            100% {
-                background-position: 100px 0px, 0px ${selectionHeight-2}px, 0px 0px, ${selectionWidth-2}px 100px;
-            }
-            }`;
-            style.textContent = keyframes;
-            document.head.appendChild(style);
-            console.log(style);
-            
-
-            this.canvasDiv.append(copyCutAnimationDiv);
+        if(!copyCutAnimationDiv){
+            this.createCopyCutAnimationDiv();
         }
-        
-    }
-
-    startMarchingAntsAnimation(){
-        
-        // this.ctxCanvas.save();
-        // this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        // this.drawWhiteSelectionBlock();
-        // this.drawTableData();
-        // this.selection = 1;
-        // this.drawSelection();
-        // this.selection = 0;
-        
-        if(this.isCellsCopyCut === 1){
-        //     this.ctxCanvas.beginPath();
-        //     this.ctxCanvas.setLineDash([2,2]);
-        //     // this.ctxCanvas.lineDashOffset = this.ctxCanvas.lineDashOffset - 0.5;
-        //     // if(this.ctxCanvas.lineDashOffset < 0){
-        //     //     this.ctxCanvas.lineDashOffset = 10;
-        //     // }
-        //     this.ctxCanvas.lineWidth = 2;
-        //     this.ctxCanvas.strokeStyle = "#f00";
-        //     this.ctxCanvas.rect(150,100,150,100);
-        //     this.ctxCanvas.stroke();
-        //     this.ctxCanvas.restore();
-        // this.animationFrameId = requestAnimationFrame(
-        //     () => this.startMarchingAntsAnimation()
-        // )
-            console.log(1);
-        //     // this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        //     // this.drawWhiteSelectionBlock();
-        //     // this.drawTableData();
-        //     // this.selection = 1;
-        //     // this.drawSelection();
-        //     // this.selection = 0;
-        //     setInterval(
-                this.animationFrameId = requestAnimationFrame(
-                    () => this.startMarchingAntsAnimation()
-                )
-        //         ,10000);
 
 
+        let selectionLeftSpace = 0;
+        let selectionTopSpace = 0; 
+        let selectionHeight = 0;
+        let selectionWidth = 0;
+
+        let lx = Math.min(this.copyCutStartX,this.copyCutEndX);
+        let ly = Math.min(this.copyCutStartY,this.copyCutEndY);
+        let hx = Math.max(this.copyCutStartX,this.copyCutEndX);
+        let hy = Math.max(this.copyCutStartY,this.copyCutEndY);
+
+
+        // if(
+        //     this.copyCutStartX !== lx &&
+        //     this.copyCutStartY !== ly &&
+        //     this.copyCutEndX !== hx &&
+        //     this.copyCutEndY !== hy
+        // ){
             
-        //     // 
-        //     // this.isCellsCopyCut = 0;
-        }
-        // else{
-
         // }
+
         
+        
+        for(let x = 0; x < lx; ++x){
+            selectionLeftSpace += this.columnWidth + (this.topSizeMap[x + 1] || 0);
+        }
+        for(let y = 0; y < ly; ++y){
+            selectionTopSpace += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
+        }
+
+        for(let x = lx; x <= hx ; ++x){
+            selectionWidth += this.columnWidth + (this.topSizeMap[x + 1] || 0);
+        }
+        for(let y = ly; y <= hy; ++y){
+            selectionHeight += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
+        }
+
+        this.copyCutAnimationDiv.style.top = `${selectionTopSpace + this.canvasTop.height - 1}px`;
+        this.copyCutAnimationDiv.style.left = `${selectionLeftSpace + this.canvasLeft.width - 1}px`;
+        this.copyCutAnimationDiv.style.width = `${selectionWidth + 2}px`;
+        this.copyCutAnimationDiv.style.height = `${selectionHeight + 2}px`;
+
+        
+        const style = document.createElement('style');
+        const keyframes = `
+        @keyframes border-dance {
+        0% {
+            background-position: 0px 0px, 100px ${selectionHeight}px, 0px 100px, ${selectionWidth}px 0px;
+        }
+        100% {
+            background-position: 100px 0px, 0px ${selectionHeight}px, 0px 0px, ${selectionWidth}px 100px;
+        }
+        }`;
+        style.textContent = keyframes;
+        document.head.appendChild(style);
+
+        let copyToClipboardString = "";
+        // this.copyCutData = [];
+
+        for(let j = ly; j <= hy ; ++j){
+            // let tempRow = [];
+            for(let i = lx; i <= hx ; ++i){
+                // tempRow.push(this.data[j][i]);
+                copyToClipboardString += (this.data[j][i] || "") + ((i===hx) ?"\n": "	" );
+            }
+            // this.copyCutData.push(tempRow);
+        }
+        
+        this.copyToClipboard(copyToClipboardString);
+        this.canvasDiv.append(this.copyCutAnimationDiv);
     }
+
+    async copyToClipboard(text) {
+        await navigator.clipboard.writeText(text).then(
+            () => {
+                // console.log('Text copied to clipboard successfully!');
+            },
+            (err) => {
+                console.error('Could not copy text: ', err);
+            }
+        );
+    }
+    
+    async getClipboardData() {
+        await navigator.clipboard.readText().then(
+            (text) => {
+                // console.log(text);
+                this.copyCutData = text;
+                // console.log(this.copyCutData);
+                this.handlePaste();
+            },
+            (err) => {
+                return "";
+            }
+        );
+    }
+      
+      
+      
+
+    
 
     mainCanvasKeyUp(e){
         if(this.ipBox.style.display != "none"){
@@ -1151,16 +1219,17 @@ export default class Table {
         // constructor();
         // this.ipBox.releasePointerCapture();
         //////////////////////////////////
-        console.log("X", e.clientX,e.clientY);
+        // console.log("X", e.clientX,e.clientY);
         this.selection = 0;
+        
+        if(this.isClickedOnLeftHeadingCanvas === 1) this.resizeRowPointerUp(e);
+        if(this.isClickedOnTopHeadingCanvas === 1) this.resizeColumnPointerUp(e);
+        if(this.isClickedOnMainCanvas === 1)this.selectionPointerUp(e);
         
         this.isClickedOnLeftHeadingCanvas = 0;
         this.isClickedOnMainCanvas = 0;
         this.isClickedOnTopHeadingCanvas = 0;
 
-        this.resizeRowPointerUp(e);
-        this.resizeColumnPointerUp(e);
-        this.selectionPointerUp(e);
 
     }
     
@@ -1299,6 +1368,7 @@ export default class Table {
                 selectionHeight + 2
             );
             
+            this.handleCopy();
         }
         else{
             this.drawGrid();
@@ -1408,7 +1478,11 @@ export default class Table {
         this.startY=startY;
         await axios.get("http://localhost:5003/userDetail")
         .then((response) => {
-            this.data = response.data;
+            for(let j = 0; j < response.data.length; ++j){
+                for( let i = 0; i< response.data[0].length ; ++i){
+                    this.data[j][i] = response.data[j][i];
+                }
+            }
             console.log(response.data);
             this.drawTableData();
         })
@@ -1456,14 +1530,10 @@ export default class Table {
     //     this.ctxCanvasTop.stroke();
     // }
 
-    resetCanvasStroke(ctx) {
-        ctx.strokeStyle = '#000000'; // default stroke color
-        ctx.lineWidth = 1;           // default line width
-        ctx.lineCap = 'butt';        // default line cap
-        ctx.lineJoin = 'miter';      // default line join
-        ctx.miterLimit = 10;         // default miter limit
-        ctx.setLineDash([]);         // default line dash (no dash)
-        ctx.lineDashOffset = 0;      // default line dash offset
+    resetDivSel() {
+        this.ipBox.style.display = "block";
+        this.ipBox.focus();
+        this.ipBox.style.display = "none";
     }
 
     drawTopHeadingsGrid() {
@@ -1489,49 +1559,6 @@ export default class Table {
                 this.canvasTop.height
             );
         }
-        // this.ctxCanvasTop.clearRect(0, 0, this.canvasTop.width, this.canvasTop.height);
-        // this.ctxCanvasTop.fillStyle = "#caead8";
-        // this.ctxCanvasTop.fillRect(
-        //     selectionLeftSpace,
-        //     this.canvasTop.height / 2,
-        //     selectionWidth,
-        //     this.canvasTop.height
-        // );
-
-
-        
-        // console.log('called top grid')
-        // let tempCtx = this.canvasTop.getContext("2d");
-        // tempCtx.clearRect(0, 0, this.canvasTop.width, this.canvasTop.height);
-        // // let x = 0;
-        // for (let i = 0; x <= this.tableWidth; i++) {
-        //     const columnWidth = this.columnWidth + (this.topSizeMap[i + 1] || 0);
-        //     x += columnWidth;
-        //     tempCtx.moveTo(x, 0);
-        //     tempCtx.lineTo(x, this.rowHeight);
-        // }
-        // tempCtx.lineWidth = 1;
-        // tempCtx.strokeStyle = "rgb(200,200,200)";
-        // tempCtx.stroke();
-        // this.resetCanvasStroke(tempCtx);
-        
-
-
-
-        // this.ctxCanvasTop.clearRect(0, 0, this.canvasTop.width, this.canvasTop.height);
-        // this.ctxCanvasTop.save();
-        // let x = 0;
-        // for (let i = 0; x <= this.tableWidth; i++) {
-        //     const columnWidth = this.columnWidth + (this.topSizeMap[i + 1] || 0);
-        //     x += columnWidth;
-        //     this.ctxCanvasTop.moveTo(x, 0);
-        //     this.ctxCanvasTop.lineTo(x, this.rowHeight);
-        // }
-        // this.ctxCanvasTop.lineWidth = 1;
-        // this.ctxCanvasTop.strokeStyle = "rgb(200,200,200)";
-        // this.ctxCanvasTop.stroke();
-        // this.ctxCanvasTop.restore();
-        // this.resetCanvasStroke(this.ctxCanvasTop);
 
         let offset = this.canvasTop.getBoundingClientRect();
 
@@ -1545,16 +1572,7 @@ export default class Table {
         
 
         if(this.startColX != -1 && this.endColX != -1){
-            // let leftSpace = 0;
-            // let selectionWidth = 0;
             
-            
-            // for(let x = 0; x < lx; ++x){
-            //     leftSpace += this.columnWidth + (this.topSizeMap[x + 1] || 0);
-            // }
-            // for(let x = lx; x <= hx; ++x){
-            //     selectionWidth += this.columnWidth + (this.topSizeMap[x + 1] || 0);
-            // }
             this.ctxCanvasTop.fillStyle = "#107c41";
             this.ctxCanvasTop.fillRect(
                 selectionLeftSpace,
@@ -1610,10 +1628,10 @@ export default class Table {
             this.ctxCanvasTop.restore();
 
             if(x === this.moveStartX) {
-                // console.log(9821,100, offset.y);
-                // this.dottedVerticalLineDiv.style.top = `${this.canvasTop.height}px`;
-                // this.dottedVerticalLineDiv.style.height = `${this.canvas.height}px`;
-                // this.dottedVerticalLineDiv.style.left = `${cellPositionX + offset.x}px`;
+            //     // console.log(9821,100, offset.y);
+                this.dottedVerticalLineDiv.style.top = `${this.canvasTop.height}px`;
+                this.dottedVerticalLineDiv.style.height = `${this.canvas.height}px`;
+                this.dottedVerticalLineDiv.style.left = `${cellPositionX + this.canvasLeft.width}px`;
             }
             
         }
@@ -1740,10 +1758,10 @@ export default class Table {
                 this.ctxCanvasLeft.strokeStyle = "#ccc";
             }
             if(y === this.moveStartY){
-                console.log(cellPositionY , offset.y)
-                // this.dottedHorizontalLineDiv.style.top = `${cellPositionY + this.canvasTop.height}px`;
-                // this.dottedHorizontalLineDiv.style.width = `${this.canvas.width}px`;
-                // this.dottedHorizontalLineDiv.style.left = `${this.canvasLeft.width}px`;
+                // console.log(cellPositionY , offset.y)
+                this.dottedHorizontalLineDiv.style.top = `${cellPositionY + this.canvasTop.height}px`;
+                this.dottedHorizontalLineDiv.style.width = `${this.canvas.width}px`;
+                this.dottedHorizontalLineDiv.style.left = `${this.canvasLeft.width}px`;
             }
             this.ctxCanvasLeft.stroke();
             this.ctxCanvasLeft.restore();
@@ -2002,10 +2020,10 @@ export default class Table {
         // }
 
         
-        for (var i = 0; this.startX < this.data.length; i++,this.startX++) {
+        for (var i = 0; this.startX < 50; i++,this.startX++) {
             // ctx.fillText(columnHeaders[i], columnWidth * i + columnWidth / 2, rowHeight / 2);
             y += (this.rowHeight / 2) + (this.leftSizeMap[i+1]/2  || 0);
-            for (var j = 0; this.startY < this.data[0].length; j++,this.startY++) {
+            for (var j = 0; this.startY < 50 ;j++,this.startY++) {
 
                 // if(startCellsX<=i && i<=endCellsX && startCellsY<=j && j<=endCellsY){
                 //     console.log(startCellsX,startCellsY)
@@ -2021,13 +2039,15 @@ export default class Table {
                 x += (this.columnWidth / 2) + (this.topSizeMap[j+1]/2  || 0);
                 
                 
-                this.ctxCanvas.fillText(
-                    this.shortenText(this.data[this.startX][this.startY],((((this.columnWidth / 2) + (this.topSizeMap[j+1]/2  || 0))/4)-3)),
-                    // j * this.columnWidth + this.columnWidth / 2,
-                    x,
-                    // i * this.rowHeight + (this.rowHeight / 2) + 6
-                    y + 6
-                );
+                if(this.data[this.startX] && this.data[this.startX][this.startY]){
+                    this.ctxCanvas.fillText(
+                        this.shortenText(this.data[this.startX][this.startY],((((this.columnWidth / 2) + (this.topSizeMap[j+1]/2  || 0))/4)-3)),
+                        // j * this.columnWidth + this.columnWidth / 2,
+                        x,
+                        // i * this.rowHeight + (this.rowHeight / 2) + 6
+                        y + 6
+                    );
+                }
                 
                 x += (this.columnWidth / 2) + (this.topSizeMap[j+1]/2  || 0);
                 
