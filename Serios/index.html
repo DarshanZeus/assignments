@@ -5,6 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Excel Clone</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
+
+    <!-- <script>
+        $(function(){
+            $("#draggable").draggable();
+        });
+    </script> -->
+
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -12,8 +24,8 @@
     <div class="main-page">
         <div class="topBar">
             <button class="upload button">Upload CSV File</button>
-            <button class="insert button">Add Row</button>
-            <button class="delete button">Delete Row</button>
+            <button id="barChart" class="insert button">Add Bar Chart</button>
+            <button id="lineChart" class="delete button">Add Line Chart</button>
         </div>
     </div>
     

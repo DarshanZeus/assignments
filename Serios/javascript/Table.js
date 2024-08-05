@@ -1,5 +1,7 @@
 export default class Table {
-    
+    /**
+     * @type {HTMLCanvasElement}
+     */
     canvasDiv = document.getElementById("canvasDiv");
     canvasD = document.getElementById("canvasD");
 
@@ -13,7 +15,7 @@ export default class Table {
     ctxCanvas ;
     // ctxCanvasTop ;
     // ctxCanvasLeft ;
-    columnWidth = 150;
+    columnWidth = 100;
     rowHeight = 20;
 
     minCountRow = 0;
@@ -97,6 +99,9 @@ export default class Table {
         this.canvas = document.getElementById(`${mainCanvasName}`);
         this.canvasTop = document.getElementById("canvasTop");
         this.canvasLeft = document.getElementById("canvasLeft");
+        
+        this.barChart = document.getElementById("barChart");
+        this.lineChart = document.getElementById("lineChart");
 
         this.ipBox = document.getElementById("ipBox");
         this.selectionDiv = document.getElementById("selectionDiv");
@@ -181,6 +186,11 @@ export default class Table {
         this.windowPointerMove = this.windowPointerMove.bind(this);
         this.windowPointerUp = this.windowPointerUp.bind(this);
 
+        
+        this.makeChartDraggable = this.makeChartDraggable.bind(this);
+        this.createBarChart = this.createBarChart.bind(this);
+        this.createLineChart = this.createLineChart.bind(this);
+
         this.addEventListeners();
         this.drawGrid();
         this.drawTopHeadingsGrid();
@@ -246,9 +256,7 @@ export default class Table {
 
     addEventListeners() {
         this.canvas.addEventListener("pointerdown", this.selectionPointerDown);
-        // this.canvas.addEventListener('pointermove', this.selectionPointerMove);
-        // this.canvas.addEventListener('pointerup', this.selectionPointerUp);
-        // this.canvas.addEventListener('pointerleave', this.selectionPointerUp);
+        
         window.addEventListener('keydown', this.mainCanvasKeyDown);
         window.addEventListener('keyup', this.mainCanvasKeyUp);
         
@@ -257,24 +265,9 @@ export default class Table {
         
         this.canvasTop.addEventListener("pointerdown", this.resizeColumnPointerDown);
         this.canvasTop.addEventListener('pointermove', this.topHeadingPointerMove);
-        // this.canvasTop.addEventListener('pointerup', this.resizeColumnPointerUp);
-        // this.canvasTop.addEventListener('pointerleave', this.resizeColumnPointerUp);
-
 
         this.canvasLeft.addEventListener("pointerdown", this.resizeRowPointerDown);
         this.canvasLeft.addEventListener('pointermove', this.leftHeadingPointerMove);
-        // this.canvasLeft.addEventListener('pointerup', this.resizeRowPointerUp);
-        // this.canvasLeft.addEventListener('pointerleave', this.resizeRowPointerUp);
-        // this.deleteButton.addEventListener('click', this.handleDelete);
-
-        
-        // this.canvasLeft.addEventListener('pointermove', this.resizeRowPointerMove);
-        // this.canvasLeft.addEventListener('pointerup', this.resizeRowPointerUp);
-        // this.canvasLeft.addEventListener('pointerleave', this.resizeRowPointerUp);
-        // document.addEventListener("pointerdown", (e)=>{
-        //     console.log('Viewport Coordinates:', e.clientX, e.clientY);
-        //     console.log('Screen Coordinates:', e.screenX, e.screenY);
-        // })
         
         window.addEventListener('pointermove', this.windowPointerMove);
         window.addEventListener('pointerup', this.windowPointerUp);
@@ -282,6 +275,14 @@ export default class Table {
         window.addEventListener('pointercancel', this.windowPointerUp);
 
         this.ipBox.addEventListener("keypress", this.ipBoxKeyDown);
+
+        
+        this.barChart.addEventListener("click", this.createBarChart);
+        this.lineChart.addEventListener("click", this.createLineChart);
+
+
+
+
 
         
         // this.canvasTop.addEventListener("mousedown", (e) => {
@@ -330,22 +331,139 @@ export default class Table {
     
         // });
         document.addEventListener('paste', function(e) {
-            console.log(e);
+            // console.log(e);
+            // console.log(e.clipboardData);
             // e.clipboardData contains the data that is about to be pasted.
             if (e.clipboardData.types.indexOf('text/html') > -1) {
-              var oldData = e.clipboardData.getData('text/html');
-              var newData = '<b>Ha Ha!</b> ' + oldData;
-              console.log(oldData);
-              console.log(newData);
-          
-              // Since we are canceling the paste operation, we need to manually
-              // paste the data into the document.
-              pasteClipboardData(newData);
-          
-              // This is necessary to prevent the default paste action.
-              e.preventDefault();
+                var oldData = e.clipboardData.getData('text/html');
+                var newData = '<b>Ha Ha!</b> ' + oldData;
+                console.log(oldData);
+                // console.log(newData);
+            
+                // Since we are canceling the paste operation, we need to manually
+                // paste the data into the document.
+                // pasteClipboardData(newData);
+            
+                // This is necessary to prevent the default paste action.
+                e.preventDefault();
             }
-          });
+        });
+    }
+
+
+    makeChartDraggable(chartDiv){
+        
+        let offsetX, offsetY;
+
+        chartDiv.addEventListener('mousedown', (e) => {
+            offsetX = e.clientX - chartDiv.getBoundingClientRect().left + this.canvasD.getBoundingClientRect().left;
+            offsetY = e.clientY - chartDiv.getBoundingClientRect().top + this.canvasD.getBoundingClientRect().top;
+
+            document.addEventListener('mousemove', moveElement);
+            document.addEventListener('mouseup', stopMovingElement);
+        });
+
+        function moveElement(e) {
+            const x = e.clientX - offsetX;
+            const y = e.clientY - offsetY;
+
+            chartDiv.style.left = `${Math.max(x,0)}px`;
+            chartDiv.style.top = `${Math.max(y,0)}px`;
+        }
+
+        function stopMovingElement() {
+            document.removeEventListener('mousemove', moveElement);
+            document.removeEventListener('mouseup', stopMovingElement);
+        }
+    }
+    
+    setChartDivProperties(chartDiv){
+        chartDiv.style.height = `288px`;
+        chartDiv.style.width = `480px`;
+        chartDiv.style.position = `absolute`;
+        chartDiv.style.top = `100px`;
+        chartDiv.style.left = `100px`;
+        chartDiv.style.backgroundColor = `#fff`;
+        chartDiv.style.padding = `10px`;
+        chartDiv.style.border = `1px solid rgb(210,210,210)`;
+        chartDiv.id = 'chartDiv';
+        chartDiv.classList.add('chartDiv');
+    }
+
+    setChartCanvasProperties(chartCanvas){
+        chartCanvas.height = 288;
+        chartCanvas.width = 480;
+    }
+
+    
+    createBarChart(data){
+        let chartCanvas = document.createElement("canvas");
+        let chartDiv = document.createElement("div");
+
+        this.setChartCanvasProperties(chartCanvas);
+        this.setChartDivProperties(chartDiv);
+        
+        if(this.canvasD) this.canvasD.append(chartDiv);
+        if(chartDiv) chartDiv.append(chartCanvas);
+
+        let xChart = new Chart(chartCanvas, {
+            type: 'bar',
+            data: {
+                labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                datasets: [{
+                    barPercentage: 1,
+                    barThickness: 21,
+                    backgroundColor : ['#4472c4'],
+                    label: 'Chart Title',
+                    data: [12, 19, 3, 5, 2, 3]
+                    // borderWidth: 5
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        
+        this.makeChartDraggable(chartDiv);
+    }
+
+    createLineChart(data){
+        let chartCanvas = document.createElement("canvas");
+        let chartDiv = document.createElement("div");
+
+        this.setChartCanvasProperties(chartCanvas);
+        this.setChartDivProperties(chartDiv);
+        
+        if(this.canvasD) this.canvasD.append(chartDiv);
+        if(chartDiv) chartDiv.append(chartCanvas);
+        
+
+        let xChart = new Chart(chartCanvas, {
+            type: 'line',
+            data: {
+                labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                datasets: [{
+                    backgroundColor : '#4472c4',
+                    borderColor : '#4472c4',
+                    label: 'Chart Title',
+                    data: [12, 19, 3, 5, 2, 3]
+                    // borderWidth: 5
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        
+        this.makeChartDraggable(chartDiv);
     }
 
     getColumnNumber(clickX) {
@@ -1021,6 +1139,8 @@ export default class Table {
             }
         );
     }
+
+    
     
     async getClipboardData() {
         await navigator.clipboard.readText().then(
@@ -1666,9 +1786,9 @@ export default class Table {
 
             if(x === this.moveStartX) {
             //     // console.log(9821,100, offset.y);
-                this.dottedVerticalLineDiv.style.top = `${this.canvasTop.height}px`;
+                this.dottedVerticalLineDiv.style.top = `${0}px`;
                 this.dottedVerticalLineDiv.style.height = `${this.canvas.height}px`;
-                this.dottedVerticalLineDiv.style.left = `${cellPositionX + this.canvasLeft.width}px`;
+                this.dottedVerticalLineDiv.style.left = `${cellPositionX + 0}px`;
             }
             
         }
@@ -1796,9 +1916,9 @@ export default class Table {
             }
             if(y === this.moveStartY){
                 // console.log(cellPositionY , offset.y)
-                this.dottedHorizontalLineDiv.style.top = `${cellPositionY + this.canvasTop.height}px`;
+                this.dottedHorizontalLineDiv.style.top = `${cellPositionY + 0}px`;
                 this.dottedHorizontalLineDiv.style.width = `${this.canvas.width}px`;
-                this.dottedHorizontalLineDiv.style.left = `${this.canvasLeft.width}px`;
+                this.dottedHorizontalLineDiv.style.left = `${0}px`;
             }
             this.ctxCanvasLeft.stroke();
             this.ctxCanvasLeft.restore();
