@@ -217,7 +217,7 @@ export default class Table {
         this.selection = 1;
         this.drawSelection();
         this.selection = 0;
-        
+
         
     }
 
@@ -395,6 +395,20 @@ export default class Table {
         chartCanvas.width = 480;
     }
 
+    handleBarChart(){
+        chartDataX = this.startCellsX;
+        chartDataY = this.startCellsY;
+        chartData = [];
+        chartLabel = [];
+
+        for(let i = 0; i < this.endCellsX - this.startCellsX + 1; ++i){
+            let isNum = 0;
+            for(let j = 0; j < this.endCellsY - this.startCellsX + 1; ++j){
+
+            }
+        }
+
+    }
     
     createBarChart(data){
         let chartCanvas = document.createElement("canvas");
