@@ -24,8 +24,9 @@
     <div class="main-page">
         <div class="topBar">
             <button class="upload button">Upload CSV File</button>
-            <button id="barChart" class="insert button">Add Bar Chart</button>
-            <button id="lineChart" class="delete button">Add Line Chart</button>
+            <button id="barChartBtn" class="insert button">Add Bar Chart</button>
+            <button id="insertSheet" class="addSheet button">Insert Sheet</button>
+            <button id="lineChartBtn" class="delete button">Add Line Chart</button>
         </div>
     </div>
     
@@ -35,23 +36,24 @@
             
             <!-- <div class="selectionDiv" id="selectionDiv"></div> -->
             
-            <div class="canvasTopDiv">
+            <div id="canvasTopDiv" class="canvasTopDiv">
                 
                 <div class="triangleSelectAll" id="triangleSelectAll">
                     <div class="triangleRightDown" id="triangleRightDown"></div>
                 </div>
-                <canvas id="canvasTop" height="40" width="3900" class="canvasTop"></canvas>
+
+                <!-- <canvas id="canvasTop" height="40" width="3900" class="canvasTop"></canvas> -->
+            
             </div>
-            <div class="canvasLeftDiv">
-                <canvas id="canvasLeft" height="880" width="40" class="canvasLeft"></canvas>
+            <div id="canvasLeftDiv" class="canvasLeftDiv">
+
+                <!-- <canvas id="canvasLeft" height="880" width="40" class="canvasLeft"></canvas> -->
+            
             </div>
-            <div id="canvasD" class="canvasD">
-                <div class="canvasRow canvasRow0">
-                    <canvas id="canvas" height="880" width="3900">
-                        
-                    </canvas>
-                    
-                </div>
+            <div id="canvasMain" class="canvasD">
+
+                <!-- <canvas id="canvas" height="880" width="3900"></canvas> -->
+
                 <div class="dottedVerticalLineDiv" id="dottedVerticalLineDiv"></div>
                 <div class="dottedHorizontalLineDiv" id="dottedHorizontalLineDiv"></div>
             </div>

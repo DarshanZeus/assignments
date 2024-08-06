@@ -60,6 +60,10 @@
     cursor: w-resize;
 }
 
+.chartDiv{
+    cursor: move;
+}
+
 .canvasTopDiv{
     display: flex;
     position: sticky;
