@@ -338,7 +338,7 @@ export default class Table {
 
         chartDiv.addEventListener('pointerdown', (e) => {
             this.selectedChart = chartDiv;
-            offsetX = e.clientX - chartDiv.getBoundingClientRect().left + this.canvasMainDiv.getBoundingClientRect().left;
+            offsetX = e.clientX - chartDiv.getBoundingClientRect().left + this.canvasMainDiv.getBoundingClientRect().left ;
             offsetY = e.clientY - chartDiv.getBoundingClientRect().top + this.canvasMainDiv.getBoundingClientRect().top;
 
             document.addEventListener('pointermove', moveElement);
