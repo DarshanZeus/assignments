@@ -42,19 +42,39 @@ canvas:first-of-type{
 
 
 
-.canvasDiv{
-    position: relative;
-    display: grid;
-    grid-template-columns: 40px 1fr;
-    grid-template-rows: 40px 1fr;
-    gap: 0px;
-    background: rgb(200,200,200);
-    overflow: auto;
+.canvasDivDiv{
+    
     height: 800px;
+    overflow: auto;
     /* margin: 1rem; */
     /* border: 0.2rem solid rgb(200,200,200); */
     /* border-right: 0.3rem #000 solid; */
 }
+
+.fixedOnFrame{
+    /* top : 100px; */
+    height: 920px;
+    width: 3940px;
+    /* border: 2px solid red; */
+    position: sticky;
+    top: 0px;
+    left: 0px;
+    /* top: 150px; */
+    display: grid;
+    grid-template-columns: 40px 2fr;
+    grid-template-rows: 40px 2fr;
+    gap: 0px;
+}
+
+.canvasDiv{
+    
+    background: rgb(200,200,200);
+
+    height: 10000px;
+    width: 10000px;
+
+}
+
 .canvasDiv:hover{
     cursor: cell;
 }
