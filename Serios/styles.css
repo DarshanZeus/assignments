@@ -5,6 +5,7 @@
     box-sizing: border-box;
 }
 
+
 /* canvas{
     border: #FF4C4C 2px solid;
 } */
@@ -25,13 +26,19 @@
     min-height: 880px; */
 }
 
-#canvas, #canvasTop, #canvasLeft {
+canvas{
     display: block;
     /* position: relative; */
     padding: 0;
     margin: 0;
     border: none;
 }
+/* canvas{
+    border-top: 1px solid rgb(225, 225, 225);
+}
+canvas:first-of-type{
+    border: none;
+} */
 
 
 
@@ -76,33 +83,37 @@
     /* border: 2px solid black; */
     background: #f5f5f5;
 }
+.canvasMain{
+    position: relative;
+    background: #fff;
+    z-index: 0;
+}
 
 .canvasLeftDiv{
     position: sticky;
     left: 0px;
-    grid-column: 1; 
-    grid-row: 2;
     background: #f5f5f5;
     z-index: 1;
     /* border: 2px solid black; */
 }
 
-.canvasD{
-    /* display: grid;
-    gap: 0px; */
-    grid-column: 2;
-    position: relative;
-    grid-row: 2;
-    background: #fff;
-    z-index: 0;
-    /* border: 1px solid rgb(233, 76, 76); */
+/* canvas{
+    border: 1px solid rgb(255, 0, 0);
+    padding: 0px;
+    margin: 0px;
+} */
 
-    /* .canvasRow{
-        display: flex;
-        height: auto;
-        width: auto;
-    } */
+/* h1{
+    margin-bottom:<x>px;
+} */
+/* canvas{
+    margin-top: -5px;
 }
+canvas:first-of-type{
+    margin-top: 0px;
+} */
+
+
     
 
 
@@ -142,6 +153,8 @@
     border-color: #FF4C4C;
     box-shadow: 0px 0px 5px 5px  #ff4c4cb3;
 }
+
+
 
 .upload{
     grid-area: b1;
