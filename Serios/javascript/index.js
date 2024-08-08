@@ -60,15 +60,14 @@ async function main() {
 
 
     var arrCanvas = [];
-    // loadCanvases(arrCanvas);
-    // console.log(arrCanvas);
-    // let table = await createTableInstance();
+    
     let table = new Table('canvas');
     arrCanvas.push(table);
     arrCanvas[0].show();
     
     let insertSheetBtn = document.getElementById("insertSheet");
-    // console.log(insertSheetBtn);
+    let deleteLastSheetBtn = document.getElementById("deleteLastSheet");
+    
     insertSheetBtn.addEventListener("click", async (e) => {
         arrCanvas[arrCanvas.length - 1].hide();
         let newSheet = await createTableInstance();
@@ -78,6 +77,17 @@ async function main() {
         console.log(arrCanvas.length);
 
     });
+
+    deleteLastSheetBtn.addEventListener("click", async (e) => {
+        console.log("delete");
+        arrCanvas[arrCanvas.length - 1].hide();
+        
+        if(arrCanvas.length > 1) arrCanvas.pop();
+
+        arrCanvas[arrCanvas.length - 1].show();
+        console.log(arrCanvas.length);
+    });
+
     let x = document.createElement('div')
 
 }

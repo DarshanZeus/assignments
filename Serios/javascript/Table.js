@@ -311,6 +311,60 @@ export default class Table {
         });
     }
 
+    removeEventListeners() {
+
+        this.canvasDivDiv.removeEventListener("scroll",(e) => this.handleScroll);
+
+        this.canvas.removeEventListener("pointerdown", this.selectionPointerDown);
+        this.canvas.removeEventListener('dblclick', this.placeInputBox);
+        
+        this.canvasTop.removeEventListener("pointerdown", this.resizeColumnPointerDown);
+        this.canvasTop.removeEventListener('pointermove', this.topHeadingPointerMove);
+
+        this.canvasLeft.removeEventListener("pointerdown", this.resizeRowPointerDown);
+        this.canvasLeft.removeEventListener('pointermove', this.leftHeadingPointerMove);
+        
+        window.removeEventListener('pointermove', this.windowPointerMove);
+        window.removeEventListener('pointerup', this.windowPointerUp);
+        window.removeEventListener('pointerleave', this.windowPointerUp);
+        window.removeEventListener('pointercancel', this.windowPointerUp);
+        window.removeEventListener('keydown', this.mainCanvasKeyDown);
+        window.removeEventListener('keyup', this.mainCanvasKeyUp);
+
+        this.ipBox.removeEventListener("keypress", this.ipBoxKeyDown);
+
+        
+        this.barChartBtn.removeEventListener("click", this.createBarChart);
+        this.lineChartBtn.removeEventListener("click", this.createLineChart);
+        this.pieChartBtn.removeEventListener("click", this.createPieChart);
+        this.scatterChartBtn.removeEventListener("click", this.createScatterChart);
+        this.areaChartBtn.removeEventListener("click", this.createAreaChart);
+
+
+
+
+
+        
+        document.removeEventListener('paste', function(e) {
+            // console.log(e);
+            // console.log(e.clipboardData);
+            // e.clipboardData contains the data that is about to be pasted.
+            if (e.clipboardData.types.indexOf('text/html') > -1) {
+                var oldData = e.clipboardData.getData('text/html');
+                var newData = '<b>Ha Ha!</b> ' + oldData;
+                console.log(oldData);
+                // console.log(newData);
+            
+                // Since we are canceling the paste operation, we need to manually
+                // paste the data into the document.
+                // pasteClipboardData(newData);
+            
+                // This is necessary to prevent the default paste action.
+                e.preventDefault();
+            }
+        });
+    }
+
     handleScroll(){
         this.scrollXaxisValue = this.canvasDivDiv.scrollLeft;
         this.scrollYaxisValue = this.canvasDivDiv.scrollTop;
@@ -356,6 +410,7 @@ export default class Table {
         chartDiv.style.padding = `10px`;
         chartDiv.style.border = `1px solid rgb(210,210,210)`;
     }
+
     setSQChartDivProperties(chartDiv){
         chartDiv.style.height = `288px`;
         chartDiv.style.width = `288px`;
@@ -370,6 +425,72 @@ export default class Table {
     setChartCanvasProperties(chartCanvas){
         chartCanvas.height = 288;
         chartCanvas.width = 480;
+    }
+
+    handleMarchingAnts(){
+        // console.log("joke");
+        if(this.isCellsCopyCut === 0) return;
+
+        this.copyCutAnimationDiv = document.getElementById("copyCutAnimationDiv");
+            // console.log(copyCutAnimationDiv);
+        if(!this.copyCutAnimationDiv){
+            this.createCopyCutAnimationDiv();
+        }
+
+        let selectionLeftSpace = - this.scrollXaxisValue;
+        let selectionTopSpace = - this.scrollYaxisValue;
+        let selectionHeight = 0;
+        let selectionWidth = 0;
+
+        let lx = Math.min(this.copyCutStartX,this.copyCutEndX);
+        let ly = Math.min(this.copyCutStartY,this.copyCutEndY);
+        let hx = Math.max(this.copyCutStartX,this.copyCutEndX);
+        let hy = Math.max(this.copyCutStartY,this.copyCutEndY);
+
+        for(let x = 0; x < lx; ++x){
+            selectionLeftSpace += this.columnWidth + (this.topSizeMap[x + 1] || 0);
+        }
+        for(let y = 0; y < ly; ++y){
+            selectionTopSpace += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
+        }
+
+        for(let x = lx; x <= hx ; ++x){
+            selectionWidth += this.columnWidth + (this.topSizeMap[x + 1] || 0);
+        }
+        for(let y = ly; y <= hy; ++y){
+            selectionHeight += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
+        }
+        this.copyCutAnimationDiv.style.display = `block`
+        this.copyCutAnimationDiv.style.top = `${selectionTopSpace + this.canvasTop.height - 1}px`;
+        this.copyCutAnimationDiv.style.left = `${selectionLeftSpace + this.canvasLeft.width - 1}px`;
+        this.copyCutAnimationDiv.style.width = `${selectionWidth + 2}px`;
+        this.copyCutAnimationDiv.style.height = `${selectionHeight + 2}px`;
+
+        
+        const style = document.createElement('style');
+        const keyframes = `
+        @keyframes border-dance {
+        0% {
+            background-position: 0px 0px, 100px ${selectionHeight}px, 0px 100px, ${selectionWidth}px 0px;
+        }
+        100% {
+            background-position: 100px 0px, 0px ${selectionHeight}px, 0px 0px, ${selectionWidth}px 100px;
+        }
+        }`;
+        style.textContent = keyframes;
+        document.head.appendChild(style);
+        
+        this.fixedOnFrame.append(this.copyCutAnimationDiv);
+
+        if(this.isCutFlag === 1){
+            this.ctxCanvas.fillStyle = "rgba(255,255,255,0.7)";
+            this.ctxCanvas.fillRect(
+                selectionLeftSpace,
+                selectionTopSpace,
+                selectionWidth,
+                selectionHeight
+            );
+        }
     }
 
     getSelectionDataForChart(){
@@ -877,7 +998,11 @@ export default class Table {
             );
             
             this.prevSizeX = 0;
-            this.topSizeMap[this.moveStartX + 1] = newWidth ;
+            this.topSizeMap[this.moveStartX + 1] = newWidth;
+            // if()
+            for(let i = this.startColX; i <= this.endColX; ++i){
+                this.topSizeMap[i + 1] = newWidth;
+            }
             
             this.selectionTop = 0;
             
@@ -1078,10 +1203,13 @@ export default class Table {
     }
 
     ipBoxKeyDown(e){
+        
+        this.setCellValue(this.startCellsY, this.startCellsX, ipBox.value);
+        // console.log(isNaN("111"));
         if(e.key === "Enter"){
             // console.log(ipBox.value);
             // this.data[][] = ;
-            this.setCellValue(this.startCellsY, this.startCellsX, ipBox.value)
+            // this.setCellValue(this.startCellsY, this.startCellsX, ipBox.value);
             this.ipBox.style.display = "none";
             this.ipBox.value = "";
             this.startCellsY = Math.min(this.maxCountRow, this.startCellsY + 1);
@@ -1089,7 +1217,6 @@ export default class Table {
             this.endCellsX = this.startCellsX;
         }
         else if(e.key === "Shift") e.preventDefault();
-        
 
         this.selection = 1;
         this.drawSelection();
@@ -1195,11 +1322,11 @@ export default class Table {
                 this.copyCutEndY = this.endCellsY;
                 this.isCellsCopyCut = 1;
                 this.handleCopy();
-                console.log('c');
+                this.handleMarchingAnts();
+                // console.log('c');
             }
             else if(e.key === 'v' || e.key === 'V'){
                 this.getClipboardData();
-                console.log('c');
             }
             else if(e.key === 'x' || e.key === 'X'){
                 this.copyCutStartX = this.startCellsX;
@@ -1209,7 +1336,7 @@ export default class Table {
                 this.isCellsCopyCut = 1;
                 this.isCutFlag = 1;
                 this.handleCopy();
-                console.log('c');
+                this.handleMarchingAnts();
             }
         }
         
@@ -1217,16 +1344,33 @@ export default class Table {
     }
 
     handlePaste(){
+
+        if(this.isCutFlag === 1){
+            let lx= Math.min(this.copyCutStartX,this.copyCutEndX);
+            let ly= Math.min(this.copyCutStartY,this.copyCutEndY);
+            let hx= Math.max(this.copyCutStartX,this.copyCutEndX);
+            let hy= Math.max(this.copyCutStartY,this.copyCutEndY);
+            for(let i = lx; i <= hx; ++i){
+                for(let j = ly; j <= hy; ++j){
+                    this.deleteCell(j ,i);
+                }
+            }
+            this.isCutFlag = 0;
+            this.isCellsCopyCut = 0;
+            this.copyCutAnimationDiv = document.getElementById("copyCutAnimationDiv");
+            if(this.copyCutAnimationDiv) this.copyCutAnimationDiv.remove(); 
+        }
+
         let lx = Math.min(this.startCellsX,this.endCellsX);
         let ly = Math.min(this.startCellsY,this.endCellsY);
-        console.log(this.copyCutData);
+        // console.log(this.copyCutData);
         let transfromToMatrixHelper = this.copyCutData.split('\n');
         this.copyCutData = [];
         for(let rowIndex = 0; rowIndex + 1 < transfromToMatrixHelper.length ; ++rowIndex){
             let temp = transfromToMatrixHelper[rowIndex].split("	");
             this.copyCutData.push(temp);
         }
-        // return;
+        
         this.startCellsX = lx;
         this.startCellsY = ly;
         if(this.copyCutData.length) this.endCellsY = ly + this.copyCutData.length - 1;
@@ -1248,19 +1392,21 @@ export default class Table {
     }
 
     handleCopy(){
+        // this.copyCutAnimationDiv = document.getElementById("copyCutAnimationDiv");
+        // if(this.copyCutAnimationDiv) return;
         if(this.isCellsCopyCut === 0) return;
 
-        this.copyCutAnimationDiv = document.getElementById("copyCutAnimationDiv");
-            // console.log(copyCutAnimationDiv);
-        if(!this.copyCutAnimationDiv){
-            this.createCopyCutAnimationDiv();
-        }
+        // this.copyCutAnimationDiv = document.getElementById("copyCutAnimationDiv");
+        //     // console.log(copyCutAnimationDiv);
+        // if(!this.copyCutAnimationDiv){
+        //     this.createCopyCutAnimationDiv();
+        // }
 
 
-        let selectionLeftSpace = - this.scrollXaxisValue;
-        let selectionTopSpace = - this.scrollYaxisValue;
-        let selectionHeight = 0;
-        let selectionWidth = 0;
+        // let selectionLeftSpace = - this.scrollXaxisValue;
+        // let selectionTopSpace = - this.scrollYaxisValue;
+        // let selectionHeight = 0;
+        // let selectionWidth = 0;
 
         let lx = Math.min(this.copyCutStartX,this.copyCutEndX);
         let ly = Math.min(this.copyCutStartY,this.copyCutEndY);
@@ -1279,38 +1425,38 @@ export default class Table {
 
         
         
-        for(let x = 0; x < lx; ++x){
-            selectionLeftSpace += this.columnWidth + (this.topSizeMap[x + 1] || 0);
-        }
-        for(let y = 0; y < ly; ++y){
-            selectionTopSpace += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
-        }
+        // for(let x = 0; x < lx; ++x){
+        //     selectionLeftSpace += this.columnWidth + (this.topSizeMap[x + 1] || 0);
+        // }
+        // for(let y = 0; y < ly; ++y){
+        //     selectionTopSpace += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
+        // }
 
-        for(let x = lx; x <= hx ; ++x){
-            selectionWidth += this.columnWidth + (this.topSizeMap[x + 1] || 0);
-        }
-        for(let y = ly; y <= hy; ++y){
-            selectionHeight += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
-        }
-        this.copyCutAnimationDiv.style.display = `block`
-        this.copyCutAnimationDiv.style.top = `${selectionTopSpace + this.canvasTop.height - 1}px`;
-        this.copyCutAnimationDiv.style.left = `${selectionLeftSpace + this.canvasLeft.width - 1}px`;
-        this.copyCutAnimationDiv.style.width = `${selectionWidth + 2}px`;
-        this.copyCutAnimationDiv.style.height = `${selectionHeight + 2}px`;
+        // for(let x = lx; x <= hx ; ++x){
+        //     selectionWidth += this.columnWidth + (this.topSizeMap[x + 1] || 0);
+        // }
+        // for(let y = ly; y <= hy; ++y){
+        //     selectionHeight += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
+        // }
+        // this.copyCutAnimationDiv.style.display = `block`
+        // this.copyCutAnimationDiv.style.top = `${selectionTopSpace + this.canvasTop.height - 1}px`;
+        // this.copyCutAnimationDiv.style.left = `${selectionLeftSpace + this.canvasLeft.width - 1}px`;
+        // this.copyCutAnimationDiv.style.width = `${selectionWidth + 2}px`;
+        // this.copyCutAnimationDiv.style.height = `${selectionHeight + 2}px`;
 
         
-        const style = document.createElement('style');
-        const keyframes = `
-        @keyframes border-dance {
-        0% {
-            background-position: 0px 0px, 100px ${selectionHeight}px, 0px 100px, ${selectionWidth}px 0px;
-        }
-        100% {
-            background-position: 100px 0px, 0px ${selectionHeight}px, 0px 0px, ${selectionWidth}px 100px;
-        }
-        }`;
-        style.textContent = keyframes;
-        document.head.appendChild(style);
+        // const style = document.createElement('style');
+        // const keyframes = `
+        // @keyframes border-dance {
+        // 0% {
+        //     background-position: 0px 0px, 100px ${selectionHeight}px, 0px 100px, ${selectionWidth}px 0px;
+        // }
+        // 100% {
+        //     background-position: 100px 0px, 0px ${selectionHeight}px, 0px 0px, ${selectionWidth}px 100px;
+        // }
+        // }`;
+        // style.textContent = keyframes;
+        // document.head.appendChild(style);
 
         let copyToClipboardString = "";
         // this.copyCutData = [];
@@ -1321,16 +1467,16 @@ export default class Table {
                 // tempRow.push(this.data[j][i]);
                 copyToClipboardString += (this.getCellValue(j, i) || "") + ((i===hx) ?"\n": "	" );
             }
-            // this.copyCutData.push(tempRow);
         }
+        // console.log('hi');
         
         this.copyToClipboard(copyToClipboardString);
-        this.fixedOnFrame.append(this.copyCutAnimationDiv);
     }
 
     async copyToClipboard(text) {
         await navigator.clipboard.writeText(text).then(
             () => {
+                console.log("copy");
                 // console.log('Text copied to clipboard successfully!');
             },
             (err) => {
@@ -1344,7 +1490,7 @@ export default class Table {
     async getClipboardData() {
         await navigator.clipboard.readText().then(
             (text) => {
-                // console.log(text);
+                console.log("paste");
                 this.copyCutData = text;
                 // console.log(this.copyCutData);
                 this.handlePaste();
@@ -1581,10 +1727,6 @@ export default class Table {
         }
     }
     drawSelection() {
-
-
-
-
         if(this.selection === 1 && this.startCellsX != -1){
 
             let selectionLeftSpace = -(this.scrollXaxisValue);;
@@ -1694,7 +1836,7 @@ export default class Table {
                 selectionHeight + 2
             );
             
-            this.handleCopy();
+            this.handleMarchingAnts();
         }
         else{
             this.drawGrid();
@@ -2126,6 +2268,10 @@ export default class Table {
             ctxCanvas.restore();
         }
 
+        // let xCordLow = 
+        // cellPositionY -= canvas.height;
+
+
         for(let startY = 1; cellPositionY <= canvas.height + 1; ++startY){
             cellPositionY += this.rowHeight + (this.leftSizeMap[startY] || 0);
             ctxCanvas.save();
@@ -2216,6 +2362,7 @@ export default class Table {
             y += rowHeight;
         }
     }
+    
 
 
     drawTableData(startX = 0 , startY = 0) {
@@ -2341,6 +2488,8 @@ export default class Table {
     }
 
     hide(){
+        
+        this.removeEventListeners();
         this.ipBox.style.display = `none`;
         // this.copyCutStartX = -1;
         // this.copyCutStartY = -1;
@@ -2351,10 +2500,11 @@ export default class Table {
         this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctxCanvasTop.clearRect(0, 0, this.canvasTop.width, this.canvasTop.height);
         this.ctxCanvasLeft.clearRect(0, 0, this.canvasLeft.width, this.canvasLeft.height);
-        this.isCellsCopyCut = 0;
+        // this.isCellsCopyCut = 0;
         if(this.copyCutAnimationDiv){
             this.copyCutAnimationDiv.remove();
         }
+
 
         this.canvas.remove();
         this.canvasTop.remove();
