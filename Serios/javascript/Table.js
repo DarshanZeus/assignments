@@ -1,3 +1,5 @@
+import cacheCoordinates from "./cacheCoordinates.js";
+
 export default class Table {
     /**
      * @type {HTMLCanvasElement}
@@ -108,6 +110,9 @@ export default class Table {
         
         this.barChartBtn = document.getElementById("barChartBtn");
         this.lineChartBtn = document.getElementById("lineChartBtn");
+        this.pieChartBtn = document.getElementById("pieChartBtn");
+        this.scatterChartBtn = document.getElementById("scatterChartBtn");
+        this.areaChartBtn = document.getElementById("areaChartBtn");
 
         this.ipBox = document.getElementById("ipBox");
         this.copyCutAnimationDiv = document.getElementById("copyCutAnimationDiv");
@@ -179,36 +184,16 @@ export default class Table {
         this.makeChartDraggable = this.makeChartDraggable.bind(this);
         this.createBarChart = this.createBarChart.bind(this);
         this.createLineChart = this.createLineChart.bind(this);
+        this.createPieChart = this.createPieChart.bind(this);
+        this.createScatterChart = this.createScatterChart.bind(this);
+        this.createAreaChart = this.createAreaChart.bind(this);
 
         this.setCellValue = this.setCellValue.bind(this);
         this.getCellValue = this.getCellValue.bind(this);
         this.deleteCell = this.deleteCell.bind(this);
 
-        // this.drawGrid();
-        // this.drawTopHeadingsGrid();
-        // this.drawLeftHeadingsGrid();
-        // // this.ctxCanvasTop.stroke();
 
-        // this.ctxCanvas.font = "15px Calibri";
-        // this.ctxCanvas.textAlign = "center";
-        // this.ctxCanvas.textBaseline = "Top";
-        // this.ctxCanvas.lineWidth = 1;
 
-        // this.ctxCanvasTop.font = "16px Calibri";
-        // this.ctxCanvasTop.textAlign = "center";
-        // this.ctxCanvasTop.textBaseline = "middle";
-        // this.ctxCanvasTop.lineWidth = 1;
-
-        // this.ctxCanvasLeft.font = "10px Calibri";
-        // this.ctxCanvasLeft.textAlign = "right";
-        // this.ctxCanvasLeft.textBaseline = "middle";
-        // this.ctxCanvasLeft.lineWidth = 1;
-
-        // this.drawTableTopHeading();
-        // this.drawTableLeftHeading();
-        // this.selection = 1;
-        // this.drawSelection();
-        // this.selection = 0;
         this.canvasDivDiv.addEventListener("scroll", (e) => {
             this.scrollXaxisValue = this.canvasDivDiv.scrollLeft;
             this.scrollYaxisValue = this.canvasDivDiv.scrollTop;
@@ -273,13 +258,11 @@ export default class Table {
     }
 
     addEventListeners() {
-        this.canvas.addEventListener("pointerdown", this.selectionPointerDown);
-        
-        window.addEventListener('keydown', this.mainCanvasKeyDown);
-        window.addEventListener('keyup', this.mainCanvasKeyUp);
-        
-        this.canvas.addEventListener('dblclick', this.placeInputBox);
 
+        this.canvasDivDiv.addEventListener("scroll",(e) => this.handleScroll);
+
+        this.canvas.addEventListener("pointerdown", this.selectionPointerDown);
+        this.canvas.addEventListener('dblclick', this.placeInputBox);
         
         this.canvasTop.addEventListener("pointerdown", this.resizeColumnPointerDown);
         this.canvasTop.addEventListener('pointermove', this.topHeadingPointerMove);
@@ -291,12 +274,17 @@ export default class Table {
         window.addEventListener('pointerup', this.windowPointerUp);
         window.addEventListener('pointerleave', this.windowPointerUp);
         window.addEventListener('pointercancel', this.windowPointerUp);
+        window.addEventListener('keydown', this.mainCanvasKeyDown);
+        window.addEventListener('keyup', this.mainCanvasKeyUp);
 
         this.ipBox.addEventListener("keypress", this.ipBoxKeyDown);
 
         
         this.barChartBtn.addEventListener("click", this.createBarChart);
         this.lineChartBtn.addEventListener("click", this.createLineChart);
+        this.pieChartBtn.addEventListener("click", this.createPieChart);
+        this.scatterChartBtn.addEventListener("click", this.createScatterChart);
+        this.areaChartBtn.addEventListener("click", this.createAreaChart);
 
 
 
@@ -323,18 +311,17 @@ export default class Table {
         });
     }
 
+    handleScroll(){
+        this.scrollXaxisValue = this.canvasDivDiv.scrollLeft;
+        this.scrollYaxisValue = this.canvasDivDiv.scrollTop;
+        this.refresh();
+    }
+
 
     makeChartDraggable(chartDiv){
         
         let offsetX, offsetY;
 
-        // chartDiv.addEventListener('dblclick', (e) => {
-        //     e.preventDefault();
-        //     console.log('Delete key pressed!');
-        //     if (e.key === 'Delete') {
-        //         console.log('Delete key pressed!');
-        //     }
-        // });
 
         chartDiv.addEventListener('pointerdown', (e) => {
             this.selectedChart = chartDiv;
@@ -362,6 +349,16 @@ export default class Table {
     setChartDivProperties(chartDiv){
         chartDiv.style.height = `288px`;
         chartDiv.style.width = `480px`;
+        chartDiv.style.position = `absolute`;
+        chartDiv.style.top = `100px`;
+        chartDiv.style.left = `100px`;
+        chartDiv.style.backgroundColor = `#fff`;
+        chartDiv.style.padding = `10px`;
+        chartDiv.style.border = `1px solid rgb(210,210,210)`;
+    }
+    setSQChartDivProperties(chartDiv){
+        chartDiv.style.height = `288px`;
+        chartDiv.style.width = `288px`;
         chartDiv.style.position = `absolute`;
         chartDiv.style.top = `100px`;
         chartDiv.style.left = `100px`;
@@ -469,16 +466,139 @@ export default class Table {
             type: 'line',
             data: {
                 labels: label,
-                // ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
                 datasets: data,
-                // [{
-                //     backgroundColor : '#4472c4',
-                //     borderColor : '#4472c4',
-                //     label: 'Chart Title',
-                //     data: data 
-                //     // [12, 19, 3, 5, 2, 3]
-                //     // borderWidth: 5
-                // }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        
+        this.makeChartDraggable(chartDiv);
+    }
+
+    createPieChart(){
+        let { data, label} = this.getSelectionDataForChart();
+        let chartCanvas = document.createElement("canvas");
+        let chartDiv = document.createElement("div");
+
+        this.setChartCanvasProperties(chartCanvas);
+        this.setSQChartDivProperties(chartDiv);
+        
+        if(this.canvasMainDiv) this.canvasMainDiv.append(chartDiv);
+        if(chartDiv) chartDiv.append(chartCanvas);
+        
+
+        let xChart = new Chart(chartCanvas, {
+            type: 'pie',
+            data: {
+                labels: label,
+                datasets: data,
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        
+        this.makeChartDraggable(chartDiv);
+    }
+    
+    createScatterChart(){
+        let { data, label} = this.getSelectionDataForChart();
+        // console.log(data);
+        let tempdata = [], cnt = 0;
+        for(let list = 0; list < data.length; ++list){
+            tempdata = [];
+            cnt = 0;
+            
+            for(let element = 0; element < data[list].data.length; ++element){
+                tempdata.push({
+                    x:++cnt,
+                    y:data[list].data[element]
+                });
+            }
+            data[list].data = tempdata;
+            data[list].pointRadius = 4;
+            data[list].pointBackgroundColor = this.getRandomColorName();
+            data[list].border = 0;
+        }
+
+        
+
+
+        let chartCanvas = document.createElement("canvas");
+        let chartDiv = document.createElement("div");
+
+        this.setChartCanvasProperties(chartCanvas);
+        this.setChartDivProperties(chartDiv);
+        
+        if(this.canvasMainDiv) this.canvasMainDiv.append(chartDiv);
+        if(chartDiv) chartDiv.append(chartCanvas);
+        
+
+        let xChart = new Chart(chartCanvas, {
+            type: 'scatter',
+            data: {
+                labels: label,
+                datasets: data,
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        
+        this.makeChartDraggable(chartDiv);
+    }
+
+    createAreaChart(){
+        let { data, label} = this.getSelectionDataForChart();
+
+        let tempdata = [], cnt = 0;
+        for(let list = 0; list < data.length; ++list){
+            tempdata = [];
+            cnt = 0;
+            
+            // for(let element = 0; element < data[list].data.length; ++element){
+            //     tempdata.push({
+            //         x:++cnt,
+            //         y:data[list].data[element]
+            //     });
+            // }
+            // data[list].data = tempdata;
+            // data[list].pointRadius = 4;
+            data[list].fill = true; 
+            data[list].backgroundColor = this.getRandomColorName(); 
+            // this.getRandomColorName();
+            // data[list].border = 0;
+        }
+
+
+        let chartCanvas = document.createElement("canvas");
+        let chartDiv = document.createElement("div");
+
+        this.setChartCanvasProperties(chartCanvas);
+        this.setChartDivProperties(chartDiv);
+        
+        if(this.canvasMainDiv) this.canvasMainDiv.append(chartDiv);
+        if(chartDiv) chartDiv.append(chartCanvas);
+        
+
+        let xChart = new Chart(chartCanvas, {
+            type: 'line',
+            data: {
+                labels: label,
+                datasets: data,
             },
             options: {
                 scales: {
@@ -547,6 +667,8 @@ export default class Table {
         return false;
     }
 
+
+
     
 
     setCellValue(row, col, value) {
@@ -614,6 +736,8 @@ export default class Table {
         
             this.ipBox.style.display = "none";
         // }
+        
+        this.selectedChart = null;
 
         this.isClickedOnTopHeadingCanvas = 1;
 
@@ -785,6 +909,8 @@ export default class Table {
         //     console.log(ipBox.value);
             this.ipBox.style.display = "none";
         // }
+        
+        this.selectedChart = null;
 
         this.isClickedOnLeftHeadingCanvas = 1;
 
@@ -911,6 +1037,9 @@ export default class Table {
     }
 
     placeInputBox(e){
+        
+        this.selectedChart = null;
+
         this.copyCutAnimationDiv = document.getElementById("copyCutAnimationDiv");
         if(this.copyCutAnimationDiv) this.copyCutAnimationDiv.remove(); 
         this.isCellsCopyCut = 0;
@@ -938,8 +1067,8 @@ export default class Table {
         this.ipBox.style.width = `${this.columnWidth - 2 + (this.topSizeMap[this.startCellsX + 1] || 0)}px`;        
         this.ipBox.style.height = `${this.rowHeight - 2 + (this.leftSizeMap[this.startCellsY + 1] || 0)}px`;      
 
-        this.ipBox.style.top = `${ipBoxY + 1}px`;
-        this.ipBox.style.left = `${ipBoxX + 1}px`;
+        this.ipBox.style.top = `${ipBoxY + 1 - this.scrollYaxisValue}px`;
+        this.ipBox.style.left = `${ipBoxX + 1 - this.scrollXaxisValue}px`;
         
         this.ipBox.style.display = "block";
         if(this.getCellValue(this.startCellsY, this.startCellsX))
@@ -986,9 +1115,19 @@ export default class Table {
                 this.selectedChart.remove();
                 this.selectedChart = null;
             }
+            else{
+                let lx= Math.min(this.startCellsX,this.endCellsX);
+                let ly= Math.min(this.startCellsY,this.endCellsY);
+                let hx= Math.max(this.startCellsX,this.endCellsX);
+                let hy= Math.max(this.startCellsY,this.endCellsY);
+                for(let i = lx; i <= hx; ++i){
+                    for(let j = ly; j <= hy; ++j){
+                        this.deleteCell(j ,i);
+                    }
+                }
+            }
         }
         else if(e.shiftKey){
-            console.log("hi");
             if(e.key === "ArrowUp"){
                 // console.log("U");
                 if(this.endCellsY !== -1) this.endCellsY = Math.max(this.minCountRow, this.endCellsY - 1);
@@ -1036,12 +1175,7 @@ export default class Table {
             this.ipBox.style.display = "none";
         }
         else if(e.key === "Enter" && this.ipBox.style.display === "none"){
-            // if(this.ipBox.style.display != "none"){
-            //     console.log(ipBox.value);
-            //     this.data[this.startCellsY][this.startCellsX] = ipBox.value;
-            //     this.ipBox.style.display = "none";
-            //     this.ipBox.value = "";
-            // }
+            
             this.startCellsY = Math.min(this.maxCountRow, this.startCellsY + 1);
             this.endCellsY = this.startCellsY;
             this.endCellsX = this.startCellsX;
@@ -1240,6 +1374,7 @@ export default class Table {
     selectionPointerDown(e){
         
         this.isClickedOnMainCanvas = 1;
+        this.selectedChart = null;
 
         this.startColX = -1;
         this.endColX = -1;
@@ -2104,10 +2239,10 @@ export default class Table {
         // }
 
         
-        for (var i = 0; this.startX < 50; i++,this.startX++) {
+        for (var i = 0; this.startX < 100; i++,this.startX++) {
             // ctx.fillText(columnHeaders[i], columnWidth * i + columnWidth / 2, rowHeight / 2);
             y += (this.rowHeight / 2) + (this.leftSizeMap[i+1]/2  || 0);
-            for (var j = 0; this.startY < 50 ;j++,this.startY++) {
+            for (var j = 0; this.startY < 100 ;j++,this.startY++) {
 
                 x += (this.columnWidth / 2) + (this.topSizeMap[j+1]/2  || 0);
                 
