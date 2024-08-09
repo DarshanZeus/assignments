@@ -1000,9 +1000,12 @@ export default class Table {
             this.prevSizeX = 0;
             this.topSizeMap[this.moveStartX + 1] = newWidth;
             // if()
-            for(let i = this.startColX; i <= this.endColX; ++i){
-                this.topSizeMap[i + 1] = newWidth;
+            if(this.startColX <= this.moveStartX && this.moveStartX <= this.endColX){
+                for(let i = this.startColX; i <= this.endColX; ++i){
+                    this.topSizeMap[i + 1] = newWidth;
+                }
             }
+            
             
             this.selectionTop = 0;
             
@@ -1136,9 +1139,12 @@ export default class Table {
             ;
 
             this.leftSizeMap[this.moveStartY + 1] =  newHeight;
-            for(let i = this.startRowY; i <= this.endRowY; ++i){
-                this.leftSizeMap[i + 1] = newHeight;
+            if(this.startRowY <= this.moveStartY && this.moveStartY <= this.endRowY){
+                for(let i = this.startRowY; i <= this.endRowY; ++i){
+                    this.leftSizeMap[i + 1] = newHeight;
+                }
             }
+            
             this.selectionLeft = 0;
 
             this.ctxCanvasLeft.clearRect(0, 0, this.canvasLeft.width, this.canvasLeft.height);
@@ -1192,9 +1198,9 @@ export default class Table {
         this.ipBox.style.width = `${this.columnWidth - 2 + (this.topSizeMap[this.startCellsX + 1] || 0)}px`;        
         this.ipBox.style.height = `${this.rowHeight - 2 + (this.leftSizeMap[this.startCellsY + 1] || 0)}px`;      
 
-        this.ipBox.style.top = `${ipBoxY + 1 - this.scrollYaxisValue}px`;
-        this.ipBox.style.left = `${ipBoxX + 1 - this.scrollXaxisValue}px`;
-        
+        this.ipBox.style.top = `${ipBoxY + 2 - this.scrollYaxisValue}px`;
+        this.ipBox.style.left = `${ipBoxX + 2 - this.scrollXaxisValue}px`;
+        Text
         this.ipBox.style.display = "block";
         if(this.getCellValue(this.startCellsY, this.startCellsX))
         this.ipBox.value = this.getCellValue(this.startCellsY, this.startCellsX);
@@ -1215,6 +1221,7 @@ export default class Table {
             this.startCellsY = Math.min(this.maxCountRow, this.startCellsY + 1);
             this.endCellsY = this.startCellsY;
             this.endCellsX = this.startCellsX;
+            
         }
         else if(e.key === "Shift") e.preventDefault();
 
@@ -1968,9 +1975,21 @@ export default class Table {
     }
 
     shortenText(textToBeShort, length){
-        if(textToBeShort.length < length ) return textToBeShort;
-        return textToBeShort.substring(0,length) + "...";
+        if(isNaN(textToBeShort)){
+            if(textToBeShort.length < length ) return textToBeShort;
+            return textToBeShort.substring(0,length) 
+            + "..."
+            ;
+        }
+        else{
+            if(textToBeShort.length < length ) return textToBeShort;
+            return '#'.repeat(length);
+        }
+        
     }
+
+    
+    
 
     convertToTitle(columnNumber) {
         let res = '';
@@ -2377,6 +2396,8 @@ export default class Table {
         let y = -(this.scrollYaxisValue);;
         let cellPositionX = 0;
         let cellPositionY = 0;
+        
+        
 
         // for (var i = 0; this.startX < this.data.length; i++,this.startX++) {
         //     // ctx.fillText(columnHeaders[i], columnWidth * i + columnWidth / 2, rowHeight / 2);
@@ -2391,20 +2412,37 @@ export default class Table {
             y += (this.rowHeight / 2) + (this.leftSizeMap[i+1]/2  || 0);
             for (var j = 0; this.startY < 100 ;j++,this.startY++) {
 
-                x += (this.columnWidth / 2) + (this.topSizeMap[j+1]/2  || 0);
+                let cellData = this.getCellValue(this.startX, this.startY);
                 
-                
-                if(this.getCellValue(this.startX, this.startY)){
-                    this.ctxCanvas.fillText(
-                        this.shortenText(this.getCellValue(this.startX, this.startY),
-                            ((((this.columnWidth / 2) + (this.topSizeMap[j+1]/2  || 0))/4)-3)),
-                        // j * this.columnWidth + this.columnWidth / 2,
-                        x,
-                        // i * this.rowHeight + (this.rowHeight / 2) + 6
-                        y + 6
-                    );
+                // console.log(this.ctxCanvas.measureText(cellData).width / 12);
+                // ((((this.columnWidth / 2) + (this.topSizeMap[j+1]/2  || 0))/4)-3);
+                if(cellData){
+                    let textLength = ((((this.columnWidth / 2) + (this.topSizeMap[j+1]/2  || 0))/4));
+                    if(isNaN(cellData)){
+                        let textLength = ((((this.columnWidth / 2) + (this.topSizeMap[j+1]/2  || 0))/4)-3);
+                        this.ctxCanvas.textAlign = "left";
+                        this.ctxCanvas.fillText(
+                            this.shortenText(cellData, textLength),
+                            // j * this.columnWidth + this.columnWidth / 2,
+                            x + 3,
+                            // i * this.rowHeight + (this.rowHeight / 2) + 6
+                            y + 6
+                        );
+                    }
+                    else{
+                        let textLength = ((((this.columnWidth / 2) + (this.topSizeMap[j+1]/2  || 0))/4));
+                        this.ctxCanvas.textAlign = "right";
+                        this.ctxCanvas.fillText(
+                            this.shortenText(cellData, textLength),
+                            // j * this.columnWidth + this.columnWidth / 2,
+                            x + (this.columnWidth) + (this.topSizeMap[j+1]  || 0) - 3,
+                            // i * this.rowHeight + (this.rowHeight / 2) + 6
+                            y + 6
+                        );
+                    }
                 }
                 
+                x += (this.columnWidth / 2) + (this.topSizeMap[j+1]/2  || 0);
                 x += (this.columnWidth / 2) + (this.topSizeMap[j+1]/2  || 0);
                 
             }

@@ -3,6 +3,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using backendAPI.Models;
 
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using System.Text.Json; // if using ReadFromJsonAsync
+
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +29,8 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+app.UseCors("AllowAllOrigins");
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -35,11 +42,30 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseRouting();
+app.UseAuthorization();
+app.UseEndpoints(endpoints =>{
+    endpoints.MapGet("/getAllData", async (context) =>{
+        await context.Response.WriteAsync("This is All the Data");
+    });
+
+    // endpoints.MapPost("/getAllData", async (context) =>{
+    //     var data = await new StreamReader(context.Request.Body).ReadToEndAsync();
+        
+    //     await context.Response.WriteAsync(data);
+    // });
+});
+
+app.UseEndpoints(endpoints =>{
+    endpoints.MapPost("/getAllData", async (context) =>{
+        var data = await new StreamReader(context.Request.Body).ReadToEndAsync();
+        await context.Response.WriteAsync(data);
+    });
+});
 
 // Enable CORS
-app.UseCors("AllowAllOrigins");
 
-app.UseAuthorization();
+
+
 
 app.MapControllers();
 
