@@ -1,0 +1,6 @@
+@Backend_Excel_HostAddress = http://localhost:5163
+
+GET {{Backend_Excel_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
