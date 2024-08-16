@@ -31,6 +31,8 @@ export default class Table {
     isClickedOnLeftHeadingCanvas = 0;
     isClickedOnMainCanvas = 0;
 
+    
+
     selection = 0;
     selectionTop = 0;
     selectionLeft = 0;
@@ -1956,13 +1958,17 @@ export default class Table {
     async loadData(startX = 0 , startY = 0){
         this.startX=startX;
         this.startY=startY;
-        await axios.get("http://localhost:5003/userDetail")
+        // console.log(this.sheetID);
+        // await axios.get("http://localhost:5003/userDetail")
+        await axios.get(`http://localhost:5163/api/getPageData?matrixName=1&rowNo=1&colNo=1`)
         .then((response) => {
+            
             for(let j = 0; j < response.data.length; ++j){
-                for( let i = 0; i< response.data[0].length ; ++i){
-                    // this.data[j][i] = response.data[j][i];
-                    this.setCellValue(j, i, response.data[j][i]);
-                }
+                this.setCellValue(response.data[j].rowNo - 1, response.data[j].colNo - 1, response.data[j].cellValue);
+                // for( let i = 0; i< response.data[0].length ; ++i){
+                //     // this.data[j][i] = response.data[j][i];
+                //     this.setCellValue(j, i, response.data[j][i]);
+                // }
             }
             console.log(response.data);
             this.drawTableData();

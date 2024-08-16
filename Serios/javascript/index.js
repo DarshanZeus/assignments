@@ -24,7 +24,7 @@ import Table from "./Table.js";
 // }
 
 
-async function createTableInstance(mainCanvasName = `canvas`) {
+async function createTableInstance(mainCanvasName = 1) {
     const tableInstance = new Table(mainCanvasName);
     window.t = tableInstance
     return tableInstance;
@@ -61,7 +61,7 @@ async function main() {
 
     var arrCanvas = [];
     
-    let table = new Table('canvas');
+    let table = new Table(1);
     arrCanvas.push(table);
     arrCanvas[0].show();
     
@@ -70,7 +70,7 @@ async function main() {
     
     insertSheetBtn.addEventListener("click", async (e) => {
         arrCanvas[arrCanvas.length - 1].hide();
-        let newSheet = await createTableInstance();
+        let newSheet = await createTableInstance(arrCanvas.length + 1);
         arrCanvas.push(newSheet);
 
         arrCanvas[arrCanvas.length - 1].show();

@@ -1,0 +1,65 @@
+﻿using System.Text;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using MySql.Data.MySqlClient;
+
+internal class Program
+{
+    private static async global::System.Threading.Tasks.Task Main(string[] args)
+    {
+        var factory = new ConnectionFactory { HostName = "localhost" };
+        using var connection = factory.CreateConnection();
+        using var channel = connection.CreateModel();
+        int cnt = 0;
+
+        //////////// DB connection Set up
+        // var configuration = sp.GetRequiredService<IConfiguration>();
+        
+        //////////////////////////////////////////////////////////////////////
+
+
+
+
+        channel.QueueDeclare(queue: "Insert To DB",
+                             durable: false,
+                             exclusive: false,
+                             autoDelete: false,
+                             arguments: null);
+
+        Console.WriteLine(" [*] Waiting for messages.");
+
+        var consumer = new EventingBasicConsumer(channel);
+        consumer.Received += async (model, ea) =>
+        {
+            var body = ea.Body.ToArray();
+            var message = Encoding.UTF8.GetString(body);
+            
+
+            // Console.WriteLine($" [x] Received ");
+            var connectionString = "User ID=root;Password=PASSWORD;Host=localhost;Port=3306;Database=excel_clone;Protocol=TCP;Compress=false;Pooling=true;Min Pool Size=0;Max Pool Size=100;Connection Lifetime=0;";
+            var dbConnection = new MySqlConnection(connectionString);
+            await dbConnection.OpenAsync();
+            
+            // var msg = "(690,690,690,\"kull\")";
+            string query = $"INSERT INTO `excel_clone`.`excel_data` (`MatrixName`, `RowNo`, `ColNo`, `CellValue`) VALUES {message};";
+            MySqlCommand command = new MySqlCommand(query, dbConnection);
+            // command.Parameters.AddWithValue("@data", msg);
+            
+            Console.WriteLine($"{query}");
+
+            var rowsAffected = command.ExecuteNonQuery();
+            Console.WriteLine($" [x] Drashan {rowsAffected}");
+            cnt++;
+            Console.WriteLine(cnt);
+        };
+        channel.BasicConsume(queue: "Insert To DB",
+                             autoAck: true,
+                             consumer: consumer);
+
+
+        var x = Console.ReadLine();
+        Console.WriteLine(x);
+        
+        // while (true);
+    }
+}

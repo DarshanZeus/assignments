@@ -53,14 +53,14 @@ namespace Backend_Excel.Controllers
                         // Console.WriteLine($"rowNo={lines} colNo={i} {row[i]}");
 
                         query = @"
-                    INSERT INTO excel_clone.excel_data (MatrixName, RowNo, ColNo, CellValue)
-                    VALUES(@MatrixName, @RowNo, @ColNo, @CellValue)
-                    ON DUPLICATE KEY UPDATE 
-                        MatrixName = VALUES(MatrixName), 
-                        RowNo = VALUES(RowNo), 
-                        ColNo = VALUES(ColNo), 
-                        CellValue = VALUES(CellValue); 
-                ";
+                            INSERT INTO excel_clone.excel_data (MatrixName, RowNo, ColNo, CellValue)
+                            VALUES(@MatrixName, @RowNo, @ColNo, @CellValue)
+                            ON DUPLICATE KEY UPDATE 
+                                MatrixName = VALUES(MatrixName), 
+                                RowNo = VALUES(RowNo), 
+                                ColNo = VALUES(ColNo), 
+                                CellValue = VALUES(CellValue); 
+                        ";
 
                         
                         // Console.WriteLine(query);
@@ -85,7 +85,7 @@ namespace Backend_Excel.Controllers
         public async Task<ActionResult> getPageDataAsync(cellModel cellData)
         {   
             await _connection.OpenAsync();
-            await GetChunk();
+            // await GetChunk();
             try
             {
                 
