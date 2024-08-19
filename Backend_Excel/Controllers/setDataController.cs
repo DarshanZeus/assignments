@@ -27,6 +27,10 @@ namespace Backend_Excel.Controllers
         {
             try
             {
+                // Console.WriteLine(cellData.MatrixName);
+                // Console.WriteLine(cellData.RowNo);
+                // Console.WriteLine(cellData.ColNo);
+                // Console.WriteLine(cellData.CellValue);
                 await _connection.OpenAsync();
 
                 // using var command = _connection.CreateCommand();

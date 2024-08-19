@@ -15,4 +15,9 @@ namespace Backend_Excel.Models
 
         public string CellValue { get; set; } = string.Empty;
     }
+
+    public class pathToFile
+    {
+        public string path { get; set; } = string.Empty;
+    }
 }

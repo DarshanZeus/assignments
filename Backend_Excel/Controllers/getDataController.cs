@@ -34,7 +34,7 @@ namespace Backend_Excel.Controllers
                 await _connection.OpenAsync();
 
                 using var command = _connection.CreateCommand();
-                string query = $@"SELECT * FROM excel_clone.excel_data LIMIT {rowNo-1},{rowNo + 400};";
+                string query = $"SELECT * FROM excel_clone.excel_data WHERE MatrixName = {matrixName} AND ({rowNo} <= RowNo AND RowNo < {rowNo + 50}) AND ({colNo} <= ColNo AND ColNo < {colNo + 50}) ";
 
                 command.CommandText = query;
                 using var reader = await command.ExecuteReaderAsync();

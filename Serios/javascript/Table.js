@@ -100,6 +100,7 @@ export default class Table {
     constructor(mainCanvasName) {
         this.sheetID = mainCanvasName;
         console.log("Window Device Pixel Ratio", window.devicePixelRatio);
+        console.log("Sheet ID", this.sheetID);
 
 
         this.canvasDiv = document.getElementById(`canvasDiv`);
@@ -794,11 +795,36 @@ export default class Table {
 
     
 
-    setCellValue(row, col, value) {
-        if (!this.data.has(row)) {
-            this.data.set(row, new Map());
+    async setCellValue(row, col, value) {
+        var cellData = {
+            "MatrixName" : this.sheetID,
+            "RowNo" : row + 1,
+            "ColNo" : col + 1,
+            "CellValue": value
         }
-        this.data.get(row).set(col, value);
+        
+        // console.log(cellData);
+        await axios.post(`http://localhost:5163/api/setCellData`, cellData)
+        .then((response) => {
+            // console.log(response);
+            if (!this.data.has(row)) {
+                this.data.set(row, new Map());
+            }
+            this.data.get(row).set(col, value);
+        })
+        .catch(
+            (error) => {
+                console.error("Error:", error);
+            }
+        );
+
+        // this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        // // this.drawGrid();
+        // // this.drawTableData();
+        this.selection = 1;
+        this.drawSelection();
+        this.selection = 0;
+       
     }
 
     getIdNum(stringID){
@@ -813,14 +839,36 @@ export default class Table {
         return null;
     }
 
-    deleteCell(row, col) {
-        if (this.data.has(row)) {
-            const rowMap = this.data.get(row);
-            rowMap.delete(col);
-            if (rowMap.size === 0) {
-                this.data.delete(row); 
-            }
+    async deleteCell(row, col) {
+        var cellData = {
+            "MatrixName" : this.sheetID,
+            "RowNo" : row + 1,
+            "ColNo" : col + 1
         }
+        await axios.delete(`http://localhost:5163/api/deleteCellData`,{
+            data:cellData
+        })
+        .then((response) => {
+            // console.log(response);
+            if (this.data.has(row)) {
+                const rowMap = this.data.get(row);
+                rowMap.delete(col);
+                if (rowMap.size === 0) {
+                    this.data.delete(row); 
+                }
+            }
+        })
+        .catch(
+            (error) => {
+                console.error("Error:", error);
+            }
+        );
+        this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        // this.drawGrid();
+        // this.drawTableData();
+        this.selection = 1;
+        this.drawSelection();
+        this.selection = 0;
     }
 
 
@@ -1225,7 +1273,7 @@ export default class Table {
             this.endCellsX = this.startCellsX;
             
         }
-        else if(e.key === "Shift") e.preventDefault();
+        // else if(e.key === "Shift") e.preventDefault();
 
         this.selection = 1;
         this.drawSelection();
@@ -1263,7 +1311,10 @@ export default class Table {
                 }
             }
         }
-        else if(e.shiftKey){
+        else if(e.shiftKey && this.ipBox.display !== 'none'){
+            // if(){
+            //     this.ipBox.focus();
+            // }
             if(e.key === "ArrowUp"){
                 // console.log("U");
                 if(this.endCellsY !== -1) this.endCellsY = Math.max(this.minCountRow, this.endCellsY - 1);
@@ -1353,7 +1404,8 @@ export default class Table {
     }
 
     handlePaste(){
-
+        
+        this.canvasMainDiv.style.cursor = "progress";
         if(this.isCutFlag === 1){
             let lx= Math.min(this.copyCutStartX,this.copyCutEndX);
             let ly= Math.min(this.copyCutStartY,this.copyCutEndY);
@@ -1398,6 +1450,7 @@ export default class Table {
         this.selection = 1;
         this.drawSelection();
         this.selection = 0;
+        this.canvasMainDiv.style.cursor = "cell";
     }
 
     handleCopy(){
@@ -1960,11 +2013,16 @@ export default class Table {
         this.startY=startY;
         // console.log(this.sheetID);
         // await axios.get("http://localhost:5003/userDetail")
-        await axios.get(`http://localhost:5163/api/getPageData?matrixName=1&rowNo=1&colNo=1`)
+        await axios.get(`http://localhost:5163/api/getPageData?matrixName=${this.sheetID}&rowNo=1&colNo=1`)
         .then((response) => {
             
             for(let j = 0; j < response.data.length; ++j){
-                this.setCellValue(response.data[j].rowNo - 1, response.data[j].colNo - 1, response.data[j].cellValue);
+                if (!this.data.has(response.data[j].rowNo - 1)) {
+                    this.data.set(response.data[j].rowNo - 1, new Map());
+                }
+                this.data.get(response.data[j].rowNo - 1).set(response.data[j].colNo - 1, response.data[j].cellValue);
+
+                // this.setCellValue(response.data[j].rowNo - 1, response.data[j].colNo - 1, response.data[j].cellValue);
                 // for( let i = 0; i< response.data[0].length ; ++i){
                 //     // this.data[j][i] = response.data[j][i];
                 //     this.setCellValue(j, i, response.data[j][i]);
@@ -2394,6 +2452,11 @@ export default class Table {
         // this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.drawGrid();
         this.ctxCanvas.fillStyle = "#000";
+        this.ctxCanvas.font = `${15}px Calibri`;
+        this.ctxCanvas.textAlign = "center";
+        this.ctxCanvas.textBaseline = "Top";
+        this.ctxCanvas.lineWidth = 1;
+
         this.startX=startX;
         this.startY=startY;
         // this.data=tableData;
@@ -2499,10 +2562,7 @@ export default class Table {
         this.ctxCanvasLeft = this.canvasLeft.getContext("2d");
         // this.ctxCanvasTop.stroke();
 
-        this.ctxCanvas.font = "15px Calibri";
-        this.ctxCanvas.textAlign = "center";
-        this.ctxCanvas.textBaseline = "Top";
-        this.ctxCanvas.lineWidth = 1;
+        
 
         this.ctxCanvasTop.font = "16px Calibri";
         this.ctxCanvasTop.textAlign = "center";

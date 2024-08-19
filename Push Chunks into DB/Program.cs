@@ -41,16 +41,18 @@ internal class Program
             await dbConnection.OpenAsync();
             
             // var msg = "(690,690,690,\"kull\")";
-            string query = $"INSERT INTO `excel_clone`.`excel_data` (`MatrixName`, `RowNo`, `ColNo`, `CellValue`) VALUES {message};";
+            // string query = $"INSERT INTO `excel_clone`.`excel_data` (`MatrixName`, `RowNo`, `ColNo`, `CellValue`) VALUES {message};";
+            string query = $"INSERT INTO excel_clone.excel_data (MatrixName, RowNo, ColNo, CellValue) VALUES {message} ON DUPLICATE KEY UPDATE MatrixName = VALUES(MatrixName), RowNo = VALUES(RowNo), ColNo = VALUES(ColNo), CellValue = VALUES(CellValue);";
             MySqlCommand command = new MySqlCommand(query, dbConnection);
             // command.Parameters.AddWithValue("@data", msg);
             
-            Console.WriteLine($"{query}");
+            // Console.WriteLine($"{query}");
 
             var rowsAffected = command.ExecuteNonQuery();
-            Console.WriteLine($" [x] Drashan {rowsAffected}");
             cnt++;
-            Console.WriteLine(cnt);
+            Console.WriteLine($" [x] Row Inserted {rowsAffected} : Inserted [x] Chunk Count {cnt}");
+            // Console.WriteLine($" ");
+            await dbConnection.CloseAsync();
         };
         channel.BasicConsume(queue: "Insert To DB",
                              autoAck: true,
@@ -60,6 +62,6 @@ internal class Program
         var x = Console.ReadLine();
         Console.WriteLine(x);
         
-        // while (true);
+        while (true);
     }
 }
