@@ -192,6 +192,7 @@ export default class Table {
         this.createAreaChart = this.createAreaChart.bind(this);
 
         this.setCellValue = this.setCellValue.bind(this);
+        this.setOnlyCellValue = this.setOnlyCellValue.bind(this);
         this.getCellValue = this.getCellValue.bind(this);
         this.deleteCell = this.deleteCell.bind(this);
 
@@ -793,15 +794,20 @@ export default class Table {
 
 
 
-    
+    setOnlyCellValue(row, col, value) {
+        if (!this.data.has(row)) {
+            this.data.set(row, new Map());
+        }
+        this.data.get(row).set(col, value);
+    }
 
     async setCellValue(row, col, value) {
-        var cellData = {
+        var cellData = [{
             "MatrixName" : this.sheetID,
             "RowNo" : row + 1,
             "ColNo" : col + 1,
             "CellValue": value
-        }
+        }];
         
         // console.log(cellData);
         await axios.post(`http://localhost:5163/api/setCellData`, cellData)
@@ -839,12 +845,22 @@ export default class Table {
         return null;
     }
 
+    deleteOnlyCell(row, col) {
+        if (this.data.has(row)) {
+            const rowMap = this.data.get(row);
+            rowMap.delete(col);
+            if (rowMap.size === 0) {
+                this.data.delete(row); 
+            }
+        }
+    }
+
     async deleteCell(row, col) {
-        var cellData = {
+        var cellData =[ {
             "MatrixName" : this.sheetID,
             "RowNo" : row + 1,
             "ColNo" : col + 1
-        }
+        }];
         await axios.delete(`http://localhost:5163/api/deleteCellData`,{
             data:cellData
         })
@@ -1280,7 +1296,7 @@ export default class Table {
         this.selection = 0;
     }
 
-    mainCanvasKeyDown(e){
+    async mainCanvasKeyDown(e){
         // e.preventDefault();
         // if(this.ipBox.style.display != "none"){
         //     console.log(ipBox.value);
@@ -1304,11 +1320,28 @@ export default class Table {
                 let ly= Math.min(this.startCellsY,this.endCellsY);
                 let hx= Math.max(this.startCellsX,this.endCellsX);
                 let hy= Math.max(this.startCellsY,this.endCellsY);
+                var listA = [];
                 for(let i = lx; i <= hx; ++i){
                     for(let j = ly; j <= hy; ++j){
-                        this.deleteCell(j ,i);
+                        this.deleteOnlyCell(j ,i);
+                        var cellData = {
+                            "MatrixName" : this.sheetID,
+                            "RowNo" : j + 1,
+                            "ColNo" : i + 1,
+                        }
+                        listA.push(cellData);
                     }
                 }
+                await axios.delete(`http://localhost:5163/api/deleteCellData`,{
+                    data:listA
+                })
+                .then((response) => {
+                })
+                .catch(
+                    (error) => {
+                        console.error("Error:", error);
+                    }
+                );
             }
         }
         else if(e.shiftKey && this.ipBox.display !== 'none'){
@@ -1403,7 +1436,7 @@ export default class Table {
         
     }
 
-    handlePaste(){
+    async handlePaste(){
         
         this.canvasMainDiv.style.cursor = "progress";
         if(this.isCutFlag === 1){
@@ -1411,11 +1444,30 @@ export default class Table {
             let ly= Math.min(this.copyCutStartY,this.copyCutEndY);
             let hx= Math.max(this.copyCutStartX,this.copyCutEndX);
             let hy= Math.max(this.copyCutStartY,this.copyCutEndY);
+            var listA = [];
             for(let i = lx; i <= hx; ++i){
                 for(let j = ly; j <= hy; ++j){
-                    this.deleteCell(j ,i);
+                    this.deleteOnlyCell(j ,i);
+                    var cellData = {
+                        "MatrixName" : this.sheetID,
+                        "RowNo" : j + 1,
+                        "ColNo" : i + 1,
+                    }
+                    listA.push(cellData);
                 }
             }
+
+            await axios.delete(`http://localhost:5163/api/deleteCellData`,{
+                data:listA
+            })
+            .then((response) => {
+            })
+            .catch(
+                (error) => {
+                    console.error("Error:", error);
+                }
+            );
+
             this.isCutFlag = 0;
             this.isCellsCopyCut = 0;
             this.copyCutAnimationDiv = document.getElementById("copyCutAnimationDiv");
@@ -1438,13 +1490,29 @@ export default class Table {
         this.endCellsX = lx;
         if(this.copyCutData[0]) this.endCellsX = lx + this.copyCutData[0].length - 1;
 
-
+        var listA = [];
         for(let j = 0; j < this.copyCutData.length ; ++j){
             for(let i = 0; i < this.copyCutData[0].length ; ++i){
                 // this.data[j + ly][i + lx] = this.copyCutData[j][i];
-                this.setCellValue(j + ly, i + lx, this.copyCutData[j][i])
+                this.setOnlyCellValue(j + ly, i + lx, this.copyCutData[j][i])
+                var cellData = {
+                    "MatrixName" : this.sheetID,
+                    "RowNo" : j + ly + 1,
+                    "ColNo" : i + lx + 1,
+                    "CellValue": this.copyCutData[j][i]
+                }
+                listA.push(cellData);
             }
         }
+
+        await axios.post(`http://localhost:5163/api/setCellData`, listA)
+        .then((response) => {
+        })
+        .catch(
+            (error) => {
+                console.error("Error:", error);
+            }
+        );
 
         this.drawGrid();
         this.selection = 1;

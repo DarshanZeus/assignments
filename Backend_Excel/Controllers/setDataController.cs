@@ -23,7 +23,7 @@ namespace Backend_Excel.Controllers
         }
 
         [HttpPost("setCellData")]
-        public async Task<ActionResult> getPageDataAsync(cellModel cellData)
+        public async Task<ActionResult> setCellDataAsync(List<cellModel> cellData)
         {
             try
             {
@@ -33,23 +33,30 @@ namespace Backend_Excel.Controllers
                 // Console.WriteLine(cellData.CellValue);
                 await _connection.OpenAsync();
 
-                // using var command = _connection.CreateCommand();
-                string query = @"
-                    INSERT INTO excel_clone.excel_data (MatrixName, RowNo, ColNo, CellValue)
-                    VALUES(@MatrixName, @RowNo, @ColNo, @CellValue)
-                    ON DUPLICATE KEY UPDATE 
-                        MatrixName = VALUES(MatrixName), 
-                        RowNo = VALUES(RowNo), 
-                        ColNo = VALUES(ColNo), 
-                        CellValue = VALUES(CellValue); 
-                ";
+                var listA = new List<string>();
+                // for(int i = 0; i < listA.Count; ++i){
+                //         listA.Add($"({cellData[i].MatrixName},{cellData[i].RowNo},{cellData[i].ColNo},'{cellData[i].CellValue}')");
+                // }
 
+                foreach(var cell in cellData){
+                        listA.Add($"({cell.MatrixName},{cell.RowNo},{cell.ColNo},'{cell.CellValue}')");
+                        // Console.WriteLine(cell.MatrixName);
+                        // Console.WriteLine(cell.RowNo);
+                        // Console.WriteLine(cell.ColNo);
+                        // Console.WriteLine(cell.CellValue);
+                }
+
+                var combinedString = string.Join(",", listA);
+
+                // using var command = _connection.CreateCommand();
+                string query = $"INSERT INTO excel_clone.excel_data (MatrixName, RowNo, ColNo, CellValue) VALUES {combinedString} ON DUPLICATE KEY UPDATE MatrixName = VALUES(MatrixName), RowNo = VALUES(RowNo), ColNo = VALUES(ColNo), CellValue = VALUES(CellValue); ";
+                // Console.WriteLine(query);
                 MySqlCommand command = new MySqlCommand(query, _connection);
                 
-                command.Parameters.AddWithValue("@MatrixName", cellData.MatrixName);
-                command.Parameters.AddWithValue("@RowNo", cellData.RowNo);
-                command.Parameters.AddWithValue("@ColNo", cellData.ColNo);
-                command.Parameters.AddWithValue("@CellValue", cellData.CellValue);
+                // command.Parameters.AddWithValue("@MatrixName", cellData[0].MatrixName);
+                // command.Parameters.AddWithValue("@RowNo", cellData[0].RowNo);
+                // command.Parameters.AddWithValue("@ColNo", cellData[0].ColNo);
+                // command.Parameters.AddWithValue("@CellValue", cellData[0].CellValue);
                 
                 var rowsAffected = command.ExecuteNonQuery();
                 

@@ -82,7 +82,7 @@ namespace Backend_Excel.Controllers
         // }
 
         [HttpDelete("deleteCellData")]
-        public async Task<ActionResult> getPageDataAsync(cellModel cellData)
+        public async Task<ActionResult> deleteDataAsync(List<cellModel> cellData)
         {   
             await _connection.OpenAsync();
             // Console.WriteLine(cellData.MatrixName);
@@ -91,23 +91,22 @@ namespace Backend_Excel.Controllers
             // // await GetChunk();
             try
             {
-                
-
                 // using var command = _connection.CreateCommand();
-                string query = @"
-                    DELETE 
-                    FROM excel_clone.excel_data
-                    WHERE 
-                        (MatrixName = @MatrixName) and 
-                        (RowNo = @RowNo) and 
-                        (ColNo = @ColNo);
-                ";
+                var listA = new List<string>();
+
+                foreach(var cell in cellData){
+                        listA.Add($"({cell.MatrixName},{cell.RowNo},{cell.ColNo})");
+                }
+
+                var combinedString = string.Join(",", listA);
+
+                string query = $"DELETE FROM excel_clone.excel_data WHERE (MatrixName, RowNo, ColNo) IN ({combinedString});";
 
                 MySqlCommand command = new MySqlCommand(query, _connection);
                 
-                command.Parameters.AddWithValue("@MatrixName", cellData.MatrixName);
-                command.Parameters.AddWithValue("@RowNo", cellData.RowNo);
-                command.Parameters.AddWithValue("@ColNo", cellData.ColNo);
+                // command.Parameters.AddWithValue("@MatrixName", cellData.MatrixName);
+                // command.Parameters.AddWithValue("@RowNo", cellData.RowNo);
+                // command.Parameters.AddWithValue("@ColNo", cellData.ColNo);
                 
                 var rowsAffected = command.ExecuteNonQuery();
                 
