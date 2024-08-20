@@ -20,4 +20,20 @@ namespace Backend_Excel.Models
     {
         public string path { get; set; } = string.Empty;
     }
+
+    public class findAndReplace
+    {
+        public string findStr { get; set; } = string.Empty;
+
+        public string replaceStr { get; set; } = string.Empty;
+    }
+
+    public class foundData
+    {
+        public string Sheet { get; set; } = string.Empty;
+
+        public string Cell { get; set; } = string.Empty;
+        
+        public string Value { get; set; } = string.Empty;
+    }
 }
