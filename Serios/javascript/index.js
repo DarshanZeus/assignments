@@ -107,7 +107,7 @@ function openTab(tabName) {
 }
 
 // Set initial active tab
-document.getElementById("find").style.display = "block";
+// document.getElementById("find").style.display = "block";
 
 function addResult(sheet, cell, value) {
     var resultTable = document.querySelector(".result-table");
@@ -124,4 +124,5 @@ function addResult(sheet, cell, value) {
 }
 
 // Example usage
-addResult('in', 'B41', 'Alex TdA3y');
+// addResult('in', 'B41', 'Alex TdA3y');
+// console.log("Lol");

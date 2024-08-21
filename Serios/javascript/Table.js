@@ -172,6 +172,8 @@ export default class Table {
         this.handleFindReplace = this.handleFindReplace.bind(this);
         this.handleFind = this.handleFind.bind(this);
         this.handleReplace = this.handleReplace.bind(this);
+        this.handleFindAll = this.handleFindAll.bind(this);
+        this.handleReplaceAll = this.handleReplaceAll.bind(this);
 
         this.drawSelection = this.drawSelection.bind(this);
         this.drawSelectionDiv = this.drawSelectionDiv.bind(this);
@@ -378,6 +380,38 @@ export default class Table {
         this.refresh();
     }
 
+    makeChartDraggableOverWindow(divToBeDraggable){
+        
+        let offsetX, offsetY;
+
+
+        divToBeDraggable.addEventListener('pointerdown', (e) => {
+            e.preventDefault();
+            offsetX = e.clientX - divToBeDraggable.getBoundingClientRect().left 
+            // + this.canvasMainDiv.getBoundingClientRect().left 
+            ;
+            offsetY = e.clientY  - divToBeDraggable.getBoundingClientRect().top 
+            // + this.canvasMainDiv.getBoundingClientRect().top
+            ;
+
+            document.addEventListener('pointermove', moveElement);
+            document.addEventListener('pointerup', stopMovingElement);
+        });
+
+        function moveElement(e) {
+            const x = e.clientX - offsetX;
+            const y = e.clientY - offsetY;
+
+            divToBeDraggable.style.left = `${Math.max(x,0)}px`;
+            divToBeDraggable.style.top = `${Math.max(y,0)}px`;
+        }
+
+        function stopMovingElement() {
+            document.removeEventListener('pointermove', moveElement);
+            document.removeEventListener('pointerup', stopMovingElement);
+        }
+    }
+
 
     makeChartDraggable(chartDiv){
         
@@ -385,6 +419,7 @@ export default class Table {
 
 
         chartDiv.addEventListener('pointerdown', (e) => {
+            e.preventDefault();
             this.selectedChart = chartDiv;
             offsetX = e.clientX - chartDiv.getBoundingClientRect().left + this.canvasMainDiv.getBoundingClientRect().left ;
             offsetY = e.clientY - chartDiv.getBoundingClientRect().top + this.canvasMainDiv.getBoundingClientRect().top;
@@ -654,7 +689,7 @@ export default class Table {
             }
             data[list].data = tempdata;
             data[list].pointRadius = 4;
-            data[list].pointBackgroundColor = this.getRandomColorName();
+            // data[list].pointBackgroundColor = this.getRandomColorName();
             data[list].border = 0;
         }
 
@@ -706,7 +741,7 @@ export default class Table {
             // data[list].data = tempdata;
             // data[list].pointRadius = 4;
             data[list].fill = true; 
-            data[list].backgroundColor = this.getRandomColorName(); 
+            // data[list].backgroundColor = this.getRandomColorName(); 
             // this.getRandomColorName();
             // data[list].border = 0;
         }
@@ -1649,136 +1684,266 @@ export default class Table {
             findReplaceDiv.style.position = "absolute";
             findReplaceDiv.style.display = "block";
 
-            findReplaceDiv.style.width = `${100}px`;
-            findReplaceDiv.style.height = `${100}px`;
-            findReplaceDiv.style.left = `${100}px`;
-            findReplaceDiv.style.top = `${100}px`;
-            findReplaceDiv.style.backgroundColor = "lightblue";
+            // findReplaceDiv.style.width = `${100}px`;
+            // findReplaceDiv.style.height = `${100}px`;
+            findReplaceDiv.style.left = `${600}px`;
+            findReplaceDiv.style.top = `${300}px`;
+            // findReplaceDiv.style.backgroundColor = "lightblue";
 
 
             findReplaceDiv.innerHTML = `
             <div class="find-replace-container">
-                <div class="find-replace-header">
-                    <span>Find and Replace</span>
-                    <button class="close-button">&times;</button>
-                </div>
-            <div class="find-replace-body">
-                <div class="tabs">
-                    <button class="tab-button active" onclick="openTab('find')">Find</button>
-                    <button class="tab-button" onclick="openTab('replace')">Replace</button>
-                </div>
-                
-                <div class="tab-content" id="find">
-                <div class="root-410">
-                    <div class="">
-                    <label for="findTextId" 
-                            id="TextFieldLabel5866" 
-                            class="ms-Label textContainer root-407">
-                        Find
-                    </label>
-                    <div class="findInputDiv">
-                        <input type="text" 
-                            id="findTextId" 
-                            placeholder="Insert Text" 
-                            spellcheck="false" 
-                            autocomplete="off" 
-                            data-unique-id="findTextId-input" 
-                            maxlength="255" 
-                            aria-labelledby="TextFieldLabel5866" 
-                            class="findInput" 
-                            aria-label="Find" 
-                            aria-invalid="false" 
-                            value>
-                        </div>
-                    </div>
-                    </div>
-                <label class="wildcardtext">
-                    Wildcards can expand search. For example, "sm?th" finds "smith". 
-                    <a target="_blank" 
-                    href="https://go.microsoft.com/fwlink/?linkid=2190801" 
-                    aria-label="Wildcards can expand search. For example, &quot;sm?th&quot; finds &quot;smith&quot;.Learn more about using wildcards to search" 
-                    class="link">
-                    Learn More
-                    </a>
-                </label>
-                
-                <div style="transform: rotate(0deg); padding-top: 4px; font-weight: 600; display: flex; flex-direction: row; margin-right: 4px;">
-                    <button type="button" role="iconButton" aria-expanded="false" class="ms-Button ms-Button--icon root-423" aria-label="Search options" data-is-focusable="true">
-                    <span class="ms-Button-flexContainer flexContainer-108" data-automationid="splitbuttonprimary">
-                        <i data-icon-name="CommonControlChevronRight_12" aria-hidden="true" class="ms-Icon root-89 ms-Button-icon icon-424">
-                        <svg height="100%" width="100%" viewBox="0,0,2048,2048" focusable="false">
-                            <path type="path" class="OfficeIconColors_HighContrast" d="M 743 1767 l -121 -121 l 708 -707 l -708 -708 l 121 -121 l 828 829 z">
-                            </path>
-                            <path type="path" class="OfficeIconColors_m22" d="M 743 1767 l -121 -121 l 708 -707 l -708 -708 l 121 -121 l 828 829 z"></path>
-                            
-                            </svg>
-                        </i>
-                        </span>
-                    </button>
-                    <label class="ms-Label root-425">Search options</label></div>
-            
-                <div class="ms-Dialog-actions actions-426">
-                <div class="ms-Dialog-actionsRight actionsRight-428">
-                    <span class="ms-Dialog-action action-427">
-                    <div class="css-319">
-                        <button type="button" 
-                                data-automation-type="AppButton" 
-                                data-unique-id="DialogActionButton" 
-                                id="DialogActionButton" 
-                                class="ms-Button footerButton primaryDialogButton root-382" 
-                                aria-label="Find next" 
-                                data-is-focusable="true">
-                        <span class="ms-Button-flexContainer flexContainer-108" 
-                                data-automationid="splitbuttonprimary">
-                            <span class="ms-Button-textContainer textContainer-109">
-                            <span class="ms-Button-label textContainer label-431" 
-                                id="id__6246">
-                            Find next
-                            </span>
-                            </span>
-                            
-                        </span>
-                            
-                        </button>
-                        <button type="button" 
-                                data-automation-type="AppButton" 
-                                data-unique-id="DialogSecondaryActionButton" 
-                                id="DialogSecondaryActionButton" 
-                                class="ms-Button footerButton root-386" 
-                                aria-label="Find all" 
-                                data-is-focusable="true">
-                        <span class="ms-Button-flexContainer flexContainer-108" 
-                                data-automationid="splitbuttonprimary">
-                            <span class="ms-Button-textContainer textContainer-109">
-                            <span class="ms-Button-label textContainer label-431" 
-                                    id="id__6249">
-                                Find all
-                            </span>
-                            </span>
-                        </span>
-                        </button>
-                    </div>
+    <div class="find-replace-header">
+      <span>Find and Replace</span>
+      <button class="close-button">&times;</button>
+    </div>
+    <div class="find-replace-body">
+      <div class="tabs">
+        <button class="tab-button" onclick="openTab('find')">Find</button>
+        <button class="tab-button active" onclick="openTab('replace')">Replace</button>
+      </div>
+
+      <!--  Find && TextBox Part -->
+      <div class="tab-content" id="find">
+        <div class="root-410">
+          <div class="">
+            <label for="findTextId" id="TextFieldLabel5866" class="ms-Label textContainer root-407">
+              Find
+            </label>
+            <div class="findInputDiv">
+              <input type="text" id="findTextId" placeholder="Insert Text" spellcheck="false" autocomplete="off"
+                data-unique-id="findTextId-input" maxlength="255" aria-labelledby="TextFieldLabel5866" class="findInput"
+                aria-label="Find" aria-invalid="false" value>
+            </div>
+          </div>
+        </div>
+        <label class="wildcardtext">
+          Wildcards can expand search. For example, "sm?th" finds "smith".
+          <a target="_blank" href="https://go.microsoft.com/fwlink/?linkid=2190801"
+            aria-label="Wildcards can expand search. For example, &quot;sm?th&quot; finds &quot;smith&quot;.Learn more about using wildcards to search"
+            class="link">
+            Learn More
+          </a>
+        </label>
+
+        <!--  Replace && TextBox Part -->
+        <!-- <div class=""> -->
+        <div class="root-410">
+          <div>
+            <label for="replaceTextId" id="TextFieldLabel5866" class="ms-Label textContainer root-407">
+              Replace with
+            </label>
+            <div class="findInputDiv">
+              <input type="text" id="replaceTextId" placeholder="Insert Text" spellcheck="false" autocomplete="off"
+                data-unique-id="replaceTextId-input" maxlength="255" aria-labelledby="TextFieldLabel5866" class="findInput"
+                aria-label="Find" aria-invalid="false" value>
+            </div>
+          </div>
+        </div>
+
+
+
+        <!--    Search Options Part   -->
+        <div
+          style="transform: rotate(0deg); padding-top: 4px; font-weight: 600; display: flex; flex-direction: row; margin-right: 4px; margin-top: 14px; margin-bottom: 24px;">
+          <button type="button" role="iconButton" aria-expanded="false" class="ms-Button ms-Button--icon root-423"
+            aria-label="Search options" data-is-focusable="true">
+            <span class="ms-Button-flexContainer flexContainer-108" data-automationid="splitbuttonprimary">
+              <i data-icon-name="CommonControlChevronRight_12" aria-hidden="true"
+                class="ms-Icon root-89 ms-Button-icon icon-424">
+                <svg height="100%" width="100%" viewBox="0,0,2048,2048" focusable="false">
+                  <path type="path" class="OfficeIconColors_HighContrast"
+                    d="M 743 1767 l -121 -121 l 708 -707 l -708 -708 l 121 -121 l 828 829 z">
+                  </path>
+                  <path type="path" class="OfficeIconColors_m22"
+                    d="M 743 1767 l -121 -121 l 708 -707 l -708 -708 l 121 -121 l 828 829 z"></path>
+
+                </svg>
+              </i>
+            </span>
+          </button>
+          <label class="ms-Label root-425">Search options</label>
+        </div>
+        <!-- Bottom buttons Part  -->
+        <div class="ms-Dialog-actions actions-426">
+          <div class="ms-Dialog-actionsRight actionsRight-428">
+            <span class="ms-Dialog-action action-427">
+              <div class="css-319">
+                <button type="button" data-automation-type="AppButton" data-unique-id="findBtn" id="findBtn"
+                  class="ms-Button footerButton primaryDialogButton root-382" aria-label="Find next"
+                  data-is-focusable="true">
+                  <span class="ms-Button-flexContainer flexContainer-108" data-automationid="splitbuttonprimary">
+                    <span class="ms-Button-textContainer textContainer-109">
+                      <span class="ms-Button-label textContainer label-431" id="id__6246">
+                        Find next
+                      </span>
                     </span>
-                </div>
-                </div>
-                </div>
-            
-            </div>
-            </div>
 
-            `
+                  </span>
 
+                </button>
+                <button type="button" data-automation-type="AppButton" data-unique-id="findAllBtn" id="findAllBtn"
+                  class="ms-Button footerButton root-386" aria-label="Find all" data-is-focusable="true">
+                  <span class="ms-Button-flexContainer flexContainer-108" data-automationid="splitbuttonprimary">
+                    <span class="ms-Button-textContainer textContainer-109">
+                      <span class="ms-Button-label textContainer label-431" id="id__6249">
+                        Find all
+                      </span>
+                    </span>
+                  </span>
+                </button>
 
+                <button type="button" data-automation-type="AppButton" data-unique-id="replaceBtn" id="replaceBtn"
+                  class="ms-Button footerButton root-386" aria-label="Replace" data-is-focusable="true">
+                  <span class="ms-Button-flexContainer flexContainer-108" data-automationid="splitbuttonprimary">
+                    <span class="ms-Button-textContainer textContainer-109">
+                      <span class="ms-Button-label textContainer label-431" id="id__6249">
+                        Replace
+                      </span>
+                    </span>
+                  </span>
+                </button>
+
+                <button type="button" data-automation-type="AppButton" data-unique-id="replaceAllBtn" id="replaceAllBtn"
+                  class="ms-Button footerButton root-386" aria-label="Replace All" data-is-focusable="true">
+                  <span class="ms-Button-flexContainer flexContainer-108" data-automationid="splitbuttonprimary">
+                    <span class="ms-Button-textContainer textContainer-109">
+                      <span class="ms-Button-label textContainer label-431" id="id__6249">
+                        Replace all
+                      </span>
+                    </span>
+                  </span>
+                </button>
+              </div>
+            </span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+            `;
+
+            // findReplaceDiv.draggable();
+            this.makeChartDraggableOverWindow(findReplaceDiv,true);
             document.body.appendChild(findReplaceDiv);
+
+            var closeFindReplaceCross = document.getElementsByClassName("close-button");
+            closeFindReplaceCross[0].addEventListener("click", (e) => {
+                findReplaceDiv.remove();
+            });
+
+            var findTextipBox = document.getElementById("findTextId");
+            findTextipBox.addEventListener("click", (e) => {
+                findTextipBox.focus();
+            });
+
+            var replaceTextipBox = document.getElementById("replaceTextId");
+            replaceTextipBox.addEventListener("click", (e) => {
+                replaceTextipBox.focus();
+            });
+
+            var findAllBtn = document.getElementById("findAllBtn");
+            findAllBtn.addEventListener("click", (e) => {
+                this.handleFindAll(findTextipBox.value);
+            });
+
+            var replaceAllBtn = document.getElementById("replaceAllBtn");
+            replaceAllBtn.addEventListener("click", (e) => {
+                this.handleReplaceAll(findTextipBox.value, replaceTextipBox.value);
+            });
+
+            var findBtn = document.getElementById("findBtn");
+            findBtn.addEventListener("click", (e) => {
+                this.handleFind(findTextipBox.value);
+            });
+
+            var replaceBtn = document.getElementById("replaceBtn");
+            replaceBtn.addEventListener("click", (e) => {
+                this.handleReplace(findTextipBox.value, replaceTextipBox.value);
+            });
+
         }
     }
 
-    handleFind(){
-        
+    async handleFind(findText){
+        console.log("findBtn", findText);
     }
 
-    handleReplace(){
+    async handleReplace(findText, replaceText){
+        console.log("replaceBtn",findText, replaceText);
+    }
+
+    async handleFindAll(findText){
+        console.log("findAllBtn", findText);
         
+        var findReplaceDiv = document.getElementById("findReplaceDiv");
+        findReplaceDiv.style.cursor = "progress";
+        this.canvasDivDiv.style.cursor = "progress";
+
+        if(findText === ""){
+            alert("Enter Text in Find Field");
+            return;
+        }
+
+        var findData = {
+            findStr: `${findText}`
+        };
+
+        await axios.post(`http://localhost:5163/api/findAll`, findData)
+        .then((response) => {
+            alert(`Results found (first ${response.data.length })`)
+        })
+        .catch(
+            (error) => {
+                console.error("Error:", error);
+            }
+        );
+
+        findReplaceDiv.style.cursor = "auto";
+        this.canvasDivDiv.style.cursor = "auto";
+        await this.loadData();
+        this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.selection = 1;
+        this.drawSelection();
+        this.selection = 0;
+    }
+
+    async handleReplaceAll(findText, replaceText){
+        console.log("replaceAllBtn",findText, replaceText);
+
+        if(findText === ""){
+            alert("Enter Text in Find Field");
+            return;
+        }
+
+        var findReplaceDiv = document.getElementById("findReplaceDiv");
+        findReplaceDiv.style.cursor = "progress";
+        this.canvasDivDiv.style.cursor = "progress";
+
+        var findReplaceData = {
+            findStr: `${findText}`,
+            replaceStr: `${replaceText}`
+        };
+
+        await axios.post(`http://localhost:5163/api/replaceAll`, findReplaceData)
+        .then((response) => {
+            // console.log(response);
+            if(response.data == 0) alert("We can't find any matches to replace");
+            else alert(`Matches replaced (${response.data})`)
+        })
+        .catch(
+            (error) => {
+                console.error("Error:", error);
+            }
+        );
+        this.canvasDivDiv.style.cursor = "auto";
+        findReplaceDiv.style.cursor = "auto";
+        await this.loadData();
+        this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.selection = 1;
+        this.drawSelection();
+        this.selection = 0;
     }
       
       

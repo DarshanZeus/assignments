@@ -33,7 +33,7 @@ namespace Backend_Excel.Controllers
 
 
 
-        [HttpPost("find")]
+        [HttpPost("findAll")]
         public async Task<ActionResult> findCellDataAsync(findAndReplace FindData)
         {
             try
@@ -85,6 +85,40 @@ namespace Backend_Excel.Controllers
                 if (_connection.State == System.Data.ConnectionState.Open)
                 {
                     await _connection.CloseAsync();
+                }
+            }
+        }
+
+        [HttpPost("replaceAll")]
+        public async Task<ActionResult> replaceCellDataAsync(findAndReplace FindData)
+        {
+            try
+            {
+                await _connection.OpenAsync();
+
+                FindData.findStr = FindData.findStr.Replace('?', '.');
+
+                string query = $"UPDATE excel_clone.excel_data SET `CellValue` = REGEXP_REPLACE(`CellValue`, '(?i){FindData.findStr}', '{FindData.replaceStr}') ";
+                
+                MySqlCommand command = new MySqlCommand(query, _connection);
+                
+                var rowsAffected = command.ExecuteNonQuery();
+                
+                return Ok(rowsAffected);
+                
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+            finally
+            {
+                if (_connection.State == System.Data.ConnectionState.Open)
+                {
+                    await _connection.CloseAsync();
+                }
+                else{
+                    Console.WriteLine("Connection is Already Closed");
                 }
             }
         }
