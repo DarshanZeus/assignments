@@ -142,6 +142,8 @@ export default class Table {
 
 
         this.hide = this.hide.bind(this);
+        this.isFindActive = false;
+        this.findStrData = "";
 
         
         this.isIntersectRegionLeft = this.isIntersectRegionLeft.bind(this);
@@ -1831,6 +1833,11 @@ export default class Table {
             var closeFindReplaceCross = document.getElementsByClassName("close-button");
             closeFindReplaceCross[0].addEventListener("click", (e) => {
                 findReplaceDiv.remove();
+                this.isFindActive = false;
+                this.findStrData = "";
+                this.selection = 1;
+                this.drawSelection();
+                this.selection = 0;
             });
 
             var findTextipBox = document.getElementById("findTextId");
@@ -1867,7 +1874,13 @@ export default class Table {
     }
 
     async handleFind(findText){
+        this.isFindActive = true;
+        this.findStrData = findText;
         console.log("findBtn", findText);
+
+        this.selection = 1;
+        this.drawSelection();
+        this.selection = 0;
     }
 
     async handleReplace(findText, replaceText){
@@ -1885,6 +1898,8 @@ export default class Table {
             alert("Enter Text in Find Field");
             return;
         }
+        this.isFindActive = true;
+        this.findStrData = findText;
 
         var findData = {
             findStr: `${findText}`
@@ -2284,8 +2299,8 @@ export default class Table {
             this.handleMarchingAnts();
         }
         else{
-            this.drawGrid();
             this.drawTableData();
+            this.drawGrid();
         }
 
         // console.log(deltaTime);
@@ -2868,7 +2883,30 @@ export default class Table {
                 
                 // console.log(this.ctxCanvas.measureText(cellData).width / 12);
                 // ((((this.columnWidth / 2) + (this.topSizeMap[j+1]/2  || 0))/4)-3);
+                // console.log(this.isFindActive);
+                
                 if(cellData){
+                    if(this.isFindActive === true && cellData.toUpperCase().includes(this.findStrData.toUpperCase())){
+                        this.ctxCanvas.fillStyle = "#caead8";
+                        this.ctxCanvas.fillRect(
+                            x, 
+                            y - (this.rowHeight / 2) + (this.leftSizeMap[i+1]/2  || 0), 
+                            ((this.columnWidth) + (this.topSizeMap[j+1]  || 0)),
+                            (this.rowHeight) + (this.leftSizeMap[i+1]  || 0)
+                        );
+
+                        this.ctxCanvas.lineWidth = 1;
+                        this.ctxCanvas.strokeStyle = "rgb(16,124,65,100)";
+                        this.ctxCanvas.strokeRect(
+                            x, 
+                            y - (this.rowHeight / 2) + (this.leftSizeMap[i+1]/2  || 0), 
+                            ((this.columnWidth) + (this.topSizeMap[j+1]  || 0)),
+                            (this.rowHeight) + (this.leftSizeMap[i+1]  || 0)
+                        );
+    
+                        this.ctxCanvas.fillStyle = "#000";
+                    }
+
                     let textLength = ((((this.columnWidth / 2) + (this.topSizeMap[j+1]/2  || 0))/4));
                     if(isNaN(cellData)){
                         let textLength = ((((this.columnWidth / 2) + (this.topSizeMap[j+1]/2  || 0))/4)-3);
@@ -2892,6 +2930,8 @@ export default class Table {
                             y + 6
                         );
                     }
+
+                    
                 }
                 
                 x += (this.columnWidth / 2) + (this.topSizeMap[j+1]/2  || 0);
@@ -2969,6 +3009,9 @@ export default class Table {
         this.drawSelection();
         this.selection = 0;
 
+        this.isFindActive = false;
+        this.findStrData = "";
+
 
 
         // this.scrollXaxis();
@@ -2996,6 +3039,9 @@ export default class Table {
         this.canvas.remove();
         this.canvasTop.remove();
         this.canvasLeft.remove();
+
+        this.isFindActive = false;
+        this.findStrData = "";
     }
     
 
