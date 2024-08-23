@@ -98,6 +98,10 @@ export default class Table {
 
 
     constructor(mainCanvasName) {
+        this.topCellCache = 0;
+        this.leftCellCache = 0;
+        this.topSpaceCache = 0;
+        this.leftSpaceCache = 0;
         this.sheetID = mainCanvasName;
         console.log("Window Device Pixel Ratio", window.devicePixelRatio);
         console.log("Sheet ID", this.sheetID);
@@ -213,6 +217,11 @@ export default class Table {
 
             this.scrollXaxisValue = this.canvasDivDiv.scrollLeft;
             this.scrollYaxisValue = this.canvasDivDiv.scrollTop;
+            
+            this.topCellCache = this.getRowNumber(this.scrollYaxisValue);
+            this.leftCellCache = this.getColumnNumber(this.scrollXaxisValue);
+            this.topSpaceCache = this.getTopHeight(this.topCellCache);
+            this.leftSpaceCache = this.getLeftWidth(this.leftCellCache);
 
             // console.log(this.scrollYaxisValue);
             if(this.scrollXrefreshValue >= 4000){
@@ -1317,10 +1326,6 @@ export default class Table {
         this.isCellsCopyCut = 0;
         
         this.ipBox.style.display = "none";
-        // console.log(e.offsetX, e.offsetY);
-        // this.selection = 1;
-        // this.startCellsX = this.getColumnNumber(e.offsetX);
-        // this.startCellsY = this.getRowNumber(e.offsetY);
 
         const ipBoxCellX = this.startCellsX;
         const ipBoxCellY = this.startCellsY;
@@ -2140,29 +2145,6 @@ export default class Table {
             // console.log("Clicked on top");
         }
         else if(this.isClickedOnMainCanvas === 1){
-            // if( this.selection === 1){
-            //     // this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
-          //     let offset = this.canvas.getBoundingClientRect();
-            //     this.endCellsX = this.getColumnNumber(e.clientX - offset.x);
-            //     this.endCellsY = this.getRowNumber(e.clientY - offset.y);
-            //     // console.log(e.offsetX,e.offsetY);
-            //     // console.log('Viewport Coordinates:', e.clientX, e.clientY);
-            //     // console.log('Screen Coordinates:', e.screenX, e.screenY);
-            //     // console.log(x);
-                
-            //     this.drawSelection();
-            //     this.ctxCanvas.fillStyle = "#fff";
-                
-            //     // this.ctxCanvas.fillRect(
-            //     //     this.startAbsX,
-            //     //     this.startAbsY,
-            //     //     this.columnWidth +(this.topSizeMap[this.startCellsX + 1] || 0),
-            //     //     this.rowHeight + (this.topSizeMap[this.startCellsY ] || 0)
-            //     // );
-    
-            //   
-            //     // this.drawTableData();
-            // }
             this.selectionPointerMove(e);
         }
         else if(this.isClickedOnTopHeadingCanvas === 1){
@@ -2457,7 +2439,7 @@ export default class Table {
                 //     this.setCellValue(j, i, response.data[j][i]);
                 // }
             }
-            console.log(response.data);
+            // console.log(response.data);
             // this.drawTableData();
         })
         .catch(
@@ -2508,16 +2490,17 @@ export default class Table {
     }
 
     drawTopHeadingsGrid() {
-        let selectionLeftSpace = -(this.scrollXaxisValue);
+        let selectionLeftSpace = this.leftSpaceCache - this.scrollXaxisValue;
         let selectionWidth = 0;
         let lx= Math.min(this.startCellsX,this.endCellsX);
         let hx= Math.max(this.startCellsX,this.endCellsX);
+        let startX = this.leftCellCache;
 
-        for(let x = 0; x < lx; ++x){
+        for(let x = startX; x < lx; ++x){
             selectionLeftSpace += this.columnWidth + (this.topSizeMap[x + 1] || 0);
         }
         for(let x = lx; x <= hx ; ++x){
-            selectionWidth += this.columnWidth + (this.topSizeMap[x + 1] || 0);
+            if(startX < x + 1 && x <= startX + 39) selectionWidth += this.columnWidth + (this.topSizeMap[x + 1] || 0);
         }
 
         if(this.startCellsX !== -1 && this.startCellsY !== -1){
@@ -2531,7 +2514,7 @@ export default class Table {
             );
         }
 
-        let offset = this.canvasTop.getBoundingClientRect();
+        // let offset = this.canvasTop.getBoundingClientRect();
 
         lx = Math.min(this.startColX, this.endColX);
         hx = Math.max(this.startColX, this.endColX);
@@ -2560,8 +2543,8 @@ export default class Table {
         }
         
 
-        let cellPositionX = -(this.scrollXaxisValue);;
-        for(let x = 0; cellPositionX <= this.canvasTop.width; x++){
+        let cellPositionX = this.leftSpaceCache - this.scrollXaxisValue;;
+        for(let x = this.leftCellCache; cellPositionX <= this.canvasTop.width; x++){
             
             cellPositionX += this.columnWidth + (this.topSizeMap[x+1] || 0);
             this.ctxCanvasTop.save();
@@ -2639,17 +2622,17 @@ export default class Table {
         let ly= Math.min(this.startCellsY,this.endCellsY);
         let hy= Math.max(this.startCellsY,this.endCellsY);
 
-        let startY = this.getRowNumber(this.scrollYaxisValue);
-        let STORE_topSpace = this.getTopHeight(startY) - this.scrollYaxisValue;
-        let selectionTopSpace = STORE_topSpace;
-        // -(this.scrollYaxisValue);
+        let startY = this.topCellCache;
+        let STORE_topSpace = this.topSpaceCache - this.scrollYaxisValue;
+        let selectionTopSpace = this.topSpaceCache - this.scrollYaxisValue;
+        
         let selectionHeight = 0; 
 
         for(let y = startY ; y < ly; ++y){
             selectionTopSpace += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
         }
         for(let y = ly; y <= hy; ++y){
-            selectionHeight += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
+            if(startY < y+1 && y <= startY + 44) selectionHeight += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
         }
 
         if(this.startCellsX !== -1 && this.startCellsY !== -1){
@@ -2769,15 +2752,13 @@ export default class Table {
         
         let ctxCanvas = canvas.getContext("2d");
 
-        let startX = this.getRowNumber(this.scrollYaxisValue);;
-        let startY = this.getColumnNumber(this.scrollXaxisValue);;
-        // console.log(startX,startY);
+        let startX = this.topCellCache;
+        let startY = this.leftCellCache;
 
 
-        let cellPositionX = this.getLeftWidth(startY) - this.scrollXaxisValue;
-        // -(this.scrollXaxisValue);
-        let cellPositionY = this.getTopHeight(startX) - this.scrollYaxisValue;
-        // -(this.scrollYaxisValue);
+        let cellPositionX = this.leftSpaceCache - this.scrollXaxisValue;
+
+        let cellPositionY = this.topSpaceCache - this.scrollYaxisValue;
 
         for(let i = startY + 1; cellPositionX <= canvas.width; ++i){
             cellPositionX += this.columnWidth + (this.topSizeMap[i] || 0);
@@ -2819,9 +2800,9 @@ export default class Table {
         let lowX = Math.min(this.startCellsX,this.endCellsX);
         let highX = Math.max(this.startCellsX,this.endCellsX);
 
-        let x = -(this.scrollXaxisValue);
+        let x = this.leftSpaceCache - this.scrollXaxisValue;
         
-        for (let i = 0; x <= this.defaultTableWidth; i++) {
+        for (let i = this.leftCellCache; x <= this.defaultTableWidth; i++) {
             const columnWidth = this.columnWidth + (this.topSizeMap[i + 1] || 0);
             if(lx <= i && i <= hx){
                 ctxCanvasTop.font = "bold 16px Calibri";
@@ -2857,11 +2838,12 @@ export default class Table {
 
         let ly = Math.min(this.startRowY, this.endRowY);
         let hy = Math.max(this.startRowY, this.endRowY);
-        let y = 1.5 -(this.scrollYaxisValue);
+        let y = this.topSpaceCache - this.scrollYaxisValue;
 
-        for (var j = 0; y <= this.defaultTableHeight; j++, start++) {
+        for (var j = this.topCellCache; y <= this.defaultTableHeight; j++, start++) {
             const rowHeight = this.rowHeight + (this.leftSizeMap[j + 1] || 0);
-
+            
+            y += rowHeight;
             if(ly <= j && j <= hy){
                 ctxCanvasLeft.font = "bold 15px Calibri";
                 ctxCanvasLeft.fillStyle = "#fff";
@@ -2878,11 +2860,10 @@ export default class Table {
 
             ctxCanvasLeft.fillText(
                 // this.data[this.startX][this.startY],
-                start + 1,
+                j + 1,
                 this.canvasLeft.width - 5,
-                y + rowHeight / 2
+                y - rowHeight / 2
             );
-            y += rowHeight;
         }
     }
     
@@ -2904,8 +2885,8 @@ export default class Table {
         let cellPositionX = 0;
         let cellPositionY = 0;
 
-        startY = this.getColumnNumber(this.scrollXaxisValue);
-        startX = this.getRowNumber(this.scrollYaxisValue); 
+        startY = this.leftCellCache
+        startX = this.topCellCache; 
 
         this.startY = startY;
         this.startX = startX;
@@ -2915,13 +2896,9 @@ export default class Table {
         
         
         
-        let STORE_X = this.getLeftWidth(startY) - this.scrollXaxisValue;;
+        let STORE_X = this.leftSpaceCache  - this.scrollXaxisValue;;
         let x = STORE_X;
-        // this.getColumnNumber(this.scrollXaxisValue);
-        //  (this.scrollXaxisValue);;
-        let y = this.getTopHeight(startX) - this.scrollYaxisValue;
-        // this.getRowNumber(this.scrollYaxisValue); 
-        // (this.scrollYaxisValue);
+        let y = this.topSpaceCache - this.scrollYaxisValue;
         
 
         

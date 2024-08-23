@@ -33,26 +33,41 @@ internal class Program
         {
             var body = ea.Body.ToArray();
             var message = Encoding.UTF8.GetString(body);
-            
 
-            // Console.WriteLine($" [x] Received ");
             var connectionString = "User ID=root;Password=PASSWORD;Host=localhost;Port=3306;Database=excel_clone;Protocol=TCP;Compress=false;Pooling=true;Min Pool Size=0;Max Pool Size=100;Connection Lifetime=0;";
             var dbConnection = new MySqlConnection(connectionString);
+
+            
             await dbConnection.OpenAsync();
             
-            // var msg = "(690,690,690,\"kull\")";
-            // string query = $"INSERT INTO `excel_clone`.`excel_data` (`MatrixName`, `RowNo`, `ColNo`, `CellValue`) VALUES {message};";
+            
             string query = $"INSERT INTO excel_clone.excel_data (MatrixName, RowNo, ColNo, CellValue) VALUES {message} ON DUPLICATE KEY UPDATE MatrixName = VALUES(MatrixName), RowNo = VALUES(RowNo), ColNo = VALUES(ColNo), CellValue = VALUES(CellValue);";
             MySqlCommand command = new MySqlCommand(query, dbConnection);
-            // command.Parameters.AddWithValue("@data", msg);
             
-            // Console.WriteLine($"{query}");
-
             var rowsAffected = command.ExecuteNonQuery();
             cnt++;
             Console.WriteLine($" [x] Row Inserted {rowsAffected} : Inserted [x] Chunk Count {cnt}");
             // Console.WriteLine($" ");
             await dbConnection.CloseAsync();
+
+        //////////////////////////////////////////////////////////////////////////////
+        ///
+            connectionString = "User ID=root;Password=PASSWORD;Host=localhost;Port=3306;Database=excel_clone;Protocol=TCP;Compress=false;Pooling=true;Min Pool Size=0;Max Pool Size=100;Connection Lifetime=0;";
+            dbConnection = new MySqlConnection(connectionString);
+
+            
+            await dbConnection.OpenAsync();
+            
+            
+            query = $"UPDATE excel_clone.loadeddata SET completedChunks = completedChunks + 1;";
+            command = new MySqlCommand(query, dbConnection);
+            
+            rowsAffected = command.ExecuteNonQuery();
+
+            await dbConnection.CloseAsync();
+
+
+
         };
         channel.BasicConsume(queue: "Insert To DB",
                              autoAck: true,

@@ -55,8 +55,8 @@ async function loadCanvases(arrCanvas){
     arrCanvas.push(canvas1);
 }
 
-// Usage example
 async function main() {
+    handleUploadBar();
 
 
     var arrCanvas = [];
@@ -67,6 +67,12 @@ async function main() {
     
     let insertSheetBtn = document.getElementById("insertSheet");
     let deleteLastSheetBtn = document.getElementById("deleteLastSheet");
+    let UploadBtn = document.getElementById("UploadBtn");
+    let curSheetID = document.getElementById("CurrentSheet");
+    let fileIP = document.getElementById("ChooseFile");
+    let chooseFileLabel = document.getElementById("chooseFileLabel");
+    let uploadform = document.getElementById("uploadForm");
+    
     
     insertSheetBtn.addEventListener("click", async (e) => {
         arrCanvas[arrCanvas.length - 1].hide();
@@ -75,8 +81,10 @@ async function main() {
 
         arrCanvas[arrCanvas.length - 1].show();
         console.log(arrCanvas.length);
+        curSheetID.innerHTML = `Sheet - ${arrCanvas.length}`;
 
     });
+
 
     deleteLastSheetBtn.addEventListener("click", async (e) => {
         console.log("delete");
@@ -86,43 +94,94 @@ async function main() {
 
         arrCanvas[arrCanvas.length - 1].show();
         console.log(arrCanvas.length);
+        curSheetID.innerHTML = `Sheet - ${arrCanvas.length}`;
     });
+    
 
-    let x = document.createElement('div')
+    uploadform.addEventListener("submit", async (e) => {
+        e.preventDefault(); // Ensure this is at the top to stop the form from submitting
+    
+        console.log("Upload");
+    
+        if (fileIP.value === "") {
+            console.log("noFile");
+            alert("Please choose a file");
+        } else {
+            const fileInput = document.getElementById("ChooseFile");
+            const formData = new FormData();
+    
+            formData.append("file", fileInput.files[0]);
+    
+            try {
+                handleUploadBar(); // Assuming this is a function to handle the progress bar
+    
+                await axios.post("http://localhost:5163/api/CSVfileUpload", formData)
+                    .then((response) => {
+                        console.log(response.data);
+                        console.log(response);
+                        // loading = true;
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        alert(error);
+                    });
+    
+            } catch (error) {
+                console.error("Error ", error);
+                alert("Error ", error);
+            }
+        }
+        // e.preventDefault();  // Remove redundant e.preventDefault()
+    });
+    
 
+}
+
+async function handleUploadBar(){
+    var fillBar = document.getElementById("fillBar");
+    if(!fillBar){
+        var secondTopLine = document.getElementById("secondTopLine");
+        var bar = document.createElement("div");
+        fillBar = document.createElement("div");
+        fillBar.id = "fillBar";
+        secondTopLine.append(bar);
+        bar.append(fillBar);
+
+        bar.style.marginTop = `40px`;
+        bar.style.height = `20px`;
+        bar.style.width = `500px`;
+        bar.style.border = `1px solid black`;
+
+        fillBar.style.height = `100%`;
+        fillBar.style.backgroundColor = '#137e43'
+    }
+    
+
+    await axios.get(`http://localhost:5163/api/getUploadStatus`)
+        .then((response) => {
+            fillBar.style.width = `${response.data}%`;
+            if(response.data === -1){
+                window.location.reload();
+                return;
+            }
+            else if(response.data < 100){
+                // setInterval(() => {
+                    setTimeout(handleUploadBar(), 1000);
+                // },1000);
+            }
+            else{
+                // arrCanvas[arrCanvas.length - 1].show();
+                // window.location.reload();
+                console.log("object");
+                return;
+            }
+        })
+        .catch(
+            (error) => {
+                console.error("Error:", error);
+            }
+        );
+    
 }
 
 main();
-
-function openTab(tabName) {
-    var i;
-    var x = document.getElementsByClassName("tab-content");
-    var tabs = document.getElementsByClassName("tab-button");
-    for (i = 0; i < x.length; i++) {
-        x[i].style.display = "none";
-        tabs[i].classList.remove("active");
-    }
-    document.getElementById(tabName).style.display = "block";
-    event.currentTarget.classList.add("active");
-}
-
-// Set initial active tab
-// document.getElementById("find").style.display = "block";
-
-function addResult(sheet, cell, value) {
-    var resultTable = document.querySelector(".result-table");
-    var newRow = document.createElement("div");
-    newRow.classList.add("result-row");
-
-    newRow.innerHTML = `
-        <div>${sheet}</div>
-        <div>${cell}</div>
-        <div>${value}</div>
-    `;
-
-    resultTable.appendChild(newRow);
-}
-
-// Example usage
-// addResult('in', 'B41', 'Alex TdA3y');
-// console.log("Lol");
