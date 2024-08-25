@@ -6,6 +6,14 @@
     <title>Excel Clone</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .swal2-confirm {
+          background-color: #4CAF50 !important; /* Change this color to your desired one */
+          color: white !important; /* Text color */
+          width: 100px;
+        }
+    </style>
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js" type="text/javascript"></script>
@@ -41,6 +49,16 @@
                 <input type="file" id="ChooseFile" name="file" accept=".csv">
                 <button id="UploadBtn" class="addSheet button-32" type="submit" > Upload CSV File</button>
             </form>
+
+            <div class="statusBar" id="statusBar">
+                <div class="fillStatusBar" id="fillStatusBar">
+
+                </div>
+            </div>
+
+            <div class="button upload-succeed" id="upload-succeed">
+                Upload Completed 100% 🎉
+            </div>
             
         </div>
     </div>

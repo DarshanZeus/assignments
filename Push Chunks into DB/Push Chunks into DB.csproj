@@ -11,6 +11,7 @@
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="9.0.0" />
     <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
+    <PackageReference Include="RabbitMQ.Stream.Client" Version="1.8.7" />
   </ItemGroup>
 
 </Project>

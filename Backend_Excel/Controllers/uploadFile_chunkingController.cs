@@ -69,7 +69,6 @@ namespace Backend_Excel.Controllers
             using(var reader = new StreamReader(exactpath))
             {
                 int listA = 0;
-
                 int lineReadCnt = 0;
                 int chunk = 5000;
                 
@@ -101,7 +100,7 @@ namespace Backend_Excel.Controllers
             await dbConnectionLoader.OpenAsync();
             
             
-            var queryLoader = $"INSERT INTO excel_clone.loadeddata (totalChunks) VALUES('{totalChunkCnt}');";
+            var queryLoader = $"DELETE FROM excel_clone.loadeddata; INSERT INTO excel_clone.loadeddata (totalChunks) VALUES('{totalChunkCnt}');";
             MySqlCommand command = new MySqlCommand(queryLoader, dbConnectionLoader);
             
             var rowsAffectedLoader = command.ExecuteNonQuery();

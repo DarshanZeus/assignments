@@ -56,11 +56,9 @@ async function loadCanvases(arrCanvas){
 }
 
 async function main() {
+
     handleUploadBar();
 
-
-    var arrCanvas = [];
-    
     let table = new Table(1);
     arrCanvas.push(table);
     arrCanvas[0].show();
@@ -80,20 +78,20 @@ async function main() {
         arrCanvas.push(newSheet);
 
         arrCanvas[arrCanvas.length - 1].show();
-        console.log(arrCanvas.length);
+        // console.log(arrCanvas.length);
         curSheetID.innerHTML = `Sheet - ${arrCanvas.length}`;
 
     });
 
 
     deleteLastSheetBtn.addEventListener("click", async (e) => {
-        console.log("delete");
+        // console.log("delete");
         arrCanvas[arrCanvas.length - 1].hide();
         
         if(arrCanvas.length > 1) arrCanvas.pop();
 
         arrCanvas[arrCanvas.length - 1].show();
-        console.log(arrCanvas.length);
+        // console.log(arrCanvas.length);
         curSheetID.innerHTML = `Sheet - ${arrCanvas.length}`;
     });
     
@@ -101,10 +99,10 @@ async function main() {
     uploadform.addEventListener("submit", async (e) => {
         e.preventDefault(); // Ensure this is at the top to stop the form from submitting
     
-        console.log("Upload");
+        // console.log("Upload");
     
         if (fileIP.value === "") {
-            console.log("noFile");
+            // console.log("noFile");
             alert("Please choose a file");
         } else {
             const fileInput = document.getElementById("ChooseFile");
@@ -113,75 +111,91 @@ async function main() {
             formData.append("file", fileInput.files[0]);
     
             try {
-                handleUploadBar(); // Assuming this is a function to handle the progress bar
     
                 await axios.post("http://localhost:5163/api/CSVfileUpload", formData)
-                    .then((response) => {
-                        console.log(response.data);
-                        console.log(response);
-                        // loading = true;
-                    })
-                    .catch((error) => {
-                        console.error("Error:", error);
-                        alert(error);
-                    });
-    
+                .then(async (response) => {
+                    // console.log(response.data);
+                    handleUploadBar();
+                    // loading = true;
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                    alert(error);
+                });
+                
             } catch (error) {
                 console.error("Error ", error);
                 alert("Error ", error);
             }
         }
-        // e.preventDefault();  // Remove redundant e.preventDefault()
     });
     
 
 }
 
 async function handleUploadBar(){
-    var fillBar = document.getElementById("fillBar");
-    if(!fillBar){
-        var secondTopLine = document.getElementById("secondTopLine");
-        var bar = document.createElement("div");
-        fillBar = document.createElement("div");
-        fillBar.id = "fillBar";
-        secondTopLine.append(bar);
-        bar.append(fillBar);
-
-        bar.style.marginTop = `40px`;
-        bar.style.height = `20px`;
-        bar.style.width = `500px`;
-        bar.style.border = `1px solid black`;
-
-        fillBar.style.height = `100%`;
-        fillBar.style.backgroundColor = '#137e43'
-    }
-    
+    var statusBar = document.getElementById("statusBar");
+    var fillStatusBar = document.getElementById("fillStatusBar");
+    var uploadSucceed = document.getElementById("upload-succeed");
 
     await axios.get(`http://localhost:5163/api/getUploadStatus`)
         .then((response) => {
-            fillBar.style.width = `${response.data}%`;
+            // fillBar.style.width = `${response.data}%`;
             if(response.data === -1){
-                window.location.reload();
-                return;
+                
             }
-            else if(response.data < 100){
-                // setInterval(() => {
-                    setTimeout(handleUploadBar(), 1000);
-                // },1000);
+            else if(response.data >= 100){
+                statusBar.style.display = `none`;
+                uploadSucceed.style.display = `flex`;
+                // alert(`File Uploaded Succeed..!!! 🎉`);
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'File Upload Succeed..!!! 🎉',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        location.reload(); // User clicks "OK"
+                    }
+                });
+                // location.reload();
+                  
+                return;
             }
             else{
-                // arrCanvas[arrCanvas.length - 1].show();
-                // window.location.reload();
-                console.log("object");
-                return;
+                statusBar.style.display = `block`;
+                fillStatusBar.style.width = `${response.data}%`;
             }
+            // console.log(response.data);
+            setTimeout(handleUploadBar, 1000);
+
         })
         .catch(
             (error) => {
                 console.error("Error:", error);
             }
         );
-    
-}
 
+
+    // if(!fillBar){
+    //     var secondTopLine = document.getElementById("secondTopLine");
+    //     var bar = document.createElement("div");
+    //     fillBar = document.createElement("div");
+    //     fillBar.id = "fillBar";
+    //     secondTopLine.append(bar);
+    //     bar.append(fillBar);
+
+    //     bar.style.marginTop = `40px`;
+    //     bar.style.height = `20px`;
+    //     bar.style.width = `500px`;
+    //     bar.style.border = `1px solid black`;
+
+    //     fillBar.style.height = `100%`;
+    //     fillBar.style.backgroundColor = '#137e43'
+    // }
+    
+    
+        
+}
+var arrCanvas = [];
 main();

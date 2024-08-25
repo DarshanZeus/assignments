@@ -41,11 +41,24 @@ namespace Backend_Excel.Controllers
                     var totalChunks = (int)reader["totalChunks"];
 
                     var percent = ((completedChunks * 100) / totalChunks);
-                    // if(percent == 100) return Ok(-1);
+
+                    if(percent >= 100){
+                        var connectionStringLoader = "User ID=root;Password=PASSWORD;Host=localhost;Port=3306;Database=excel_clone;Protocol=TCP;Compress=false;Pooling=true;Min Pool Size=0;Max Pool Size=100;Connection Lifetime=0;";
+                        var dbConnectionLoader = new MySqlConnection(connectionStringLoader);
+                        
+                        await dbConnectionLoader.OpenAsync();
+
+                        string queryLoader = "DELETE FROM excel_clone.loadeddata;";
+                        MySqlCommand deleteCommand = new MySqlCommand(queryLoader, dbConnectionLoader);
+                        var rowsAffected = deleteCommand.ExecuteNonQuery();
+
+                        await dbConnectionLoader.CloseAsync();
+                    }
+
                     return Ok(percent);
                 }
                 
-                return Ok(100);
+                return Ok(-1);
                 
             }
             catch (Exception ex)
