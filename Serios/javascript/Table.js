@@ -120,6 +120,47 @@ export default class Table {
         this.pieChartBtn = document.getElementById("pieChartBtn");
         this.scatterChartBtn = document.getElementById("scatterChartBtn");
         this.areaChartBtn = document.getElementById("areaChartBtn");
+        this.uploadform = document.getElementById("uploadForm");
+        this.fileIP = document.getElementById("ChooseFile");
+
+        this.uploadform.addEventListener("submit", async (e) => {
+            e.preventDefault(); 
+        
+            if (this.fileIP.value === "") {
+                alert("Please choose a file");
+            } else {
+                const fileInput = document.getElementById("ChooseFile");
+                const formData = new FormData();
+        
+                formData.append("file", fileInput.files[0]);
+                formData.append("sheetID", 108);
+
+                console.log(formData["file"]);
+                console.log(formData["sheetId"]);
+        
+                try {
+                    await axios.post("http://localhost:5163/api/CSVfileUpload", {
+                        file : fileInput.files[0],
+                        sheetId : 9821
+                    }, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    })
+                    .then(async (response) => {
+                        this.handleUploadBar();
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        alert(error);
+                    });
+                    
+                } catch (error) {
+                    console.error("Error ", error);
+                    alert("Error ", error);
+                }
+            }
+        });
 
         this.ipBox = document.getElementById("ipBox");
         this.copyCutAnimationDiv = document.getElementById("copyCutAnimationDiv");
@@ -183,6 +224,7 @@ export default class Table {
 
         this.drawSelection = this.drawSelection.bind(this);
         this.drawSelectionDiv = this.drawSelectionDiv.bind(this);
+        this.handleUploadBar = this.handleUploadBar.bind(this);
 
         
         this.drawTopHeadingsGrid = this.drawTopHeadingsGrid.bind(this);
@@ -253,7 +295,68 @@ export default class Table {
         this.selection = 0;
     }
 
+    async handleUploadBar(){
+        var statusBar = document.getElementById("statusBar");
+        var fillStatusBar = document.getElementById("fillStatusBar");
+        var uploadSucceed = document.getElementById("upload-succeed");
     
+        await axios.get(`http://localhost:5163/api/getUploadStatus`)
+            .then((response) => {
+                if(response.data === -1){
+                    
+                }
+                else if(response.data >= 100){
+                    statusBar.style.display = `none`;
+                    uploadSucceed.style.display = `flex`;
+                    // alert(`File Uploaded Succeed..!!! 🎉`);
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'File Upload Succeed..!!! 🎉',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload(); // User clicks "OK"
+                        }
+                    });
+
+                    return;
+                }
+                else{
+                    statusBar.style.display = `block`;
+                    fillStatusBar.style.width = `${response.data}%`;
+                }
+
+                setTimeout(this.handleUploadBar, 1000);
+    
+            })
+            .catch(
+                (error) => {
+                    console.error("Error:", error);
+                }
+            );
+    
+    
+        // if(!fillBar){
+        //     var secondTopLine = document.getElementById("secondTopLine");
+        //     var bar = document.createElement("div");
+        //     fillBar = document.createElement("div");
+        //     fillBar.id = "fillBar";
+        //     secondTopLine.append(bar);
+        //     bar.append(fillBar);
+    
+        //     bar.style.marginTop = `40px`;
+        //     bar.style.height = `20px`;
+        //     bar.style.width = `500px`;
+        //     bar.style.border = `1px solid black`;
+    
+        //     fillBar.style.height = `100%`;
+        //     fillBar.style.backgroundColor = '#137e43'
+        // }
+        
+        
+            
+    }
 
     scrollXaxis(){
         console.warn("ScrollX Toxic Hit");

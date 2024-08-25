@@ -57,11 +57,12 @@ async function loadCanvases(arrCanvas){
 
 async function main() {
 
-    handleUploadBar();
+    
 
     let table = new Table(1);
     arrCanvas.push(table);
     arrCanvas[0].show();
+    arrCanvas[0].handleUploadBar();
     
     let insertSheetBtn = document.getElementById("insertSheet");
     let deleteLastSheetBtn = document.getElementById("deleteLastSheet");
@@ -78,6 +79,7 @@ async function main() {
         arrCanvas.push(newSheet);
 
         arrCanvas[arrCanvas.length - 1].show();
+        arrCanvas[arrCanvas.length - 1].handleUploadBar();
         // console.log(arrCanvas.length);
         curSheetID.innerHTML = `Sheet - ${arrCanvas.length}`;
 
@@ -91,111 +93,17 @@ async function main() {
         if(arrCanvas.length > 1) arrCanvas.pop();
 
         arrCanvas[arrCanvas.length - 1].show();
+        arrCanvas[arrCanvas.length - 1].handleUploadBar();
         // console.log(arrCanvas.length);
         curSheetID.innerHTML = `Sheet - ${arrCanvas.length}`;
     });
     
 
-    uploadform.addEventListener("submit", async (e) => {
-        e.preventDefault(); // Ensure this is at the top to stop the form from submitting
     
-        // console.log("Upload");
-    
-        if (fileIP.value === "") {
-            // console.log("noFile");
-            alert("Please choose a file");
-        } else {
-            const fileInput = document.getElementById("ChooseFile");
-            const formData = new FormData();
-    
-            formData.append("file", fileInput.files[0]);
-    
-            try {
-    
-                await axios.post("http://localhost:5163/api/CSVfileUpload", formData)
-                .then(async (response) => {
-                    // console.log(response.data);
-                    handleUploadBar();
-                    // loading = true;
-                })
-                .catch((error) => {
-                    console.error("Error:", error);
-                    alert(error);
-                });
-                
-            } catch (error) {
-                console.error("Error ", error);
-                alert("Error ", error);
-            }
-        }
-    });
     
 
 }
 
-async function handleUploadBar(){
-    var statusBar = document.getElementById("statusBar");
-    var fillStatusBar = document.getElementById("fillStatusBar");
-    var uploadSucceed = document.getElementById("upload-succeed");
 
-    await axios.get(`http://localhost:5163/api/getUploadStatus`)
-        .then((response) => {
-            // fillBar.style.width = `${response.data}%`;
-            if(response.data === -1){
-                
-            }
-            else if(response.data >= 100){
-                statusBar.style.display = `none`;
-                uploadSucceed.style.display = `flex`;
-                // alert(`File Uploaded Succeed..!!! 🎉`);
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'File Upload Succeed..!!! 🎉',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        location.reload(); // User clicks "OK"
-                    }
-                });
-                // location.reload();
-                  
-                return;
-            }
-            else{
-                statusBar.style.display = `block`;
-                fillStatusBar.style.width = `${response.data}%`;
-            }
-            // console.log(response.data);
-            setTimeout(handleUploadBar, 1000);
-
-        })
-        .catch(
-            (error) => {
-                console.error("Error:", error);
-            }
-        );
-
-
-    // if(!fillBar){
-    //     var secondTopLine = document.getElementById("secondTopLine");
-    //     var bar = document.createElement("div");
-    //     fillBar = document.createElement("div");
-    //     fillBar.id = "fillBar";
-    //     secondTopLine.append(bar);
-    //     bar.append(fillBar);
-
-    //     bar.style.marginTop = `40px`;
-    //     bar.style.height = `20px`;
-    //     bar.style.width = `500px`;
-    //     bar.style.border = `1px solid black`;
-
-    //     fillBar.style.height = `100%`;
-    //     fillBar.style.backgroundColor = '#137e43'
-    // }
-    
-    
-        
-}
 var arrCanvas = [];
 main();
