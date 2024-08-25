@@ -25,15 +25,23 @@ namespace Backend_Excel.Controllers
         }
 
         [HttpPost("CSVfileUpload")]
-        public async Task<ActionResult> uploadFile_chunking(List<IFormFile> file, int sheetID)
+        public async Task<ActionResult> uploadFile_chunking(SheetCSVwithID sheetCSVwithID)
         {
-            
+            if (sheetCSVwithID.file == null || sheetCSVwithID.file.Count == 0)
+            {
+                return BadRequest("No file uploaded.");
+            }
+
+            List<IFormFile> file = sheetCSVwithID.file;
+            int sheetID = sheetCSVwithID.sheetID;
+
             if (file == null || file.Count == 0)
             {
                 return BadRequest("No file uploaded.");
             }
-            Console.WriteLine(file.Count);
-            Console.WriteLine(sheetID);
+
+            // Console.WriteLine(file.Count);
+            Console.WriteLine($"[x]Sheet ID : {sheetID}");
             
 
             long milliseconds = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;

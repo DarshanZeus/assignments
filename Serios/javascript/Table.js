@@ -133,20 +133,22 @@ export default class Table {
                 const formData = new FormData();
         
                 formData.append("file", fileInput.files[0]);
-                formData.append("sheetID", 108);
+                formData.append("sheetID", this.sheetID);
 
-                console.log(formData["file"]);
-                console.log(formData["sheetId"]);
+                console.log(formData.get("file"));
+                console.log(formData.get("sheetId"));
         
                 try {
-                    await axios.post("http://localhost:5163/api/CSVfileUpload", {
-                        file : fileInput.files[0],
-                        sheetId : 9821
-                    }, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    })
+                    await axios.post("http://localhost:5163/api/CSVfileUpload", formData
+                    //     {
+                    //     file : fileInput.files[0],
+                    //     sheetId : 9821
+                    // }, {
+                    //     headers: {
+                    //         'Content-Type': 'multipart/form-data'
+                    //     }
+                    // }
+                )
                     .then(async (response) => {
                         this.handleUploadBar();
                     })
