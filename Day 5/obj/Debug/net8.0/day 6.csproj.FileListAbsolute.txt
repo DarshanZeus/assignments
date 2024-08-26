@@ -1,6 +1,0 @@
-C:\Users\darshan.mahankar\OneDrive - zeuslearning.com\Desktop\Assignments\Day 5\obj\Debug\net8.0\day 6.csproj.AssemblyReference.cache
-C:\Users\darshan.mahankar\OneDrive - zeuslearning.com\Desktop\Assignments\Day 5\obj\Debug\net8.0\day 6.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\darshan.mahankar\OneDrive - zeuslearning.com\Desktop\Assignments\Day 5\obj\Debug\net8.0\day 6.AssemblyInfoInputs.cache
-C:\Users\darshan.mahankar\OneDrive - zeuslearning.com\Desktop\Assignments\Day 5\obj\Debug\net8.0\day 6.AssemblyInfo.cs
-C:\Users\darshan.mahankar\OneDrive - zeuslearning.com\Desktop\Assignments\Day 5\obj\Debug\net8.0\day 6.csproj.CoreCompileInputs.cache
-C:\Users\darshan.mahankar\OneDrive - zeuslearning.com\Desktop\Assignments\Day 5\obj\Debug\net8.0\day 6.sourcelink.json

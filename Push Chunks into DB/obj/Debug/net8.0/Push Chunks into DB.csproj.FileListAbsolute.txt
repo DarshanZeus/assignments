@@ -79,3 +79,6 @@ D:\Projects\Zeus\assignments\Push Chunks into DB\obj\Debug\net8.0\ref\Push Chunk
 D:\Projects\Zeus\assignments\Push Chunks into DB\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 D:\Projects\Zeus\assignments\Push Chunks into DB\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
 D:\Projects\Zeus\assignments\Push Chunks into DB\bin\Debug\net8.0\RabbitMQ.Stream.Client.dll
+C:\Users\darshan.mahankar\OneDrive - zeuslearning.com\Desktop\Assignments\Push Chunks into DB\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\darshan.mahankar\OneDrive - zeuslearning.com\Desktop\Assignments\Push Chunks into DB\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\darshan.mahankar\OneDrive - zeuslearning.com\Desktop\Assignments\Push Chunks into DB\bin\Debug\net8.0\RabbitMQ.Stream.Client.dll
