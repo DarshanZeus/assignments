@@ -41,7 +41,7 @@ namespace Backend_Excel.Controllers
             }
 
             // Console.WriteLine(file.Count);
-            Console.WriteLine($"[x]Sheet ID : {sheetID}");
+            Console.WriteLine($"[x] Sheet ID : {sheetID}");
             
 
             long milliseconds = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
@@ -139,7 +139,7 @@ namespace Backend_Excel.Controllers
 
                         var values = line.Split(',');
                         for(int i = 0; i < values.Length; ++i){
-                                listA.Add($"({1},{lineReadCnt},{i+1},'{values[i]}')");
+                                listA.Add($"({sheetID},{lineReadCnt},{i+1},'{values[i]}')");
                         }
                         
                     }

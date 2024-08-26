@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("excelCloneTask")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+822cd450450f1bdc9a05220cf8052d9e13b2ab90")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4e2c11686856739d58d7453263e784fdffce82cc")]
 [assembly: System.Reflection.AssemblyProductAttribute("excelCloneTask")]
 [assembly: System.Reflection.AssemblyTitleAttribute("excelCloneTask")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

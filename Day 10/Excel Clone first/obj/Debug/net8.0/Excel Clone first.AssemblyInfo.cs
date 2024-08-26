@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Excel Clone first")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a091a1511aa6feb266097992947c1d0647184428")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4e2c11686856739d58d7453263e784fdffce82cc")]
 [assembly: System.Reflection.AssemblyProductAttribute("Excel Clone first")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Excel Clone first")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

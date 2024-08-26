@@ -31,6 +31,7 @@
 <body>
     
     <div class="main-page">
+        <div class="top">
         <div class="topBar">
             <!-- <button class="upload button-33">Upload CSV File</button> -->
             <button id="deleteLastSheet" class="addSheet button-32"> < Prev Sheet</button>
@@ -51,15 +52,14 @@
             </form>
 
             <div class="statusBar" id="statusBar">
-                <div class="fillStatusBar" id="fillStatusBar">
-
-                </div>
+                <div class="fillStatusBar" id="fillStatusBar"></div>
             </div>
 
             <div class="button upload-succeed" id="upload-succeed">
                 Upload Completed 100% 🎉
             </div>
             
+        </div>
         </div>
     </div>
     <style></style>
@@ -96,6 +96,32 @@
 
             </div>
             <!-- <div class="selectionDiv" id="selectionDiv"></div> -->
+        </div>
+    </div>
+
+
+    <div class="bottomDiv" id="bottomDiv">
+        <div class="arithmetics flex" id="arithmetics">
+            <div class="flex">
+                Count : 
+                <span class="count" id="count"></span>
+            </div>
+            <div class="flex">
+                Sum : 
+                <span class="sum" id="sum"></span>
+            </div>
+            <div class="flex">
+                Avg : 
+                <span class="avg" id="avg"></span>
+            </div>
+            <div class="flex">
+                Max : 
+                <span class="max" id="max"></span>
+            </div>
+            <div class="flex">
+                Min : 
+                <span class="min" id="min"></span>
+            </div>
         </div>
     </div>
 

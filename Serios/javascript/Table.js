@@ -1,4 +1,5 @@
 import cacheCoordinates from "./cacheCoordinates.js";
+import StatisticsCalculator from "./StatisticsCalculator.js";
 
 export default class Table {
     /**
@@ -123,46 +124,6 @@ export default class Table {
         this.uploadform = document.getElementById("uploadForm");
         this.fileIP = document.getElementById("ChooseFile");
 
-        this.uploadform.addEventListener("submit", async (e) => {
-            e.preventDefault(); 
-        
-            if (this.fileIP.value === "") {
-                alert("Please choose a file");
-            } else {
-                const fileInput = document.getElementById("ChooseFile");
-                const formData = new FormData();
-        
-                formData.append("file", fileInput.files[0]);
-                formData.append("sheetID", this.sheetID);
-
-                console.log(formData.get("file"));
-                console.log(formData.get("sheetId"));
-        
-                try {
-                    await axios.post("http://localhost:5163/api/CSVfileUpload", formData
-                    //     {
-                    //     file : fileInput.files[0],
-                    //     sheetId : 9821
-                    // }, {
-                    //     headers: {
-                    //         'Content-Type': 'multipart/form-data'
-                    //     }
-                    // }
-                )
-                    .then(async (response) => {
-                        this.handleUploadBar();
-                    })
-                    .catch((error) => {
-                        console.error("Error:", error);
-                        alert(error);
-                    });
-                    
-                } catch (error) {
-                    console.error("Error ", error);
-                    alert("Error ", error);
-                }
-            }
-        });
 
         this.ipBox = document.getElementById("ipBox");
         this.copyCutAnimationDiv = document.getElementById("copyCutAnimationDiv");
@@ -175,6 +136,7 @@ export default class Table {
         this.copyCutStartY = -1;
         this.copyCutEndX = -1;
         this.copyCutEndY = -1;
+        this.statCalRef = [];
         if(this.ipBox) this.ipBox.style.display = `none`;
         if(this.copyCutAnimationDiv) this.copyCutAnimationDiv.remove(); 
         if(this.dottedVerticalLineDiv) this.dottedVerticalLineDiv.style.display = `none`;
@@ -251,38 +213,14 @@ export default class Table {
         this.getCellValue = this.getCellValue.bind(this);
         this.deleteCell = this.deleteCell.bind(this);
 
+        
+        this.uploadFormSubmitFunc = this.uploadFormSubmitFunc.bind(this);
+        this.handleScrollDataPagination = this.handleScrollDataPagination.bind(this);
+
 
         this.scrollXrefreshValue = 300;
         this.scrollYrefreshValue = 4000;
-        this.canvasDivDiv.addEventListener("scroll", async(e) => {
-            
-            this.scrollXrefreshValue += Math.abs(this.canvasDivDiv.scrollLeft - this.scrollXaxisValue);
-            this.scrollYrefreshValue += Math.abs(this.canvasDivDiv.scrollTop - this.scrollYaxisValue);
-
-            this.scrollXaxisValue = this.canvasDivDiv.scrollLeft;
-            this.scrollYaxisValue = this.canvasDivDiv.scrollTop;
-            
-            this.topCellCache = this.getRowNumber(this.scrollYaxisValue);
-            this.leftCellCache = this.getColumnNumber(this.scrollXaxisValue);
-            this.topSpaceCache = this.getTopHeight(this.topCellCache);
-            this.leftSpaceCache = this.getLeftWidth(this.leftCellCache);
-
-            // console.log(this.scrollYaxisValue);
-            if(this.scrollXrefreshValue >= 4000){
-                this.scrollXrefreshValue = 0;
-                await this.loadData( Math.ceil(this.scrollXaxisValue/this.columnWidth) ,  Math.ceil(this.scrollYaxisValue/this.rowHeight));
-            }
-            if(this.scrollYrefreshValue >= 1000){
-                this.scrollYrefreshValue = 0;
-                await this.loadData( Math.ceil((this.scrollXaxisValue)/this.columnWidth) ,  Math.ceil((this.scrollYaxisValue)/this.rowHeight));
-            }
-            // if(this.scrollXaxisValue%1000 === 0){
-            //     this.loadData( this.scrollXaxisValue/this.columnWidth ,  this.scrollYaxisValue/this.rowHeight);
-            // }
-            this.refresh();
-        });
         
-
         
     }
 
@@ -295,6 +233,48 @@ export default class Table {
         this.selection = 1;
         this.drawSelection();
         this.selection = 0;
+    }
+
+    async uploadFormSubmitFunc(e){
+        e.preventDefault(); 
+        // this.fileIP = document.getElementById("ChooseFile");
+        // console.log(this.fileIP, this.fileIP.value);
+        if (this.fileIP.value === "") {
+            alert("Please choose a file");
+        } else {
+            const fileInput = document.getElementById("ChooseFile");
+            const formData = new FormData();
+    
+            formData.append("file", fileInput.files[0]);
+            formData.append("sheetID", this.sheetID);
+
+            // console.log(formData.get("file"));
+            // console.log(formData.get("sheetId"));
+    
+            try {
+                await axios.post("http://localhost:5163/api/CSVfileUpload", formData
+                //     {
+                //     file : fileInput.files[0],
+                //     sheetId : 9821
+                // }, {
+                //     headers: {
+                //         'Content-Type': 'multipart/form-data'
+                //     }
+                // }
+            )
+                .then(async (response) => {
+                    this.handleUploadBar();
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                    alert(error);
+                });
+                
+            } catch (error) {
+                console.error("Error ", error);
+                alert("Error ", error);
+            }
+        }
     }
 
     async handleUploadBar(){
@@ -316,9 +296,11 @@ export default class Table {
                         text: 'File Upload Succeed..!!! 🎉',
                         icon: 'success',
                         confirmButtonText: 'OK'
-                    }).then((result) => {
+                    }).then(async (result) => {
                         if (result.isConfirmed) {
-                            location.reload(); // User clicks "OK"
+                            await this.loadData();
+                            this.drawTableData();
+                            // location.reload(); // User clicks "OK"
                         }
                     });
 
@@ -327,6 +309,7 @@ export default class Table {
                 else{
                     statusBar.style.display = `block`;
                     fillStatusBar.style.width = `${response.data}%`;
+                    // fillStatusBar.innerHTML = `${response.data}%`;
                 }
 
                 setTimeout(this.handleUploadBar, 1000);
@@ -356,6 +339,34 @@ export default class Table {
         //     fillBar.style.backgroundColor = '#137e43'
         // }
             
+    }
+
+    async handleScrollDataPagination(e){
+            
+        this.scrollXrefreshValue += Math.abs(this.canvasDivDiv.scrollLeft - this.scrollXaxisValue);
+        this.scrollYrefreshValue += Math.abs(this.canvasDivDiv.scrollTop - this.scrollYaxisValue);
+
+        this.scrollXaxisValue = this.canvasDivDiv.scrollLeft;
+        this.scrollYaxisValue = this.canvasDivDiv.scrollTop;
+        
+        this.topCellCache = this.getRowNumber(this.scrollYaxisValue);
+        this.leftCellCache = this.getColumnNumber(this.scrollXaxisValue);
+        this.topSpaceCache = this.getTopHeight(this.topCellCache);
+        this.leftSpaceCache = this.getLeftWidth(this.leftCellCache);
+
+        // console.log(this.scrollYaxisValue);
+        if(this.scrollXrefreshValue >= 4000){
+            this.scrollXrefreshValue = 0;
+            await this.loadData( Math.ceil(this.scrollXaxisValue/this.columnWidth) ,  Math.ceil(this.scrollYaxisValue/this.rowHeight));
+        }
+        if(this.scrollYrefreshValue >= 1000){
+            this.scrollYrefreshValue = 0;
+            await this.loadData( Math.ceil((this.scrollXaxisValue)/this.columnWidth) ,  Math.ceil((this.scrollYaxisValue)/this.rowHeight));
+        }
+        // if(this.scrollXaxisValue%1000 === 0){
+        //     this.loadData( this.scrollXaxisValue/this.columnWidth ,  this.scrollYaxisValue/this.rowHeight);
+        // }
+        this.refresh();
     }
 
     scrollXaxis(){
@@ -401,7 +412,7 @@ export default class Table {
 
     addEventListeners() {
 
-        this.canvasDivDiv.addEventListener("scroll",(e) => this.handleScroll);
+        // this.canvasDivDiv.addEventListener("scroll",(e) => this.handleScroll);
 
         this.canvas.addEventListener("pointerdown", this.selectionPointerDown);
         this.canvas.addEventListener('dblclick', this.placeInputBox);
@@ -428,10 +439,9 @@ export default class Table {
         this.scatterChartBtn.addEventListener("click", this.createScatterChart);
         this.areaChartBtn.addEventListener("click", this.createAreaChart);
 
-
-
-
-
+        
+        this.uploadform.addEventListener("submit", this.uploadFormSubmitFunc);
+        this.canvasDivDiv.addEventListener("scroll", this.handleScrollDataPagination);
         
         document.addEventListener('paste', function(e) {
             // console.log(e);
@@ -455,7 +465,7 @@ export default class Table {
 
     removeEventListeners() {
 
-        this.canvasDivDiv.removeEventListener("scroll",(e) => this.handleScroll);
+        // this.canvasDivDiv.removeEventListener("scroll",(e) => this.handleScroll);
 
         this.canvas.removeEventListener("pointerdown", this.selectionPointerDown);
         this.canvas.removeEventListener('dblclick', this.placeInputBox);
@@ -482,6 +492,10 @@ export default class Table {
         this.scatterChartBtn.removeEventListener("click", this.createScatterChart);
         this.areaChartBtn.removeEventListener("click", this.createAreaChart);
 
+        
+        this.uploadform.removeEventListener("submit", this.uploadFormSubmitFunc);
+        this.canvasDivDiv.removeEventListener("scroll", this.handleScrollDataPagination);
+
 
 
 
@@ -507,11 +521,11 @@ export default class Table {
         });
     }
 
-    handleScroll(){
-        this.scrollXaxisValue = this.canvasDivDiv.scrollLeft;
-        this.scrollYaxisValue = this.canvasDivDiv.scrollTop;
-        this.refresh();
-    }
+    // handleScroll(){
+    //     this.scrollXaxisValue = this.canvasDivDiv.scrollLeft;
+    //     this.scrollYaxisValue = this.canvasDivDiv.scrollTop;
+    //     this.refresh();
+    // }
 
     makeChartDraggableOverWindow(divToBeDraggable){
         
@@ -1279,7 +1293,6 @@ export default class Table {
             
             this.moveStartX = -1;
             // console.log(this.topSizeMap);
-            this.resetDivSel();
         }
         else this.colSelection = 0;
     }
@@ -1413,7 +1426,6 @@ export default class Table {
             this.dottedHorizontalLineDiv.style.display = "none";
 
             // console.log(this.leftSizeMap);
-            this.resetDivSel();
         }
         else {
             this.rowSelection = 0;
@@ -2226,6 +2238,9 @@ export default class Table {
             // this.drawTableData();
         }
     }
+    isNumber(n) { 
+        return !isNaN(parseFloat(n)) && !isNaN(n - 0) 
+    }
 
     selectionPointerUp(e){
         // console.log("hiyeyeyeyeye")
@@ -2236,6 +2251,30 @@ export default class Table {
         // this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
         
         // this.drawTableData();
+        
+        this.statCalRef[0].resetAll();
+
+        let lx= Math.min(this.startCellsX,this.endCellsX);
+        let ly= Math.min(this.startCellsY,this.endCellsY);
+        let hx= Math.max(this.startCellsX,this.endCellsX);
+        let hy= Math.max(this.startCellsY,this.endCellsY);
+
+        for(let i = lx; i <= hx; ++i){
+            for(let j = ly; j <= hy; ++j){
+                let x = this.getCellValue(j, i);
+                if(x === undefined  || x === "") continue;
+                if(this.isNumber(x)){
+                    this.statCalRef[0].sum += +x;
+                    this.statCalRef[0].countInt++;
+                    this.statCalRef[0].max = Math.max(this.statCalRef[0].max, x);
+                    this.statCalRef[0].min = Math.min(this.statCalRef[0].min, x);
+                }
+                this.statCalRef[0].count++;
+            }
+        }
+        this.statCalRef[0].avg = (this.statCalRef[0].sum / this.statCalRef[0].countInt).toFixed(2);
+        this.statCalRef[0].display();
+        
 
     }
 
@@ -2268,6 +2307,7 @@ export default class Table {
         if(this.isClickedOnLeftHeadingCanvas === 1) this.resizeRowPointerUp(e);
         if(this.isClickedOnTopHeadingCanvas === 1) this.resizeColumnPointerUp(e);
         if(this.isClickedOnMainCanvas === 1)this.selectionPointerUp(e);
+        this.resetDivSel();
         
         this.isClickedOnLeftHeadingCanvas = 0;
         this.isClickedOnMainCanvas = 0;
@@ -3130,6 +3170,7 @@ export default class Table {
 
         
         await this.loadData();
+        this.handleUploadBar();
         this.addEventListeners();
         this.drawGrid();
         this.drawTopHeadingsGrid();
@@ -3142,6 +3183,9 @@ export default class Table {
 
         this.isFindActive = false;
         this.findStrData = "";
+
+        var statCal = new StatisticsCalculator();
+        this.statCalRef.push(statCal);
 
 
 
@@ -3173,8 +3217,8 @@ export default class Table {
 
         this.isFindActive = false;
         this.findStrData = "";
+        this.statCalRef[0].resetAll();
+        this.statCalRef.pop();
     }
-    
-
-    
+        
 }
