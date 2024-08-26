@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Push Chunks into DB")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7beb207a4c240c3bbb8fc6f244ff2f23bee83953")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7c3b551dd2c621a61ba183e01e6f3560ba578428")]
 [assembly: System.Reflection.AssemblyProductAttribute("Push Chunks into DB")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Push Chunks into DB")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

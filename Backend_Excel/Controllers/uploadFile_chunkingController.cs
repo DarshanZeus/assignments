@@ -25,13 +25,24 @@ namespace Backend_Excel.Controllers
         }
 
         [HttpPost("CSVfileUpload")]
-        public async Task<ActionResult> uploadFile_chunking(List<IFormFile> file)
+        public async Task<ActionResult> uploadFile_chunking(SheetCSVwithID sheetCSVwithID)
         {
-            
+            if (sheetCSVwithID.file == null || sheetCSVwithID.file.Count == 0)
+            {
+                return BadRequest("No file uploaded.");
+            }
+
+            List<IFormFile> file = sheetCSVwithID.file;
+            int sheetID = sheetCSVwithID.sheetID;
+
             if (file == null || file.Count == 0)
             {
                 return BadRequest("No file uploaded.");
             }
+
+            // Console.WriteLine(file.Count);
+            Console.WriteLine($"[x]Sheet ID : {sheetID}");
+            
 
             long milliseconds = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
             string filename = milliseconds.ToString();   
@@ -69,7 +80,6 @@ namespace Backend_Excel.Controllers
             using(var reader = new StreamReader(exactpath))
             {
                 int listA = 0;
-
                 int lineReadCnt = 0;
                 int chunk = 5000;
                 
@@ -101,7 +111,7 @@ namespace Backend_Excel.Controllers
             await dbConnectionLoader.OpenAsync();
             
             
-            var queryLoader = $"INSERT INTO excel_clone.loadeddata (totalChunks) VALUES('{totalChunkCnt}');";
+            var queryLoader = $"DELETE FROM excel_clone.loadeddata; INSERT INTO excel_clone.loadeddata (totalChunks) VALUES('{totalChunkCnt}');";
             MySqlCommand command = new MySqlCommand(queryLoader, dbConnectionLoader);
             
             var rowsAffectedLoader = command.ExecuteNonQuery();

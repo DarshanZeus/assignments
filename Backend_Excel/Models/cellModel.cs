@@ -36,4 +36,13 @@ namespace Backend_Excel.Models
         
         public string Value { get; set; } = string.Empty;
     }
+
+    public class SheetCSVwithID
+    {
+        public List<IFormFile>? file { get; set; }
+
+        public int sheetID { get; set; }
+        
+        // public string Value { get; set; } = string.Empty;
+    }
 }

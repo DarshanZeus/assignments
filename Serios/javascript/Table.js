@@ -104,7 +104,7 @@ export default class Table {
         this.leftSpaceCache = 0;
         this.sheetID = mainCanvasName;
         console.log("Window Device Pixel Ratio", window.devicePixelRatio);
-        console.log("Sheet ID", this.sheetID);
+        // console.log("Sheet ID", this.sheetID);
 
 
         this.canvasDiv = document.getElementById(`canvasDiv`);
@@ -120,6 +120,49 @@ export default class Table {
         this.pieChartBtn = document.getElementById("pieChartBtn");
         this.scatterChartBtn = document.getElementById("scatterChartBtn");
         this.areaChartBtn = document.getElementById("areaChartBtn");
+        this.uploadform = document.getElementById("uploadForm");
+        this.fileIP = document.getElementById("ChooseFile");
+
+        this.uploadform.addEventListener("submit", async (e) => {
+            e.preventDefault(); 
+        
+            if (this.fileIP.value === "") {
+                alert("Please choose a file");
+            } else {
+                const fileInput = document.getElementById("ChooseFile");
+                const formData = new FormData();
+        
+                formData.append("file", fileInput.files[0]);
+                formData.append("sheetID", this.sheetID);
+
+                console.log(formData.get("file"));
+                console.log(formData.get("sheetId"));
+        
+                try {
+                    await axios.post("http://localhost:5163/api/CSVfileUpload", formData
+                    //     {
+                    //     file : fileInput.files[0],
+                    //     sheetId : 9821
+                    // }, {
+                    //     headers: {
+                    //         'Content-Type': 'multipart/form-data'
+                    //     }
+                    // }
+                )
+                    .then(async (response) => {
+                        this.handleUploadBar();
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        alert(error);
+                    });
+                    
+                } catch (error) {
+                    console.error("Error ", error);
+                    alert("Error ", error);
+                }
+            }
+        });
 
         this.ipBox = document.getElementById("ipBox");
         this.copyCutAnimationDiv = document.getElementById("copyCutAnimationDiv");
@@ -183,6 +226,7 @@ export default class Table {
 
         this.drawSelection = this.drawSelection.bind(this);
         this.drawSelectionDiv = this.drawSelectionDiv.bind(this);
+        this.handleUploadBar = this.handleUploadBar.bind(this);
 
         
         this.drawTopHeadingsGrid = this.drawTopHeadingsGrid.bind(this);
@@ -243,7 +287,7 @@ export default class Table {
     }
 
     refresh(){
-        console.log("refresh");
+        // console.log("refresh");
         this.drawTableTopHeading();
         this.drawTableLeftHeading();
 
@@ -253,10 +297,69 @@ export default class Table {
         this.selection = 0;
     }
 
+    async handleUploadBar(){
+        var statusBar = document.getElementById("statusBar");
+        var fillStatusBar = document.getElementById("fillStatusBar");
+        var uploadSucceed = document.getElementById("upload-succeed");
     
+        await axios.get(`http://localhost:5163/api/getUploadStatus`)
+            .then((response) => {
+                if(response.data === -1){
+                    
+                }
+                else if(response.data >= 100){
+                    statusBar.style.display = `none`;
+                    uploadSucceed.style.display = `flex`;
+                    // alert(`File Uploaded Succeed..!!! 🎉`);
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'File Upload Succeed..!!! 🎉',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload(); // User clicks "OK"
+                        }
+                    });
+
+                    return;
+                }
+                else{
+                    statusBar.style.display = `block`;
+                    fillStatusBar.style.width = `${response.data}%`;
+                }
+
+                setTimeout(this.handleUploadBar, 1000);
+    
+            })
+            .catch(
+                (error) => {
+                    console.error("Error:", error);
+                }
+            );
+    
+    
+        // if(!fillBar){
+        //     var secondTopLine = document.getElementById("secondTopLine");
+        //     var bar = document.createElement("div");
+        //     fillBar = document.createElement("div");
+        //     fillBar.id = "fillBar";
+        //     secondTopLine.append(bar);
+        //     bar.append(fillBar);
+    
+        //     bar.style.marginTop = `40px`;
+        //     bar.style.height = `20px`;
+        //     bar.style.width = `500px`;
+        //     bar.style.border = `1px solid black`;
+    
+        //     fillBar.style.height = `100%`;
+        //     fillBar.style.backgroundColor = '#137e43'
+        // }
+            
+    }
 
     scrollXaxis(){
-        console.log("ScrollX Toxic Hit");
+        console.warn("ScrollX Toxic Hit");
         this.canvasDiv.addEventListener("scroll", (e) => {
             
                  
@@ -266,7 +369,7 @@ export default class Table {
                 canvas1.height = this.defaultTableHeight;
                 canvas1.width = this.defaultTableWidth;
                 if(this.canvasMainDiv) this.canvasMainDiv.appendChild(canvas1);
-                else console.log("nahi dikh raha");
+                // else console.log("nahi dikh raha");
                 this.drawGrid(canvas1);
 
  
@@ -276,7 +379,7 @@ export default class Table {
                 canvasLeft1.height = this.defaultTableHeight;
                 canvasLeft1.width = 40;
                 if(this.canvasMainDiv) this.canvasLeftDiv.appendChild(canvasLeft1);
-                else console.log("nahi dikh raha");
+                // else console.log("nahi dikh raha");
                 this.drawLeftHeadingsGrid(canvasLeft1);
 
             }
@@ -607,10 +710,10 @@ export default class Table {
     
     createBarChart(){
         let { data, label} = this.getSelectionDataForChart();
-        console.log({
-            "Data":data,
-            "Label":label
-        })
+        // console.log({
+        //     "Data":data,
+        //     "Label":label
+        // })
 
         let chartCanvas = document.createElement("canvas");
         let chartDiv = document.createElement("div");
@@ -1175,7 +1278,7 @@ export default class Table {
             // console.log(this.moveStartX,this.moveStartY);
             
             this.moveStartX = -1;
-            console.log(this.topSizeMap);
+            // console.log(this.topSizeMap);
             this.resetDivSel();
         }
         else this.colSelection = 0;
@@ -1309,7 +1412,7 @@ export default class Table {
 
             this.dottedHorizontalLineDiv.style.display = "none";
 
-            console.log(this.leftSizeMap);
+            // console.log(this.leftSizeMap);
             this.resetDivSel();
         }
         else {
@@ -1690,7 +1793,7 @@ export default class Table {
     async copyToClipboard(text) {
         await navigator.clipboard.writeText(text).then(
             () => {
-                console.log("copy");
+                // console.log("copy");
                 // console.log('Text copied to clipboard successfully!');
             },
             (err) => {
@@ -1704,7 +1807,7 @@ export default class Table {
     async getClipboardData() {
         await navigator.clipboard.readText().then(
             (text) => {
-                console.log("paste");
+                // console.log("paste");
                 this.copyCutData = text;
                 // console.log(this.copyCutData);
                 this.handlePaste();
@@ -1718,7 +1821,7 @@ export default class Table {
     handleFindReplace(){
         var findReplaceDiv = document.getElementById("findReplaceDiv");
         if(!findReplaceDiv){
-            console.log("object");
+            // console.log("object");
             findReplaceDiv = document.createElement('div');
             findReplaceDiv.classList.add("findReplaceDiv");
             findReplaceDiv.id = "findReplaceDiv";
@@ -2054,7 +2157,7 @@ export default class Table {
         this.endCellsY = this.startCellsY;
 
         if(this.ipBox.style.display != "none"){
-            console.log(ipBox.value);
+            // console.log(ipBox.value);
             // this.data[this.startCellsY][this.startCellsX] = ipBox.value;
             this.setCellValue(this.startCellsY, this.startCellsX, ipBox.value);
             this.ipBox.value = "";

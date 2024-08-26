@@ -3699,19 +3699,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\darshan.mahankar\\.nuget\\packages\\": {}
+    "C:\\Users\\darsh\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\darshan.mahankar\\OneDrive - zeuslearning.com\\Desktop\\Assignments\\Day 5\\day 6.csproj",
+      "projectUniqueName": "D:\\Projects\\Zeus\\assignments\\Day 5\\day 6.csproj",
       "projectName": "day 6",
-      "projectPath": "C:\\Users\\darshan.mahankar\\OneDrive - zeuslearning.com\\Desktop\\Assignments\\Day 5\\day 6.csproj",
-      "packagesPath": "C:\\Users\\darshan.mahankar\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\darshan.mahankar\\OneDrive - zeuslearning.com\\Desktop\\Assignments\\Day 5\\obj\\",
+      "projectPath": "D:\\Projects\\Zeus\\assignments\\Day 5\\day 6.csproj",
+      "packagesPath": "C:\\Users\\darsh\\.nuget\\packages\\",
+      "outputPath": "D:\\Projects\\Zeus\\assignments\\Day 5\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\darshan.mahankar\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\darsh\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -3779,7 +3779,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.304/PortableRuntimeIdentifierGraph.json"
       }
     }
   },

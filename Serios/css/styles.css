@@ -29,8 +29,8 @@
   border: 0;
   font-size: 16px;
   font-weight: 640;
-  user-select: none;
   -webkit-user-select: none;
+  user-select: none;
   touch-action: manipulation;
   width: 200px;
 }
@@ -76,8 +76,8 @@
     border: 0;
     font-size: 16px;
     font-weight: 640;
-    user-select: none;
     -webkit-user-select: none;
+    user-select: none;
     touch-action: manipulation;
     width: 200px;
   }
@@ -268,8 +268,8 @@ canvas:first-of-type{
     border: 0;
     font-size: 16px;
     font-weight: 640;
-    user-select: none;
     -webkit-user-select: none;
+    user-select: none;
     touch-action: manipulation;
     width: 190px;
 }
@@ -385,4 +385,31 @@ canvas:first-of-type{
     /* height: 100px; */
     pointer-events: none;
     height: 0px;
+}
+
+.statusBar{
+    margin-top : 40px;
+    height : 20px;
+    width : 500px;
+    border : 1px solid black;
+    display: none;
+}
+
+.fillStatusBar{
+    height: 100%;
+    background: #137e43;
+    /* width: 50%; */
+}
+
+.upload-succeed{
+    /* display: flex; */
+    display: none;
+    justify-content: center;
+    align-items: center;
+    width: 250px;
+    background: #60f7a4;
+    /* margin-top : 40px;
+    height : 20px;
+    width : 500px; */
+    /* border : 1px solid black; */
 }

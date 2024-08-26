@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\darshan.mahankar\\OneDrive - zeuslearning.com\\Desktop\\Assignments\\Push Chunks into DB\\Push Chunks into DB.csproj": {}
+    "D:\\Projects\\Zeus\\assignments\\Push Chunks into DB\\Push Chunks into DB.csproj": {}
   },
   "projects": {
-    "C:\\Users\\darshan.mahankar\\OneDrive - zeuslearning.com\\Desktop\\Assignments\\Push Chunks into DB\\Push Chunks into DB.csproj": {
+    "D:\\Projects\\Zeus\\assignments\\Push Chunks into DB\\Push Chunks into DB.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\darshan.mahankar\\OneDrive - zeuslearning.com\\Desktop\\Assignments\\Push Chunks into DB\\Push Chunks into DB.csproj",
+        "projectUniqueName": "D:\\Projects\\Zeus\\assignments\\Push Chunks into DB\\Push Chunks into DB.csproj",
         "projectName": "Push Chunks into DB",
-        "projectPath": "C:\\Users\\darshan.mahankar\\OneDrive - zeuslearning.com\\Desktop\\Assignments\\Push Chunks into DB\\Push Chunks into DB.csproj",
-        "packagesPath": "C:\\Users\\darshan.mahankar\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\darshan.mahankar\\OneDrive - zeuslearning.com\\Desktop\\Assignments\\Push Chunks into DB\\obj\\",
+        "projectPath": "D:\\Projects\\Zeus\\assignments\\Push Chunks into DB\\Push Chunks into DB.csproj",
+        "packagesPath": "C:\\Users\\darsh\\.nuget\\packages\\",
+        "outputPath": "D:\\Projects\\Zeus\\assignments\\Push Chunks into DB\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\darshan.mahankar\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\darsh\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -50,6 +50,10 @@
             "RabbitMQ.Client": {
               "target": "Package",
               "version": "[6.8.1, )"
+            },
+            "RabbitMQ.Stream.Client": {
+              "target": "Package",
+              "version": "[1.8.7, )"
             }
           },
           "imports": [
@@ -68,7 +72,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
