@@ -479,4 +479,10 @@ canvas:first-of-type{
 
 .flex{
     display: flex;
+    margin-right: 10px;
+    margin-left: 5px;
+}
+
+.statLabel{
+    margin-right: 5px;
 }

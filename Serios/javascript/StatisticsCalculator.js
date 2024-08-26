@@ -21,6 +21,8 @@ export default class StatisticsCalculator {
         this.max = Number.MIN_SAFE_INTEGER;
         /** @type {number} */
         this.min = Number.MAX_SAFE_INTEGER;
+        /** @type {boolean} */
+        this.anyIntExist = false;
     }
     
     /**
@@ -127,19 +129,19 @@ export default class StatisticsCalculator {
 
         /** @type {HTMLElement} */
         var sum = document.getElementById("sum");
-        sum.innerHTML = ` ${this.sum}`;
+        sum.innerHTML = ` ${(this.anyIntExist)? this.sum : 0}`;
 
         /** @type {HTMLElement} */
         var avg = document.getElementById("avg");
-        avg.innerHTML = ` ${this.avg}`;
+        avg.innerHTML = ` ${(this.anyIntExist)? this.avg : 0}`;
 
         /** @type {HTMLElement} */
         var max = document.getElementById("max");
-        max.innerHTML = ` ${this.max}`;
+        max.innerHTML = ` ${(this.anyIntExist)? this.max : 0}`;
 
         /** @type {HTMLElement} */
         var min = document.getElementById("min");
-        min.innerHTML = ` ${this.min}`;
+        min.innerHTML = ` ${(this.anyIntExist)? this.min : 0}`;
     }
 
     /**
@@ -171,5 +173,7 @@ export default class StatisticsCalculator {
         var min = document.getElementById("min");
         min.innerHTML = ``;
         this.min = Number.MAX_SAFE_INTEGER;
+
+        this.anyIntExist = false;
     }
 }

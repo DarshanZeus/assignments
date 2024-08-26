@@ -601,8 +601,8 @@ export default class Table {
     }
 
     setSQChartDivProperties(chartDiv){
-        chartDiv.style.height = `288px`;
-        chartDiv.style.width = `288px`;
+        chartDiv.style.height = `388px`;
+        chartDiv.style.width = `388px`;
         chartDiv.style.position = `absolute`;
         chartDiv.style.top = `100px`;
         chartDiv.style.left = `100px`;
@@ -2264,6 +2264,8 @@ export default class Table {
                 let x = this.getCellValue(j, i);
                 if(x === undefined  || x === "") continue;
                 if(this.isNumber(x)){
+                    this.statCalRef[0].anyIntExist = true;
+
                     this.statCalRef[0].sum += +x;
                     this.statCalRef[0].countInt++;
                     this.statCalRef[0].max = Math.max(this.statCalRef[0].max, x);
