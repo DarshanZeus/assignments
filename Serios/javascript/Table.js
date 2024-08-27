@@ -21,7 +21,7 @@ export default class Table {
     minCountRow = 0;
     minCountCol = 0;
     maxCountRow = 1048576;
-    maxCountCol = 16384;
+    maxCountCol = 2000000/100; //16384;
 
     startCellsX = 0;
     startCellsY = 0;
@@ -104,6 +104,7 @@ export default class Table {
         this.topSpaceCache = 0;
         this.leftSpaceCache = 0;
         this.sheetID = mainCanvasName;
+        this.isSelectedAll = false;
         console.log("Window Device Pixel Ratio", window.devicePixelRatio);
         // console.log("Sheet ID", this.sheetID);
 
@@ -151,6 +152,9 @@ export default class Table {
 
 
         this.hide = this.hide.bind(this);
+        this.show = this.show.bind(this);
+        this.handleDeleteAll = this.handleDeleteAll.bind(this);
+        this.handleUploadingCSV = this.handleUploadingCSV.bind(this);
         this.isFindActive = false;
         this.findStrData = "";
 
@@ -239,6 +243,7 @@ export default class Table {
         e.preventDefault(); 
         // this.fileIP = document.getElementById("ChooseFile");
         // console.log(this.fileIP, this.fileIP.value);
+        console.warn("clicked submit");
         if (this.fileIP.value === "") {
             alert("Please choose a file");
         } else {
@@ -250,31 +255,40 @@ export default class Table {
 
             // console.log(formData.get("file"));
             // console.log(formData.get("sheetId"));
-    
-            try {
-                await axios.post("http://localhost:5163/api/CSVfileUpload", formData
-                //     {
-                //     file : fileInput.files[0],
-                //     sheetId : 9821
-                // }, {
-                //     headers: {
-                //         'Content-Type': 'multipart/form-data'
-                //     }
-                // }
-            )
-                .then(async (response) => {
-                    this.handleUploadBar();
-                })
-                .catch((error) => {
-                    console.error("Error:", error);
-                    alert(error);
-                });
-                
-            } catch (error) {
-                console.error("Error ", error);
-                alert("Error ", error);
-            }
+            
+            console.warn("Pre fun");
+            await this.handleUploadingCSV(formData);
+            console.warn("Post Fun");
         }
+        
+        console.warn("Post --------------------------------- Fun");
+    }
+    async handleUploadingCSV(formData){
+        console.warn("Start Fun");
+        // try {
+            await axios.post("http://localhost:5163/api/CSVfileUpload", formData
+            //     {
+            //     file : fileInput.files[0],
+            //     sheetId : 9821
+            // }, {
+            //     headers: {
+            //         'Content-Type': 'multipart/form-data'
+            //     }
+            // }
+        )
+            .then(async (response) => {
+                this.handleUploadBar();
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                alert(error);
+            });
+            
+        // } catch (error) {
+        //     console.error("Error ", error);
+        //     alert("Error ", error);
+        // }
+        console.warn("End Fun");
     }
 
     async handleUploadBar(){
@@ -299,7 +313,10 @@ export default class Table {
                     }).then(async (result) => {
                         if (result.isConfirmed) {
                             await this.loadData();
-                            this.drawTableData();
+                            this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                            this.selection = 1;
+                            this.drawSelection();
+                            this.selection = 0;
                             // location.reload(); // User clicks "OK"
                         }
                     });
@@ -442,6 +459,12 @@ export default class Table {
         
         this.uploadform.addEventListener("submit", this.uploadFormSubmitFunc);
         this.canvasDivDiv.addEventListener("scroll", this.handleScrollDataPagination);
+
+        // window.addEventListener("beforeunload", (e)=>{
+        //     e.preventDefault();
+        //     console.log("reload");
+        //     e.returnValue = "Noice";
+        // });
         
         document.addEventListener('paste', function(e) {
             // console.log(e);
@@ -595,7 +618,7 @@ export default class Table {
         chartDiv.style.position = `absolute`;
         chartDiv.style.top = `100px`;
         chartDiv.style.left = `100px`;
-        chartDiv.style.backgroundColor = `#fff`;
+        chartDiv.style.backgroundColor = `#fff`; 
         chartDiv.style.padding = `10px`;
         chartDiv.style.border = `1px solid rgb(210,210,210)`;
     }
@@ -1124,7 +1147,8 @@ export default class Table {
         //     console.log(ipBox.value);
         //     this.ipBox.value = "";
         
-            this.ipBox.style.display = "none";
+        this.ipBox.style.display = "none";
+        this.isSelectedAll = false;
         // }
         
         this.selectedChart = null;
@@ -1301,7 +1325,9 @@ export default class Table {
 
         // if(this.ipBox.style.display != "none"){
         //     console.log(ipBox.value);
-            this.ipBox.style.display = "none";
+        
+        this.isSelectedAll = false;
+        this.ipBox.style.display = "none";
         // }
         
         this.selectedChart = null;
@@ -1350,8 +1376,9 @@ export default class Table {
             this.drawTableLeftHeading();
 
             this.startCellsX = 0;
-            this.endCellsX = this.getRowNumber(this.canvas.width);
             this.startCellsY = this.startRowY;
+
+            this.endCellsX = this.maxCountCol;
             this.endCellsY = this.endRowY;
 
             this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -1491,6 +1518,25 @@ export default class Table {
         this.selection = 0;
     }
 
+    async handleDeleteAll(){
+        var cellData = {
+            "MatrixName" : this.sheetID,
+            "RowNo" : 0,
+            "ColNo" : 0,
+            "CellValue" : ""
+        }
+        await axios.delete(`http://localhost:5163/api/deleteAllCellData`,{
+            data:cellData
+        })
+        .then((response) => {
+        })
+        .catch(
+            (error) => {
+                console.error("Error:", error);
+            }
+        );
+    }
+
     async mainCanvasKeyDown(e){
         // e.preventDefault();
         // if(this.ipBox.style.display != "none"){
@@ -1511,6 +1557,15 @@ export default class Table {
                 this.selectedChart = null;
             }
             else{
+                if(this.isSelectedAll === true){
+                    
+                    this.data.clear();
+                    this.selection = 1;
+                    this.drawSelection();
+                    this.selection = 0;
+                    await this.handleDeleteAll();                    
+                    return;
+                }
                 let lx= Math.min(this.startCellsX,this.endCellsX);
                 let ly= Math.min(this.startCellsY,this.endCellsY);
                 let hx= Math.max(this.startCellsX,this.endCellsX);
@@ -1539,10 +1594,11 @@ export default class Table {
                 );
             }
         }
-        else if(e.shiftKey && this.ipBox.display !== 'none'){
-            // if(){
-            //     this.ipBox.focus();
-            // }
+        else if(e.shiftKey){
+            if(this.ipBox.style.display === `block`){
+                this.ipBox.focus();
+                return;
+            }
             if(e.key === "ArrowUp"){
                 // console.log("U");
                 if(this.endCellsY !== -1) this.endCellsY = Math.max(this.minCountRow, this.endCellsY - 1);
@@ -1629,6 +1685,36 @@ export default class Table {
             else if(e.key === 'f' || e.key === 'F'){
                 e.preventDefault();
                 this.handleFindReplace();
+            }
+            else if(e.key === 'd' || e.key === 'D'){
+                e.preventDefault();
+                if(this.isSelectedRow === 1){
+                    await axios.delete(`http://localhost:5163/api/deleteRow1`,{
+                        data:{
+                            "MatrixName" : this.sheetID,
+                            "Start" : this.startRowY,
+                            "End" : this.endRowY
+                        }
+                    })
+                    .then((response) => {
+                    })
+                    .catch(
+                        (error) => {
+                            console.error("Error:", error);
+                        }
+                    );
+                }
+            }
+            else if(e.key === 'a' || e.key === 'A'){
+                e.preventDefault();
+                this.startCellsX = this.minCountRow;
+                this.startCellsY = this.minCountCol;
+                this.endCellsX = this.maxCountCol;
+                this.endCellsY = this.maxCountRow;
+                this.isSelectedAll = true;
+                this.selection = 1;
+                this.drawSelection();
+                this.selection = 0;
             }
         }
         
@@ -2151,7 +2237,8 @@ export default class Table {
         this.isSelectedRow = 0;
         this.ctxCanvasLeft.clearRect(0, 0, this.canvasLeft.width, this.canvasLeft.height);
         this.drawLeftHeadingsGrid();
-        this.drawTableLeftHeading()
+        this.drawTableLeftHeading();
+        this.isSelectedAll = false;
 
         if(this.ipBox.style.display !== "none"){
             // this.data[this.startCellsY][this.startCellsX] = ipBox.value;
@@ -2304,6 +2391,7 @@ export default class Table {
 
     windowPointerUp(e){
         e.preventDefault();
+        this.ipBox.style.display = `none`;
         this.selection = 0;
         
         if(this.isClickedOnLeftHeadingCanvas === 1) this.resizeRowPointerUp(e);
@@ -2435,18 +2523,31 @@ export default class Table {
             // ----------- Main Canvas Selection -------------
             this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.ctxCanvas.fillStyle = "#e7f1ec";
-            this.ctxCanvas.fillRect(
-                selectionLeftSpace,
-                selectionTopSpace,
-                selectionWidth,
-                selectionHeight
-            );
+            if(this.isSelectedAll){
+                this.ctxCanvas.fillRect(
+                    selectionLeftSpace,
+                    selectionTopSpace,
+                    selectionWidth,
+                    selectionHeight
+                );
+            }
+            else{
+                this.ctxCanvas.fillRect(
+                    selectionLeftSpace,
+                    selectionTopSpace,
+                    selectionWidth,
+                    selectionHeight
+                );
+            }
+            
             this.drawWhiteSelectionBlock();
             this.drawTableData();
 
             
             this.ctxCanvas.lineWidth = 2;
             this.ctxCanvas.strokeStyle = "rgb(16,124,65)";
+
+            
             this.ctxCanvas.strokeRect(
                 selectionLeftSpace - 1,
                 selectionTopSpace - 1,
