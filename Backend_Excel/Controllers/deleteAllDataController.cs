@@ -25,7 +25,7 @@ namespace Backend_Excel.Controllers
         }
 
         [HttpDelete("deleteAllCellData")]
-        public async Task<ActionResult> deleteDataAsync(cellModel cellData)
+        public async Task<ActionResult> deleteAllDataAsync(cellModel cellData)
         {   
             await _connection.OpenAsync();
             try

@@ -45,7 +45,17 @@ namespace Backend_Excel.Models
         
         // public string Value { get; set; } = string.Empty;
     }
-    
+    public class MatrixRows
+    {
+        public int MatrixName { get; set; }
+
+        public int Start { get; set; }
+
+        public int End { get; set; }
+        
+    }
+
+
 
 
 }

@@ -1210,7 +1210,7 @@ export default class Table {
             this.startCellsX = this.startColX;
             this.endCellsX = this.endColX;
             this.startCellsY = 0;
-            this.endCellsY = this.getRowNumber(this.canvas.height);
+            this.endCellsY = this.maxCountRow;
 
             this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.selection = 1;
@@ -1545,10 +1545,84 @@ export default class Table {
             
         //     this.ipBox.value = "";
         // }
-        this.endColX = -1;
-        this.startColX = -1;
-        this.endRowY = -1;
-        this.startRowY = -1;
+        if(e.ctrlKey){ 
+            if(e.key === 'C' || e.key === 'c'){
+
+                this.copyCutStartX = this.startCellsX;
+                this.copyCutStartY = this.startCellsY;
+                this.copyCutEndX = this.endCellsX;
+                this.copyCutEndY = this.endCellsY;
+                this.isCellsCopyCut = 1;
+                this.handleCopy();
+                this.handleMarchingAnts();
+                // console.log('c');
+            }
+            else if(e.key === 'v' || e.key === 'V'){
+                this.getClipboardData();
+            }
+            else if(e.key === 'x' || e.key === 'X'){
+                this.copyCutStartX = this.startCellsX;
+                this.copyCutStartY = this.startCellsY;
+                this.copyCutEndX = this.endCellsX;
+                this.copyCutEndY = this.endCellsY;
+                this.isCellsCopyCut = 1;
+                this.isCutFlag = 1;
+                this.handleCopy();
+                this.handleMarchingAnts();
+            }
+            else if(e.key === 'f' || e.key === 'F'){
+                e.preventDefault();
+                this.handleFindReplace();
+            }
+            else if(e.key === 'd' || e.key === 'D'){
+                e.preventDefault();
+                console.log("del row strt");
+                if(this.isSelectedRow === 1){
+                    var data = {
+                        "MatrixName" : this.sheetID,
+                        "Start" : this.startRowY + 1,
+                        "End" : this.endRowY + 1
+                    };
+                    // console.log(this.startRowY + 1, this.endRowY + 1);
+                    // return;
+                    await axios.delete(`http://localhost:5163/api/deleteRow`,{
+                        data : data
+                    })
+                    .then(async(response) => {
+                        console.log("del row success");
+                        this.data.clear();
+                        await this.loadData();
+                        this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                        this.selection = 1;
+                        this.drawSelection();
+                        this.selection = 0;
+                    })
+                    .catch(
+                        (error) => {
+                            console.error("Error:", error);
+                        }
+                    );
+                }
+            }
+            else if(e.key === 'a' || e.key === 'A'){
+                e.preventDefault();
+                this.startCellsX = this.minCountRow;
+                this.startCellsY = this.minCountCol;
+                this.endCellsX = this.maxCountCol;
+                this.endCellsY = this.maxCountRow;
+                this.isSelectedAll = true;
+                this.selection = 1;
+                this.drawSelection();
+                this.selection = 0;
+            }
+        }
+        else{
+            this.endColX = -1;
+            this.startColX = -1;
+            this.endRowY = -1;
+            this.startRowY = -1;
+        }
+        
 
         if (e.key === 'Delete') {
             // console.log('Delete key pressed!');
@@ -1657,66 +1731,7 @@ export default class Table {
         this.drawSelection();
         this.selection = 0;
 
-        if(e.ctrlKey){ 
-            if(e.key === 'C' || e.key === 'c'){
-
-                this.copyCutStartX = this.startCellsX;
-                this.copyCutStartY = this.startCellsY;
-                this.copyCutEndX = this.endCellsX;
-                this.copyCutEndY = this.endCellsY;
-                this.isCellsCopyCut = 1;
-                this.handleCopy();
-                this.handleMarchingAnts();
-                // console.log('c');
-            }
-            else if(e.key === 'v' || e.key === 'V'){
-                this.getClipboardData();
-            }
-            else if(e.key === 'x' || e.key === 'X'){
-                this.copyCutStartX = this.startCellsX;
-                this.copyCutStartY = this.startCellsY;
-                this.copyCutEndX = this.endCellsX;
-                this.copyCutEndY = this.endCellsY;
-                this.isCellsCopyCut = 1;
-                this.isCutFlag = 1;
-                this.handleCopy();
-                this.handleMarchingAnts();
-            }
-            else if(e.key === 'f' || e.key === 'F'){
-                e.preventDefault();
-                this.handleFindReplace();
-            }
-            else if(e.key === 'd' || e.key === 'D'){
-                e.preventDefault();
-                if(this.isSelectedRow === 1){
-                    await axios.delete(`http://localhost:5163/api/deleteRow1`,{
-                        data:{
-                            "MatrixName" : this.sheetID,
-                            "Start" : this.startRowY,
-                            "End" : this.endRowY
-                        }
-                    })
-                    .then((response) => {
-                    })
-                    .catch(
-                        (error) => {
-                            console.error("Error:", error);
-                        }
-                    );
-                }
-            }
-            else if(e.key === 'a' || e.key === 'A'){
-                e.preventDefault();
-                this.startCellsX = this.minCountRow;
-                this.startCellsY = this.minCountCol;
-                this.endCellsX = this.maxCountCol;
-                this.endCellsY = this.maxCountRow;
-                this.isSelectedAll = true;
-                this.selection = 1;
-                this.drawSelection();
-                this.selection = 0;
-            }
-        }
+        
         
         
     }
