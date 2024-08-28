@@ -9,11 +9,13 @@
       "Backend_Excel/1.0.0": {
         "dependencies": {
           "CsvHelper": "33.0.1",
+          "Elasticsearch.Net": "7.17.5",
           "Microsoft.AspNetCore.Cors": "2.2.0",
           "Microsoft.AspNetCore.OpenApi": "8.0.7",
           "MySql.Data": "9.0.0",
           "MySqlConnector": "2.3.7",
           "MySqlConnector.DependencyInjection": "2.3.6",
+          "NEST": "7.17.5",
           "RabbitMQ.Client": "6.8.1",
           "RabbitMQ.Stream.Client": "1.8.7",
           "Swashbuckle.AspNetCore": "6.4.0"
@@ -35,6 +37,19 @@
           "lib/net8.0/CsvHelper.dll": {
             "assemblyVersion": "33.0.0.0",
             "fileVersion": "33.0.1.24"
+          }
+        }
+      },
+      "Elasticsearch.Net/7.17.5": {
+        "dependencies": {
+          "Microsoft.CSharp": "4.6.0",
+          "System.Buffers": "4.5.1",
+          "System.Diagnostics.DiagnosticSource": "8.0.1"
+        },
+        "runtime": {
+          "lib/netstandard2.1/Elasticsearch.Net.dll": {
+            "assemblyVersion": "7.0.0.0",
+            "fileVersion": "7.17.5.0"
           }
         }
       },
@@ -114,6 +129,7 @@
           }
         }
       },
+      "Microsoft.CSharp/4.6.0": {},
       "Microsoft.Extensions.ApiDescription.Server/6.0.5": {},
       "Microsoft.Extensions.Configuration.Abstractions/2.2.0": {
         "dependencies": {
@@ -230,6 +246,17 @@
           "lib/net7.0/MySqlConnector.DependencyInjection.dll": {
             "assemblyVersion": "2.0.0.0",
             "fileVersion": "2.3.6.0"
+          }
+        }
+      },
+      "NEST/7.17.5": {
+        "dependencies": {
+          "Elasticsearch.Net": "7.17.5"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Nest.dll": {
+            "assemblyVersion": "7.0.0.0",
+            "fileVersion": "7.17.5.0"
           }
         }
       },
@@ -440,6 +467,13 @@
       "path": "csvhelper/33.0.1",
       "hashPath": "csvhelper.33.0.1.nupkg.sha512"
     },
+    "Elasticsearch.Net/7.17.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-orChsQi1Ceho/NyIylNOn6y4vuGcsbCfMZnCueNN0fzqYEGQmQdPfcVmsR5+3fwpXTgxCdjTUVmqOwvHpCSB+Q==",
+      "path": "elasticsearch.net/7.17.5",
+      "hashPath": "elasticsearch.net.7.17.5.nupkg.sha512"
+    },
     "Google.Protobuf/3.26.1": {
       "type": "package",
       "serviceable": true,
@@ -502,6 +536,13 @@
       "sha512": "sha512-9SBDNvlwA88r5oD7yUbTmwr9ylkmZWdPQgohBWCdz6cESDAo6JgCD5vEOZS/nq2WIL5SCn3/RamAStcdiRzd4g==",
       "path": "microsoft.aspnetcore.openapi/8.0.7",
       "hashPath": "microsoft.aspnetcore.openapi.8.0.7.nupkg.sha512"
+    },
+    "Microsoft.CSharp/4.6.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kxn3M2rnAGy5N5DgcIwcE8QTePWU/XiYcQVzn9HqTls2NKluVzVSmVWRjK7OUPWbljCXuZxHyhEz9kPRIQeXow==",
+      "path": "microsoft.csharp/4.6.0",
+      "hashPath": "microsoft.csharp.4.6.0.nupkg.sha512"
     },
     "Microsoft.Extensions.ApiDescription.Server/6.0.5": {
       "type": "package",
@@ -600,6 +641,13 @@
       "sha512": "sha512-rhrpGpcWufr/jy2OCbsusvcK797j9jXBrKPpVGr+k2ESDyiGb6tHfot0xoaG/nn6BZ7FLsWl+eBRUmjFhekNgg==",
       "path": "mysqlconnector.dependencyinjection/2.3.6",
       "hashPath": "mysqlconnector.dependencyinjection.2.3.6.nupkg.sha512"
+    },
+    "NEST/7.17.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-bo9UyuIoVRx4IUQiuC8ZrlZuvAXKIccernC7UUKukQCEmRq2eVIk+gubHlnMQljrP51q0mN4cjgy9vv5uZPkoA==",
+      "path": "nest/7.17.5",
+      "hashPath": "nest.7.17.5.nupkg.sha512"
     },
     "RabbitMQ.Client/6.8.1": {
       "type": "package",

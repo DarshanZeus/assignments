@@ -11,6 +11,9 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using MySql.Data.MySqlClient;
 using Backend_Excel.Models;
+using Nest;
+using Elasticsearch.Net;
+
 namespace Backend_Excel.Controllers
 {
     [ApiController]
@@ -18,9 +21,23 @@ namespace Backend_Excel.Controllers
     public class uploadFile_chunkingController : Controller
     {
         private readonly MySqlConnection _connection;
+        private readonly IElasticClient _elasticClient;
+        private readonly ILogger<uploadFile_chunkingController> _logger;
 
-        public uploadFile_chunkingController(MySqlConnection connection)
+        public uploadFile_chunkingController(
+            MySqlConnection connection,
+            IElasticClient elasticClient,
+            ILogger<uploadFile_chunkingController> logger
+        )
         {
+            // var settings = new ConnectionSettings(new Uri("https://localhost:9200"))
+            //     .DefaultIndex("cellData")
+            //     .BasicAuthentication("elastic", "WzB*7FBu-cVHcU39MIC6")
+            //     .ServerCertificateValidationCallback((o, certificate, chain, errors) => true);
+
+            // _elasticClient = new ElasticClient(settings);
+            _logger = logger;
+            _elasticClient = elasticClient;
             _connection = connection;
         }
 
@@ -126,7 +143,7 @@ namespace Backend_Excel.Controllers
             using(var reader = new StreamReader(exactpath))
             {
                 var listA = new List<string>();
-                var listB = new List<string>();
+                var listVal = new List<cellModel>();
 
                 int lineReadCnt = 0;
                 int chunk = 5000;
@@ -140,6 +157,13 @@ namespace Backend_Excel.Controllers
                         var values = line.Split(',');
                         for(int i = 0; i < values.Length; ++i){
                                 listA.Add($"({sheetID},{lineReadCnt},{i+1},'{values[i]}')");
+                                var cell = new cellModel{
+                                    MatrixName = sheetID,
+                                    RowNo = lineReadCnt,
+                                    ColNo = i + 1,
+                                    CellValue = values[i]
+                                };
+                                listVal.Add(cell);
                         }
                         
                     }
@@ -154,8 +178,10 @@ namespace Backend_Excel.Controllers
                             mandatory : false,
                             basicProperties: null,
                             body: dataStr);
-                            
+                        
+                        await BulkIndexCellDataAsync(listVal);
                         listA.Clear();
+                        listVal.Clear();
                     }
                 }
                 if(listA.Count > 0){
@@ -167,13 +193,31 @@ namespace Backend_Excel.Controllers
                             mandatory : false,
                             basicProperties: null,
                             body: dataStr);
-                            
+                    
+                    await BulkIndexCellDataAsync(listVal);
                     listA.Clear();
+                    listVal.Clear();
                 }
                 
             }
-            
             return Ok("File Uploaded SuccessFully");
+        }
+        public async Task BulkIndexCellDataAsync(List<cellModel> data)
+        {
+            var bulkDescriptor = new BulkDescriptor();
+
+            foreach (var cell in data)
+            {
+                bulkDescriptor.Index<cellModel>(op => op.Document(cell));
+            }
+
+            var bulkResponse = await _elasticClient.BulkAsync(bulkDescriptor);
+
+            if (bulkResponse.Errors)
+            {
+                // Log the errors or handle them as needed
+                Console.WriteLine($"{bulkResponse}");
+            }
         }
     }
 }

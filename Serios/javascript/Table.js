@@ -3327,6 +3327,7 @@ export default class Table {
         if(this.copyCutAnimationDiv){
             this.copyCutAnimationDiv.remove();
         }
+        this.data.clear();
 
 
         this.canvas.remove();

@@ -1,9 +1,10 @@
-// using MySqlConnector;
 using MySql.Data.MySqlClient;
 using Backend_Excel.Controllers;
 using Backend_Excel.Models;
+using Elasticsearch.Net;
+using Nest;
+using Backend_Excel.extensions;
 
-      
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
@@ -14,7 +15,7 @@ builder.Services.AddCors(options =>
                         .AllowAnyMethod());
 });
 
-builder.Services.AddTransient<MySqlConnection>(sp =>
+builder.Services.AddTransient(sp =>
 {
     var configuration = sp.GetRequiredService<IConfiguration>();
     var connectionString = configuration.GetConnectionString("DefaultConnection");
@@ -22,18 +23,22 @@ builder.Services.AddTransient<MySqlConnection>(sp =>
 });
 
 
+// Elasticsearch Configuration
+var settings = new ConnectionSettings(new Uri("https://localhost:9200")) // Use HTTPS URL
+                .DefaultIndex("cellData")
+                .BasicAuthentication("elastic", "WzB*7FBu-cVHcU39MIC6")  // Provide your Elasticsearch username and password
+                .ServerCertificateValidationCallback((o, certificate, chain, errors) => true);
+                    // CertificateValidations.AllowAll);  // Ignore SSL certificate validation (for development only)
 
+            // _elasticClient = new ElasticClient(settings);
+
+var client = new ElasticClient(settings);
+builder.Services.AddSingleton<IElasticClient>(client);
+
+builder.Services.AddElasticsearch(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
-
-// builder.Services.AddMySqlDataSource(builder.Configuration.GetConnectionString("Default")!);
-// builder.services.AddTransient<MySqlConnection>(_ =>
-//     new MySqlConnection(builder.Configuration.GetConnectionString["Default"]));
-
-
-
-
 
 var app = builder.Build();
 
@@ -44,55 +49,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.MapControllers();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-// app.UseCors("AllowAll");
-
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseHttpsRedirection();
-
-
-// app.MapGet("/weatherforecast/", async (int rowNo = 1) =>
-// {
-//     // var connectionStringBuilder = new MySqlConnectionStringBuilder
-//     // {
-//     //     Server = "127.0.0.1",
-//     //     UserID = "root",
-//     //     Password = "PASSWORD",
-//     //     Database = "excel_clone",
-//     // };
-
-
-//     // // open a connection asynchronously
-//     using var command = connection.CreateCommand();
-//     string query = @"SELECT * FROM excel_clone.excel_data;";
-//     command.CommandText = query;
-//     // command.Parameters.AddWithValue("@OrderId", orderId);
-
-//     // MySqlCommand command = new MySqlCommand(query, connection);
-//     // var rowsAffected = command.ExecuteNonQuery();
-//     using var reader = await command.ExecuteReaderAsync();
-
-
-//     while (reader.Read())
-//     {
-//         // Console.WriteLine(reader["matrixName"].ToString());
-//         // Console.WriteLine(reader["rowNo"].ToString());
-//         // Console.WriteLine(reader["colNo"].ToString());
-//         // Console.WriteLine(reader["cellValue"].ToString());
-//         // var value = reader[3];
-//         // return value;
-//         // Console.WriteLine(value.ToString());
-//     }
-//     // Console.WriteLine(rowsAffected);
-//     Console.WriteLine(rowNo);
-
-//     return "forecast";
-// })
-// .WithName("GetWeatherForecast")
-// .WithOpenApi();
 
 app.Run();
-

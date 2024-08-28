@@ -47,6 +47,10 @@
               "target": "Package",
               "version": "[33.0.1, )"
             },
+            "Elasticsearch.Net": {
+              "target": "Package",
+              "version": "[7.17.5, )"
+            },
             "Microsoft.AspNetCore.Cors": {
               "target": "Package",
               "version": "[2.2.0, )"
@@ -66,6 +70,10 @@
             "MySqlConnector.DependencyInjection": {
               "target": "Package",
               "version": "[2.3.6, )"
+            },
+            "NEST": {
+              "target": "Package",
+              "version": "[7.17.5, )"
             },
             "RabbitMQ.Client": {
               "target": "Package",
