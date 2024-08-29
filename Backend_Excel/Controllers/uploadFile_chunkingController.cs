@@ -72,7 +72,7 @@ namespace Backend_Excel.Controllers
             }
 
             var exactpath = Path.Combine(Directory.GetCurrentDirectory(), "Upload", filename);
-            Console.WriteLine(exactpath);
+            // Console.WriteLine(exactpath);
             using (var stream = new FileStream(exactpath, FileMode.Create))
             {
                 await file[0].CopyToAsync(stream);
@@ -129,7 +129,7 @@ namespace Backend_Excel.Controllers
             
             
             var queryLoader = $"DELETE FROM excel_clone.loadeddata; INSERT INTO excel_clone.loadeddata (totalChunks) VALUES('{totalChunkCnt}');";
-            MySqlCommand command = new MySqlCommand(queryLoader, dbConnectionLoader);
+            var command = new MySqlCommand(queryLoader, dbConnectionLoader);
             
             var rowsAffectedLoader = command.ExecuteNonQuery();
 
@@ -163,6 +163,7 @@ namespace Backend_Excel.Controllers
                                     ColNo = i + 1,
                                     CellValue = values[i]
                                 };
+                                
                                 listVal.Add(cell);
                         }
                         
@@ -179,7 +180,7 @@ namespace Backend_Excel.Controllers
                             basicProperties: null,
                             body: dataStr);
                         
-                        await BulkIndexCellDataAsync(listVal);
+                        BulkIndexCellDataAsync(listVal);
                         listA.Clear();
                         listVal.Clear();
                     }
@@ -193,8 +194,8 @@ namespace Backend_Excel.Controllers
                             mandatory : false,
                             basicProperties: null,
                             body: dataStr);
-                    
-                    await BulkIndexCellDataAsync(listVal);
+
+                    _ = BulkIndexCellDataAsync(listVal);
                     listA.Clear();
                     listVal.Clear();
                 }
@@ -205,19 +206,58 @@ namespace Backend_Excel.Controllers
         public async Task BulkIndexCellDataAsync(List<cellModel> data)
         {
             var bulkDescriptor = new BulkDescriptor();
+            // Console.WriteLine(data.Count);
+            
 
             foreach (var cell in data)
             {
-                bulkDescriptor.Index<cellModel>(op => op.Document(cell));
+                bulkDescriptor.Index<cellModel>(op => op
+                    .Index("cellmodel")  
+                    .Document(cell)
+                );
             }
 
-            var bulkResponse = await _elasticClient.BulkAsync(bulkDescriptor);
-
-            if (bulkResponse.Errors)
+            try
             {
-                // Log the errors or handle them as needed
-                Console.WriteLine($"{bulkResponse}");
+                var bulkResponse = await _elasticClient.BulkAsync(bulkDescriptor);
+
+                if (bulkResponse.Errors)
+                {
+                    // foreach (var itemWithError in bulkResponse.ItemsWithErrors)
+                    // {
+                    //     Console.WriteLine($"Failed to index document {itemWithError.Id}: {itemWithError.Error.Reason}");
+                    // }
+                    Console.WriteLine(bulkResponse.ToString());
+                    
+                }
+                else
+                {
+                    // Console.WriteLine("Bulk indexing successful.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception during bulk indexing: {ex.Message}");
             }
         }
+
+        // public async Task BulkIndexCellDataAsync(List<cellModel> data)
+        // {
+        //     var bulkDescriptor = new BulkDescriptor();
+
+        //     foreach (var cell in data)
+        //     {
+        //         bulkDescriptor.Index<cellModel>(op => op.Document(cell));
+        //     }
+
+        //     var bulkResponse = await _elasticClient.BulkAsync(bulkDescriptor);
+        //     Console.WriteLine($"{bulkResponse}");
+
+        //     if (bulkResponse.Errors)
+        //     {
+        //         // Log the errors or handle them as needed
+        //         Console.WriteLine($"{bulkResponse}");
+        //     }
+        // }
     }
 }

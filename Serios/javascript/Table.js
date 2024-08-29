@@ -1576,7 +1576,7 @@ export default class Table {
             }
             else if(e.key === 'd' || e.key === 'D'){
                 e.preventDefault();
-                console.log("del row strt");
+                // console.log("del row strt");
                 if(this.isSelectedRow === 1){
                     var data = {
                         "MatrixName" : this.sheetID,
@@ -1589,7 +1589,7 @@ export default class Table {
                         data : data
                     })
                     .then(async(response) => {
-                        console.log("del row success");
+                        // console.log("del row success");
                         this.data.clear();
                         await this.loadData();
                         this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);

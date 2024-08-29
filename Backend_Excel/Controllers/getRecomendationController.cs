@@ -21,16 +21,16 @@ namespace Backend_Excel.Controllers
     {
         private readonly MySqlConnection _connection;
         private readonly IElasticClient _elasticClient;
+        private readonly ILogger<uploadFile_chunkingController> _logger;
 
-        public getRecomendationController(MySqlConnection connection)
+        public getRecomendationController(
+            MySqlConnection connection,
+            IElasticClient elasticClient,
+            ILogger<uploadFile_chunkingController> logger
+        )
         {
-            var settings = new ConnectionSettings(new Uri("https://localhost:9200")) // Use HTTPS URL
-                .DefaultIndex("cellModel")
-                .BasicAuthentication("elastic", "WzB*7FBu-cVHcU39MIC6")  // Provide your Elasticsearch username and password
-                .ServerCertificateValidationCallback((o, certificate, chain, errors) => true);
-                    // CertificateValidations.AllowAll);  // Ignore SSL certificate validation (for development only)
-
-            _elasticClient = new ElasticClient(settings);
+            _logger = logger;
+            _elasticClient = elasticClient;
             _connection = connection;
         }
 
@@ -41,17 +41,23 @@ namespace Backend_Excel.Controllers
         )
         {
             int page = 1;
-            int pageSize = 10;
+            int pageSize = 10000;
             try
             {
-                var searchResponse = await _elasticClient.SearchAsync<cellModel>(s => s
+                var searchResponse = await _elasticClient.SearchAsync<cellModel>(
+                    s => s
                     .From((page - 1) * pageSize)
                     .Size(pageSize)
                     .Query(q => q
-                        .Match(m => m
-                            .Field(f => f.CellValue)
-                            .Query(query)
-                        )
+                        // .Match(m => m
+                        //     .Field(f => f.CellValue)
+                        //     .Query('*' + query + '*')
+                        // )
+                        .Wildcard(wc => wc
+                        .Field(f => f.CellValue.Suffix("keyword")) // Ensure to use the keyword field for case-insensitive search
+                        .Value($"*{query.ToLower()}*") // Lowercase the query for case insensitivity
+                        .CaseInsensitive(true) // Make the wildcard query case-insensitive
+                    )
                     )
                 );
 
@@ -74,10 +80,11 @@ namespace Backend_Excel.Controllers
                 {
                     await _connection.CloseAsync();
                 }
-                else
-                {
-                    Console.WriteLine("Connection is Already Closed");
-                }
+                // else
+                // {
+                //     return;
+                //     Console.WriteLine("Connection is Already Closed");
+                // }
             }
         }
 

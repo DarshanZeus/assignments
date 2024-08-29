@@ -25,9 +25,9 @@ builder.Services.AddTransient(sp =>
 
 // Elasticsearch Configuration
 var settings = new ConnectionSettings(new Uri("https://localhost:9200")) // Use HTTPS URL
-                .DefaultIndex("cellData")
+                .DefaultIndex("cellModel")
                 .BasicAuthentication("elastic", "WzB*7FBu-cVHcU39MIC6")  // Provide your Elasticsearch username and password
-                .ServerCertificateValidationCallback((o, certificate, chain, errors) => true);
+                .ServerCertificateValidationCallback(CertificateValidations.AllowAll);
                     // CertificateValidations.AllowAll);  // Ignore SSL certificate validation (for development only)
 
             // _elasticClient = new ElasticClient(settings);

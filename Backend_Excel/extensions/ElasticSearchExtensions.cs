@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Backend_Excel.Models;
+using Elasticsearch.Net;
 using Nest;
 
 namespace Backend_Excel.extensions
@@ -17,9 +18,14 @@ namespace Backend_Excel.extensions
             var url = configuration["ELKConfiguration:url"];
             var defaultIndex = configuration["ELKConfiguration:index"];
 
-            var settings = new ConnectionSettings(new Uri("https://localhost:9200/")).BasicAuthentication("elastic", "WzB*7FBu-cVHcU39MIC6")
+            var settings = new ConnectionSettings(new Uri("https://localhost:9200/"))
+                .ServerCertificateValidationCallback(CertificateValidations.AllowAll)
+                .BasicAuthentication("elastic", "WzB*7FBu-cVHcU39MIC6")
                 .PrettyJson()
-                .DefaultIndex(defaultIndex);
+                .DisablePing()
+                .DisableDirectStreaming() // This will capture the request and response for logging
+                .EnableApiVersioningHeader()
+                .DefaultIndex("cellmodel");
 
             AddDefaultMappings(settings);
 
@@ -33,17 +39,37 @@ namespace Backend_Excel.extensions
         private static void AddDefaultMappings(ConnectionSettings settings)
         {
             settings
-                .DefaultMappingFor<cellModel>(m => m
-                    // .Ignore(p => p.Price)
-                    // .Ignore(p => p.Measurement)
-                );
+                .DefaultMappingFor<cellModel>(m => m);
         }
 
-        private static void CreateIndex(IElasticClient client, string indexName)
+        private static void CreateIndex(IElasticClient client, string indexName = "cellmodel")
         {
-            var createIndexResponse = client.Indices.Create(indexName,
-                index => index.Map<cellModel>(x => x.AutoMap())
+            var indexExistsResponse = client.Indices.Exists(indexName);
+    
+            if (indexExistsResponse.Exists)
+            {
+                // Console.WriteLine("Index already exists.");
+                return;
+            }
+
+            var createIndexResponse = client.Indices.Create(indexName, index => index
+                .Settings(s => s
+                    .NumberOfShards(1)
+                    .NumberOfReplicas(0)
+                )
+                .Map<cellModel>(m => m.AutoMap())
             );
+
+            if (createIndexResponse.IsValid)
+            {
+                // Console.WriteLine("Index created successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Index creation failed.");
+                Console.WriteLine(createIndexResponse.DebugInformation);
+            }
+
         }
     }
 }

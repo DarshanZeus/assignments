@@ -95,12 +95,13 @@ namespace Backend_Excel.Controllers
             try
             {
                 await _connection.OpenAsync();
-
+                var findStr = FindData.findStr.Replace('?', '_');
                 FindData.findStr = FindData.findStr.Replace('?', '.');
 
-                string query = $"UPDATE excel_clone.excel_data SET `CellValue` = REGEXP_REPLACE(`CellValue`, '(?i){FindData.findStr}', '{FindData.replaceStr}') ";
+                string query = $@"UPDATE excel_clone.excel_data SET `CellValue` = REGEXP_REPLACE(`CellValue`, '(?i){FindData.findStr}', '{FindData.replaceStr}') WHERE CellValue LIKE @findStr; ";
                 
                 MySqlCommand command = new MySqlCommand(query, _connection);
+                command.Parameters.AddWithValue("@findStr", $"%{findStr}%");
                 
                 var rowsAffected = command.ExecuteNonQuery();
                 
