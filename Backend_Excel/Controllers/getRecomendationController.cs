@@ -40,8 +40,21 @@ namespace Backend_Excel.Controllers
             [FromQuery] string query = "data"
         )
         {
+            // Console.WriteLine($"Hit horaha");
+            
+            // var tempData = new List<cellModel>();
+            // for (var i = 0; i < 10 ; ++i){
+            //     tempData.Add(new cellModel{
+            //         MatrixName = i,
+            //         RowNo = i,
+            //         ColNo = i,
+            //         CellValue = "Sample Text"
+            //     });
+            // }
+            // return Ok(tempData);
+
             int page = 1;
-            int pageSize = 10000;
+            int pageSize = 20;
             try
             {
                 var searchResponse = await _elasticClient.SearchAsync<cellModel>(

@@ -11,6 +11,11 @@ export default class Table {
     canvasTop;
     canvasLeft;
 
+    headermap = ["Email","Name","Country","State","City","Telephone","Address1","Address2","DOB","FY_19_20","FY_20_21","FY_21_22","FY_22_23","FY_23_24"]
+
+    headermapLower = ["email","name","country","state","city","telephone","address1","address2","dob","fY_19_20","fY_20_21","fY_21_22","fY_22_23","fY_23_24"]
+
+
     
     ctxCanvas ;
     // ctxCanvasTop ;
@@ -44,8 +49,9 @@ export default class Table {
     rowSelection = 0;
     isSelectedRow = 0;
 
-    defaultTableWidth = 3900;
+    defaultTableWidth = 1400;
     defaultTableHeight = 880;
+    dataRow = [];
     data = new Map();
     // Array.from({ length: 100 }, () => Array(100).fill());;
     
@@ -390,47 +396,6 @@ export default class Table {
         this.refresh();
     }
 
-    scrollXaxis(){
-        console.warn("ScrollX Toxic Hit");
-        this.canvasDiv.addEventListener("scroll", (e) => {
-            
-                 
-           if(this.canvasDiv.scrollTop + this.defaultTableHeight >= this.canvasDiv.scrollHeight){
-                const canvas1 = document.createElement("canvas");
-                canvas1.id = `canvasMain_canvas_${this.verticalMainCanvasID++}`;
-                canvas1.height = this.defaultTableHeight;
-                canvas1.width = this.defaultTableWidth;
-                if(this.canvasMainDiv) this.canvasMainDiv.appendChild(canvas1);
-                // else console.log("nahi dikh raha");
-                this.drawGrid(canvas1);
-
- 
-               const canvasLeft1 = document.createElement("canvas");
-                canvasLeft1.id = `canvasLeft_${this.sheetID}_${this.verticalMainCanvasID-1}`;
-                canvasLeft1.classList.add('canvasLeft')
-                canvasLeft1.height = this.defaultTableHeight;
-                canvasLeft1.width = 40;
-                if(this.canvasMainDiv) this.canvasLeftDiv.appendChild(canvasLeft1);
-                // else console.log("nahi dikh raha");
-                this.drawLeftHeadingsGrid(canvasLeft1);
-
-            }
-            // console.log(this.canvasDiv.clientWidth);
-            // console.log(this.canvasDiv.scrollLeft, this.canvasDiv.scrollWidth)
-
-            // if(this.canvasDiv.scrollLeft + this.canvasDiv.clientWidth >= this.canvasDiv.scrollWidth){
-            //     console.log("add right");
-            //     const canvas1 = document.createElement("canvas");
-            //     canvas1.id = "canvas";
-            //     canvas1.height = this.defaultTableHeight;
-            //     canvas1.width = this.defaultTableWidth;
-            //     if(this.canvasMainDiv) this.canvasMainDiv.appendChild(canvas1);
-            //     else console.log("nahi dikh raha")
-            //     // const tableInstance = new Table();
-            // }
-        });
-    }
-
     addEventListeners() {
 
         // this.canvasDivDiv.addEventListener("scroll",(e) => this.handleScroll);
@@ -589,7 +554,7 @@ export default class Table {
         divToBeDraggable.addEventListener('pointerdown', (e) => {
             e.preventDefault();
             offsetX = e.clientX - divToBeDraggable.getBoundingClientRect().left 
-            // + this.canvasMainDiv.getBoundingClientRect().left 
+            // + this..getBoundingClientRect().left 
             ;
             offsetY = e.clientY  - divToBeDraggable.getBoundingClientRect().top 
             // + this.canvasMainDiv.getBoundingClientRect().top
@@ -2733,20 +2698,16 @@ export default class Table {
         this.startY=startY;
         // console.log(this.sheetID,startX,startY);
         // await axios.get("http://localhost:5003/userDetail")
-        await axios.get(`http://localhost:5163/api/getPageData?matrixName=${this.sheetID}&rowNo=${startY}&colNo=${startX}`)
+        await axios.get(`http://localhost:5163/api/_getPageData?matrixName=${this.sheetID}&rowNo=${startY}&colNo=${startX}`)
         .then((response) => {
             
             for(let j = 0; j < response.data.length; ++j){
-                if (!this.data.has(response.data[j].rowNo - 1)) {
-                    this.data.set(response.data[j].rowNo - 1, new Map());
-                }
-                this.data.get(response.data[j].rowNo - 1).set(response.data[j].colNo - 1, response.data[j].cellValue);
-
-                // this.setCellValue(response.data[j].rowNo - 1, response.data[j].colNo - 1, response.data[j].cellValue);
-                // for( let i = 0; i< response.data[0].length ; ++i){
-                //     // this.data[j][i] = response.data[j][i];
-                //     this.setCellValue(j, i, response.data[j][i]);
+                // if (!this.data.has(response.data[j].rowNo - 1)) {
+                //     this.data.set(response.data[j].rowNo - 1, new Map());
                 // }
+                // this.data.get(response.data[j].rowNo - 1).set(response.data[j].colNo - 1, response.data[j].cellValue);
+
+                this.dataRow.push(response.data[j]);
             }
             // console.log(response.data);
             // this.drawTableData();
@@ -3127,7 +3088,8 @@ export default class Table {
             }
             
             ctxCanvasTop.fillText(
-                this.convertToTitle(i + 1),
+                this.headermap[i],
+                // this.convertToTitle(i + 1),
                 x + columnWidth / 2,
                 this.canvasTop.height *3 / 4
             );
@@ -3210,13 +3172,15 @@ export default class Table {
         let y = this.topSpaceCache - this.scrollYaxisValue;
         
 
-        
+        // console.log(this.dataRow);
         for (var i = startX; this.startX < this.endX; i++,this.startX++) {
             // ctx.fillText(columnHeaders[i], columnWidth * i + columnWidth / 2, rowHeight / 2);
             y += (this.rowHeight / 2) + (this.leftSizeMap[i+1]/2  || 0);
             for (var j = startY; this.startY < this.endY ;j++,this.startY++) {
 
-                let cellData = this.getCellValue(this.startX, this.startY);
+                // let cellData = this.getCellValue(this.startX, this.startY);
+                let cellData = this.dataRow[this.startX][this.headermapLower[this.startY]] || "";
+                // console.log(cellData);
                 
                 // console.log(this.ctxCanvas.measureText(cellData).width / 12);
                 // ((((this.columnWidth / 2) + (this.topSizeMap[j+1]/2  || 0))/4)-3);

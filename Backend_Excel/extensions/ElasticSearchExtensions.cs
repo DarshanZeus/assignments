@@ -33,7 +33,7 @@ namespace Backend_Excel.extensions
 
             services.AddSingleton<IElasticClient>(client);
 
-            CreateIndex(client, defaultIndex);
+            if(defaultIndex != null) CreateIndex(client, defaultIndex);
         }
 
         private static void AddDefaultMappings(ConnectionSettings settings)

@@ -179,8 +179,8 @@ namespace Backend_Excel.Controllers
                             mandatory : false,
                             basicProperties: null,
                             body: dataStr);
-                        
-                        BulkIndexCellDataAsync(listVal);
+
+                        _ = BulkIndexCellDataAsync(listVal);
                         listA.Clear();
                         listVal.Clear();
                     }
