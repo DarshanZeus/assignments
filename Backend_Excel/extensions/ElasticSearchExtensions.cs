@@ -25,7 +25,7 @@ namespace Backend_Excel.extensions
                 .DisablePing()
                 .DisableDirectStreaming() // This will capture the request and response for logging
                 .EnableApiVersioningHeader()
-                .DefaultIndex("cellmodel");
+                .DefaultIndex("rowmodel");
 
             AddDefaultMappings(settings);
 
@@ -39,10 +39,10 @@ namespace Backend_Excel.extensions
         private static void AddDefaultMappings(ConnectionSettings settings)
         {
             settings
-                .DefaultMappingFor<cellModel>(m => m);
+                .DefaultMappingFor<RowModel>(m => m);
         }
 
-        private static void CreateIndex(IElasticClient client, string indexName = "cellmodel")
+        private static void CreateIndex(IElasticClient client, string indexName = "rowmodel")
         {
             var indexExistsResponse = client.Indices.Exists(indexName);
     
@@ -57,12 +57,12 @@ namespace Backend_Excel.extensions
                     .NumberOfShards(1)
                     .NumberOfReplicas(0)
                 )
-                .Map<cellModel>(m => m.AutoMap())
+                .Map<RowModel>(m => m.AutoMap())
             );
 
             if (createIndexResponse.IsValid)
             {
-                // Console.WriteLine("Index created successfully.");
+                Console.WriteLine("Index created successfully.");
             }
             else
             {

@@ -276,7 +276,7 @@ export default class Table {
     async handleUploadingCSV(formData){
         console.warn("Start Fun");
         // try {
-            await axios.post("http://localhost:5163/api/CSVfileUpload", formData
+            await axios.post("http://localhost:5163/api/_CSVfileUpload", formData
             //     {
             //     file : fileInput.files[0],
             //     sheetId : 9821
