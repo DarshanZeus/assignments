@@ -37,7 +37,7 @@ namespace Backend_Excel.Controllers
 
         [HttpPost("_searchrow")]
         public async Task<ActionResult> _searchStaticRowDataAsync(
-            [FromQuery] string query = "data"
+            [FromBody] RowModelSearch query
         )
         {
 
@@ -69,7 +69,7 @@ namespace Backend_Excel.Controllers
 
                 // Return only the documents found, not the entire response
                 // var results = searchResponse.Hits.Select(hit => hit.Source).ToList();
-                return await SearchRowModelAsync(query, page: 1, pageSize: 10);;
+                return await SearchRowModelAsync(query, page: 1, pageSize: 10); ;
             }
             catch (Exception ex)
             {
@@ -88,58 +88,237 @@ namespace Backend_Excel.Controllers
                 // }
             }
         }
-        public async Task<ActionResult> SearchRowModelAsync(string query, int page = 1, int pageSize = 10)
+        // public async Task<ActionResult> SearchRowModelAsync(string query, int page = 1, int pageSize = 10)
+        // {
+        //     var searchResponse = await _elasticClient.SearchAsync<RowModel>(s => s
+        //         .From((page - 1) * pageSize)
+        //         .Size(pageSize)
+        //         .Query(q => q
+        //             .Bool(b => b
+        //                 .Should(
+        //                     bs => bs.Wildcard(wc => wc
+        //                         .Field(f => f.Email.Suffix("keyword"))
+        //                         .Value($"*{query.ToLower()}*")
+        //                         .CaseInsensitive(true)
+        //                     ),
+        //                     bs => bs.Wildcard(wc => wc
+        //                         .Field(f => f.Name.Suffix("keyword"))
+        //                         .Value($"*{query.ToLower()}*")
+        //                         .CaseInsensitive(true)
+        //                     ),
+        //                     bs => bs.Wildcard(wc => wc
+        //                         .Field(f => f.Telephone.Suffix("keyword"))
+        //                         .Value($"*{query.ToLower()}*")
+        //                         .CaseInsensitive(true)
+        //                     ),
+        //                     bs => bs.Wildcard(wc => wc
+        //                         .Field(f => f.Address1.Suffix("keyword"))
+        //                         .Value($"*{query.ToLower()}*")
+        //                         .CaseInsensitive(true)
+        //                     ),
+        //                     bs => bs.Wildcard(wc => wc
+        //                         .Field(f => f.DOB.Suffix("keyword"))
+        //                         .Value($"*{query.ToLower()}*")
+        //                         .CaseInsensitive(true)
+        //                     )
+        //                 )
+        //             )
+        //         )
+        //     );
+
+        //     if (!searchResponse.IsValid)
+        //     {
+        //         Console.WriteLine($"Search failed: {searchResponse.DebugInformation}");
+        //         return BadRequest(searchResponse);
+        //     }
+        //     // return Ok(searchResponse);
+
+        //     var results = searchResponse.Hits.Select(hit => hit.Source).ToList();
+        //     return Ok(results);
+        // }
+
+        public async Task<ActionResult> SearchRowModelAsync(RowModelSearch query, int page = 1, int pageSize = 10)
         {
-            var searchResponse = await _elasticClient.SearchAsync<RowModel>(s => s
+            var searchQuery = query.SearchQuery.ToLower();
+
+            var searchDescriptor = new SearchDescriptor<RowModel>()
                 .From((page - 1) * pageSize)
                 .Size(pageSize)
-                .Query(q => q
-                    .Bool(b => b
-                        .Should(
-                            bs => bs.Wildcard(wc => wc
-                                .Field(f => f.Email.Suffix("keyword"))
-                                .Value($"*{query.ToLower()}*")
-                                .CaseInsensitive(true)
-                            ),
-                            bs => bs.Wildcard(wc => wc
-                                .Field(f => f.Name.Suffix("keyword"))
-                                .Value($"*{query.ToLower()}*")
-                                .CaseInsensitive(true)
-                            ),
-                            bs => bs.Wildcard(wc => wc
-                                .Field(f => f.Telephone.Suffix("keyword"))
-                                .Value($"*{query.ToLower()}*")
-                                .CaseInsensitive(true)
-                            ),
-                            bs => bs.Wildcard(wc => wc
-                                .Field(f => f.Address1.Suffix("keyword"))
-                                .Value($"*{query.ToLower()}*")
-                                .CaseInsensitive(true)
-                            ),
-                            bs => bs.Wildcard(wc => wc
-                                .Field(f => f.DOB.Suffix("keyword"))
-                                .Value($"*{query.ToLower()}*")
-                                .CaseInsensitive(true)
-                            )
-                        )
-                    )
-                )
-            );
+                .Query(q => q.Bool(b => b.Should(BuildFieldQueries(query, searchQuery))));
+
+            var searchResponse = await _elasticClient.SearchAsync<RowModel>(searchDescriptor);
 
             if (!searchResponse.IsValid)
             {
                 Console.WriteLine($"Search failed: {searchResponse.DebugInformation}");
                 return BadRequest(searchResponse);
             }
-            // return Ok(searchResponse);
 
             var results = searchResponse.Hits.Select(hit => hit.Source).ToList();
             return Ok(results);
-            foreach (var result in results)
+        }
+
+        private Func<QueryContainerDescriptor<RowModel>, QueryContainer>[] BuildFieldQueries(RowModelSearch query, string searchQuery)
+        {
+            var queries = new List<Func<QueryContainerDescriptor<RowModel>, QueryContainer>>();
+
+            if (query.Email)
             {
-                Console.WriteLine($"Email: {result.Email}, Name: {result.Name}, Telephone: {result.Telephone}, Address1: {result.Address1}, DOB: {result.DOB}");
+                Console.WriteLine($"Email");
+                
+                queries.Add(q => q.Wildcard(wc => wc
+                    .Field(f => f.Email.Suffix("keyword"))
+                    .Value($"*{searchQuery}*")
+                    .CaseInsensitive(true)
+                ));
             }
-            return Ok();
+
+            if (query.Name)
+            {
+                Console.WriteLine($"Name");
+                
+                queries.Add(q => q.Wildcard(wc => wc
+                    .Field(f => f.Name.Suffix("keyword"))
+                    .Value($"*{searchQuery}*")
+                    .CaseInsensitive(true)
+                ));
+            }
+
+            if (query.Telephone)
+            {
+                Console.WriteLine($"Telephone");
+                
+                queries.Add(q => q.Wildcard(wc => wc
+                    .Field(f => f.Telephone.Suffix("keyword"))
+                    .Value($"*{searchQuery}*")
+                    .CaseInsensitive(true)
+                ));
+            }
+
+            if (query.Address1)
+            {
+                Console.WriteLine($"Address1");
+                
+                queries.Add(q => q.Wildcard(wc => wc
+                    .Field(f => f.Address1.Suffix("keyword"))
+                    .Value($"*{searchQuery}*")
+                    .CaseInsensitive(true)
+                ));
+            }
+
+            if (query.DOB)
+            {
+                Console.WriteLine($"DOB");
+                
+                queries.Add(q => q.Wildcard(wc => wc
+                    .Field(f => f.DOB.Suffix("keyword"))
+                    .Value($"*{searchQuery}*")
+                    .CaseInsensitive(true)
+                ));
+            }
+
+            if (query.State)
+            {
+                Console.WriteLine($"State");
+                
+                queries.Add(q => q.Wildcard(wc => wc
+                    .Field(f => f.State.Suffix("keyword"))
+                    .Value($"*{searchQuery}*")
+                    .CaseInsensitive(true)
+                ));
+            }
+
+            if (query.City)
+            {
+                Console.WriteLine($"City");
+                
+                queries.Add(q => q.Wildcard(wc => wc
+                    .Field(f => f.City.Suffix("keyword"))
+                    .Value($"*{searchQuery}*")
+                    .CaseInsensitive(true)
+                ));
+            }
+
+            if (query.Country)
+            {
+                Console.WriteLine($"Country");
+                
+                queries.Add(q => q.Wildcard(wc => wc
+                    .Field(f => f.Country.Suffix("keyword"))
+                    .Value($"*{searchQuery}*")
+                    .CaseInsensitive(true)
+                ));
+            }
+
+            if (query.Address2)
+            {
+                Console.WriteLine($"Address2");
+                
+                queries.Add(q => q.Wildcard(wc => wc
+                    .Field(f => f.Address2.Suffix("keyword"))
+                    .Value($"*{searchQuery}*")
+                    .CaseInsensitive(true)
+                ));
+            }
+
+            // Repeat the above pattern for all other fields
+            // For example:
+            if (query.FY_19_20)
+            {
+                Console.WriteLine($"FY_19_20");
+                
+                queries.Add(q => q.Wildcard(wc => wc
+                    .Field(f => f.FY_19_20.Suffix("keyword"))
+                    .Value($"*{searchQuery}*")
+                    .CaseInsensitive(true)
+                ));
+            }
+
+            if (query.FY_20_21)
+            {
+                Console.WriteLine($"FY_20_21");
+                
+                queries.Add(q => q.Wildcard(wc => wc
+                    .Field(f => f.FY_20_21.Suffix("keyword"))
+                    .Value($"*{searchQuery}*")
+                    .CaseInsensitive(true)
+                ));
+            }
+
+            if (query.FY_21_22)
+            {
+                Console.WriteLine($"FY_21_22");
+                
+                queries.Add(q => q.Wildcard(wc => wc
+                    .Field(f => f.FY_21_22.Suffix("keyword"))
+                    .Value($"*{searchQuery}*")
+                    .CaseInsensitive(true)
+                ));
+            }
+
+            if (query.FY_22_23)
+            {
+                Console.WriteLine($"FY_22_23");
+                
+                queries.Add(q => q.Wildcard(wc => wc
+                    .Field(f => f.FY_22_23.Suffix("keyword"))
+                    .Value($"*{searchQuery}*")
+                    .CaseInsensitive(true)
+                ));
+            }
+
+            if (query.FY_23_24)
+            {
+                Console.WriteLine($"FY_23_24");
+                
+                queries.Add(q => q.Wildcard(wc => wc
+                    .Field(f => f.FY_23_24.Suffix("keyword"))
+                    .Value($"*{searchQuery}*")
+                    .CaseInsensitive(true)
+                ));
+            }
+
+            return queries.ToArray();
         }
 
     }

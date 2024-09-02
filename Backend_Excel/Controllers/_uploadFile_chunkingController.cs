@@ -166,7 +166,8 @@ namespace Backend_Excel.Controllers
                             FY_20_21 = values[10],
                             FY_21_22 = values[11],
                             FY_22_23 = values[12],
-                            FY_23_24 = values[13]
+                            FY_23_24 = values[13],
+                            RowNo = lineReadCnt
                         };
                         listVal.Add(row);
                     }

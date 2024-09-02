@@ -21,5 +21,30 @@ namespace Backend_Excel.Models
         public string FY_21_22 { get; set; } = string.Empty;
         public string FY_22_23 { get; set; } = string.Empty;
         public string FY_23_24 { get; set; } = string.Empty;
+        public int RowNo { get; set; }
+
+        internal object Field(object v)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class RowModelSearch
+    {
+        public bool Email { get; set; }
+        public bool Name { get; set; }
+        public bool Country { get; set; }
+        public bool State { get; set; }
+        public bool City { get; set; }
+        public bool Telephone { get; set; }
+        public bool Address1 { get; set; }
+        public bool Address2 { get; set; }
+        public bool DOB { get; set; }
+        public bool FY_19_20 { get; set; }
+        public bool FY_20_21 { get; set; }
+        public bool FY_21_22 { get; set; }
+        public bool FY_22_23 { get; set; }
+        public bool FY_23_24 { get; set; }
+        public string SearchQuery { get; set; } = string.Empty;
     }
 }

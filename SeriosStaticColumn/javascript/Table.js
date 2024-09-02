@@ -7,17 +7,17 @@ export default class Table {
      */
 
 
-    canvas ;
+    canvas;
     canvasTop;
     canvasLeft;
 
-    headermap = ["Email","Name","Country","State","City","Telephone","Address1","Address2","DOB","FY_19_20","FY_20_21","FY_21_22","FY_22_23","FY_23_24"]
+    headermap = ["Email", "Name", "Country", "State", "City", "Telephone", "Address1", "Address2", "DOB", "FY_19_20", "FY_20_21", "FY_21_22", "FY_22_23", "FY_23_24"]
 
-    headermapLower = ["email","name","country","state","city","telephone","address1","address2","dob","fY_19_20","fY_20_21","fY_21_22","fY_22_23","fY_23_24"]
+    headermapLower = ["email", "name", "country", "state", "city", "telephone", "address1", "address2", "dob", "fY_19_20", "fY_20_21", "fY_21_22", "fY_22_23", "fY_23_24"]
 
 
-    
-    ctxCanvas ;
+
+    ctxCanvas;
     // ctxCanvasTop ;
     // ctxCanvasLeft ;
     columnWidth = 100;
@@ -26,7 +26,7 @@ export default class Table {
     minCountRow = 0;
     minCountCol = 0;
     maxCountRow = 1048576;
-    maxCountCol = 2000000/100; //16384;
+    maxCountCol = 2000000 / 100; //16384;
 
     startCellsX = 0;
     startCellsY = 0;
@@ -37,12 +37,12 @@ export default class Table {
     isClickedOnLeftHeadingCanvas = 0;
     isClickedOnMainCanvas = 0;
 
-    
+
 
     selection = 0;
     selectionTop = 0;
     selectionLeft = 0;
-    
+
     colSelection = 0;
     isSelectedCol = 0;
 
@@ -51,10 +51,10 @@ export default class Table {
 
     defaultTableWidth = 1400;
     defaultTableHeight = 880;
-    dataRow = [];
+    dataRow = {};
     data = new Map();
     // Array.from({ length: 100 }, () => Array(100).fill());;
-    
+
     isCellsCopyCut = 0;
     isCutFlag = 0;
     // copyCutData = [];
@@ -101,7 +101,7 @@ export default class Table {
     scrollXaxisValue = 0;
     scrollYaxisValue = 0;
 
-    
+
 
 
     constructor(mainCanvasName) {
@@ -121,8 +121,8 @@ export default class Table {
         this.canvasMainDiv = document.getElementById(`canvasMain`);
         this.canvasTopDiv = document.getElementById("canvasTopDiv");
         this.canvasLeftDiv = document.getElementById("canvasLeftDiv");
-        
-        
+
+
         this.barChartBtn = document.getElementById("barChartBtn");
         this.lineChartBtn = document.getElementById("lineChartBtn");
         this.pieChartBtn = document.getElementById("pieChartBtn");
@@ -146,12 +146,12 @@ export default class Table {
         this.copyCutEndX = -1;
         this.copyCutEndY = -1;
         this.statCalRef = [];
-        if(this.ipBox) this.ipBox.style.display = `none`;
-        if(this.copyCutAnimationDiv) this.copyCutAnimationDiv.remove(); 
-        if(this.dottedVerticalLineDiv) this.dottedVerticalLineDiv.style.display = `none`;
-        if(this.dottedHorizontalLineDiv) this.dottedHorizontalLineDiv.style.display = `none`;
-        
-        
+        if (this.ipBox) this.ipBox.style.display = `none`;
+        if (this.copyCutAnimationDiv) this.copyCutAnimationDiv.remove();
+        if (this.dottedVerticalLineDiv) this.dottedVerticalLineDiv.style.display = `none`;
+        if (this.dottedHorizontalLineDiv) this.dottedHorizontalLineDiv.style.display = `none`;
+
+
         this.isIntersectRegionTop = this.isIntersectRegionTop.bind(this);
         this.resizeColumnPointerDown = this.resizeColumnPointerDown.bind(this);
         this.resizeColumnPointerMove = this.resizeColumnPointerMove.bind(this);
@@ -166,7 +166,7 @@ export default class Table {
         this.isFindActive = false;
         this.findStrData = "";
 
-        
+
         this.isIntersectRegionLeft = this.isIntersectRegionLeft.bind(this);
         this.resizeRowPointerDown = this.resizeRowPointerDown.bind(this);
         this.resizeRowPointerMove = this.resizeRowPointerMove.bind(this);
@@ -174,7 +174,7 @@ export default class Table {
         this.getRowNumber = this.getRowNumber.bind(this);
 
 
-        
+
         this.selectionPointerDown = this.selectionPointerDown.bind(this);
         this.selectionPointerMove = this.selectionPointerMove.bind(this);
         this.selectionPointerUp = this.selectionPointerUp.bind(this);
@@ -186,7 +186,7 @@ export default class Table {
         this.mainCanvasKeyDown = this.mainCanvasKeyDown.bind(this);
         this.mainCanvasKeyUp = this.mainCanvasKeyUp.bind(this);
 
-        
+
         this.placeInputBox = this.placeInputBox.bind(this);
         this.ipBoxKeyDown = this.ipBoxKeyDown.bind(this);
         this.getRecomendations = this.getRecomendations.bind(this);
@@ -204,17 +204,17 @@ export default class Table {
         this.drawSelectionDiv = this.drawSelectionDiv.bind(this);
         this.handleUploadBar = this.handleUploadBar.bind(this);
 
-        
+
         this.drawTopHeadingsGrid = this.drawTopHeadingsGrid.bind(this);
         this.drawTableTopHeading = this.drawTableTopHeading.bind(this);
-        
+
         this.topHeadingPointerMove = this.topHeadingPointerMove.bind(this);
         this.leftHeadingPointerMove = this.leftHeadingPointerMove.bind(this);
-        
+
         this.windowPointerMove = this.windowPointerMove.bind(this);
         this.windowPointerUp = this.windowPointerUp.bind(this);
 
-        
+
         this.makeChartDraggable = this.makeChartDraggable.bind(this);
         this.createBarChart = this.createBarChart.bind(this);
         this.createLineChart = this.createLineChart.bind(this);
@@ -227,30 +227,30 @@ export default class Table {
         this.getCellValue = this.getCellValue.bind(this);
         this.deleteCell = this.deleteCell.bind(this);
 
-        
+
         this.uploadFormSubmitFunc = this.uploadFormSubmitFunc.bind(this);
         this.handleScrollDataPagination = this.handleScrollDataPagination.bind(this);
 
 
         this.scrollXrefreshValue = 300;
         this.scrollYrefreshValue = 4000;
-        
-        
+
+
     }
 
-    refresh(){
+    refresh() {
         // console.log("refresh");
         this.drawTableTopHeading();
         this.drawTableLeftHeading();
 
-        
+
         this.selection = 1;
         this.drawSelection();
         this.selection = 0;
     }
 
-    async uploadFormSubmitFunc(e){
-        e.preventDefault(); 
+    async uploadFormSubmitFunc(e) {
+        e.preventDefault();
         // this.fileIP = document.getElementById("ChooseFile");
         // console.log(this.fileIP, this.fileIP.value);
         console.warn("clicked submit");
@@ -259,24 +259,24 @@ export default class Table {
         } else {
             const fileInput = document.getElementById("ChooseFile");
             const formData = new FormData();
-    
+
             formData.append("file", fileInput.files[0]);
             formData.append("sheetID", this.sheetID);
 
             // console.log(formData.get("file"));
             // console.log(formData.get("sheetId"));
-            
+
             console.warn("Pre fun");
             await this.handleUploadingCSV(formData);
             console.warn("Post Fun");
         }
-        
+
         console.warn("Post --------------------------------- Fun");
     }
-    async handleUploadingCSV(formData){
+    async handleUploadingCSV(formData) {
         console.warn("Start Fun");
         // try {
-            await axios.post("http://localhost:5163/api/_CSVfileUpload", formData
+        await axios.post("http://localhost:5163/api/_CSVfileUpload", formData
             //     {
             //     file : fileInput.files[0],
             //     sheetId : 9821
@@ -293,7 +293,7 @@ export default class Table {
                 console.error("Error:", error);
                 alert(error);
             });
-            
+
         // } catch (error) {
         //     console.error("Error ", error);
         //     alert("Error ", error);
@@ -301,17 +301,17 @@ export default class Table {
         console.warn("End Fun");
     }
 
-    async handleUploadBar(){
+    async handleUploadBar() {
         var statusBar = document.getElementById("statusBar");
         var fillStatusBar = document.getElementById("fillStatusBar");
         var uploadSucceed = document.getElementById("upload-succeed");
-    
+
         await axios.get(`http://localhost:5163/api/getUploadStatus`)
             .then((response) => {
-                if(response.data === -1){
-                    
+                if (response.data === -1) {
+
                 }
-                else if(response.data >= 100){
+                else if (response.data >= 100) {
                     statusBar.style.display = `none`;
                     uploadSucceed.style.display = `flex`;
                     // alert(`File Uploaded Succeed..!!! 🎉`);
@@ -333,22 +333,22 @@ export default class Table {
 
                     return;
                 }
-                else{
+                else {
                     statusBar.style.display = `block`;
                     fillStatusBar.style.width = `${response.data}%`;
                     // fillStatusBar.innerHTML = `${response.data}%`;
                 }
 
                 setTimeout(this.handleUploadBar, 1000);
-    
+
             })
             .catch(
                 (error) => {
                     console.error("Error:", error);
                 }
             );
-    
-    
+
+
         // if(!fillBar){
         //     var secondTopLine = document.getElementById("secondTopLine");
         //     var bar = document.createElement("div");
@@ -356,39 +356,39 @@ export default class Table {
         //     fillBar.id = "fillBar";
         //     secondTopLine.append(bar);
         //     bar.append(fillBar);
-    
+
         //     bar.style.marginTop = `40px`;
         //     bar.style.height = `20px`;
         //     bar.style.width = `500px`;
         //     bar.style.border = `1px solid black`;
-    
+
         //     fillBar.style.height = `100%`;
         //     fillBar.style.backgroundColor = '#137e43'
         // }
-            
+
     }
 
-    async handleScrollDataPagination(e){
-            
+    async handleScrollDataPagination(e) {
+
         this.scrollXrefreshValue += Math.abs(this.canvasDivDiv.scrollLeft - this.scrollXaxisValue);
         this.scrollYrefreshValue += Math.abs(this.canvasDivDiv.scrollTop - this.scrollYaxisValue);
 
         this.scrollXaxisValue = this.canvasDivDiv.scrollLeft;
         this.scrollYaxisValue = this.canvasDivDiv.scrollTop;
-        
+
         this.topCellCache = this.getRowNumber(this.scrollYaxisValue);
         this.leftCellCache = this.getColumnNumber(this.scrollXaxisValue);
         this.topSpaceCache = this.getTopHeight(this.topCellCache);
         this.leftSpaceCache = this.getLeftWidth(this.leftCellCache);
 
         // console.log(this.scrollYaxisValue);
-        if(this.scrollXrefreshValue >= 4000){
+        if (this.scrollXrefreshValue >= 4000) {
             this.scrollXrefreshValue = 0;
-            await this.loadData( Math.ceil(this.scrollXaxisValue/this.columnWidth) ,  Math.ceil(this.scrollYaxisValue/this.rowHeight));
+            await this.loadData(Math.ceil(this.scrollXaxisValue / this.columnWidth), Math.ceil(this.scrollYaxisValue / this.rowHeight));
         }
-        if(this.scrollYrefreshValue >= 1000){
+        if (this.scrollYrefreshValue >= 1000) {
             this.scrollYrefreshValue = 0;
-            await this.loadData( Math.ceil((this.scrollXaxisValue)/this.columnWidth) ,  Math.ceil((this.scrollYaxisValue)/this.rowHeight));
+            await this.loadData(Math.ceil((this.scrollXaxisValue) / this.columnWidth), Math.ceil((this.scrollYaxisValue) / this.rowHeight));
         }
         // if(this.scrollXaxisValue%1000 === 0){
         //     this.loadData( this.scrollXaxisValue/this.columnWidth ,  this.scrollYaxisValue/this.rowHeight);
@@ -402,13 +402,13 @@ export default class Table {
 
         this.canvas.addEventListener("pointerdown", this.selectionPointerDown);
         this.canvas.addEventListener('dblclick', this.placeInputBox);
-        
+
         this.canvasTop.addEventListener("pointerdown", this.resizeColumnPointerDown);
         this.canvasTop.addEventListener('pointermove', this.topHeadingPointerMove);
 
         this.canvasLeft.addEventListener("pointerdown", this.resizeRowPointerDown);
         this.canvasLeft.addEventListener('pointermove', this.leftHeadingPointerMove);
-        
+
         window.addEventListener('pointermove', this.windowPointerMove);
         window.addEventListener('pointerup', this.windowPointerUp);
         window.addEventListener('pointerleave', this.windowPointerUp);
@@ -418,19 +418,19 @@ export default class Table {
 
         this.ipBox.addEventListener("keypress", this.ipBoxKeyDown);
 
-        
+
         this.barChartBtn.addEventListener("click", this.createBarChart);
         this.lineChartBtn.addEventListener("click", this.createLineChart);
         this.pieChartBtn.addEventListener("click", this.createPieChart);
         this.scatterChartBtn.addEventListener("click", this.createScatterChart);
         this.areaChartBtn.addEventListener("click", this.createAreaChart);
 
-        
+
         this.uploadform.addEventListener("submit", this.uploadFormSubmitFunc);
         this.canvasDivDiv.addEventListener("scroll", this.handleScrollDataPagination);
 
-        
-        document.addEventListener('paste', function(e) {
+
+        document.addEventListener('paste', function (e) {
             // console.log(e);
             // console.log(e.clipboardData);
             if (e.clipboardData.types.indexOf('text/html') > -1) {
@@ -442,43 +442,43 @@ export default class Table {
             }
         });
     }
-    async getRecomendations(e){
+    async getRecomendations(e) {
         this.searchSuggestion = document.getElementById("searchSuggestion");
-        if(this.FindipBox.value.length >= 2 && this.FindipBox === document.activeElement){
+        if (this.FindipBox.value.length >= 2 && this.FindipBox === document.activeElement) {
             this.searchSuggestion.innerHTML = ``;
             await axios.post(`http://localhost:5163/api/getRecomendation?query=${this.FindipBox.value}`)
-            .then((response) => {
-                
-                for(let j = 0; j < response.data.length; ++j){
-                    this.searchSuggestion.innerHTML += `
+                .then((response) => {
+
+                    for (let j = 0; j < response.data.length; ++j) {
+                        this.searchSuggestion.innerHTML += `
                     <li class="suggestion"> 
                         <div class="suggestionText"> ${response.data[j]["cellValue"]} </div>
                         <div class="suggestionPosition"> ${this.convertToTitle(response.data[j]["colNo"])}${response.data[j]["rowNo"]} </div>
                     </li>
                     `
-                }
-                console.log("object");
-                var suggestionDivs = document.getElementsByClassName('suggestionText');
-                var FindipBox = document.getElementById('findTextId');
-                for(let i = 0; i < suggestionDivs.length ; ++i){
-                    suggestionDivs[i].addEventListener('click', function() {
-                      console.log(FindipBox.value);
-                        FindipBox.value = suggestionDivs[i].innerHTML;
-                    });
-                }
-            })
-            .catch(
-                (error) => {
-                    console.error("Error:", error);
-                }
-            );
+                    }
+                    // console.log("object");
+
+                    var suggestionDivs = document.getElementsByClassName('suggestionText');
+                    var FindipBox = document.getElementById('findTextId');
+                    for (let i = 0; i < suggestionDivs.length; ++i) {
+                        suggestionDivs[i].addEventListener('click', function () {
+                            FindipBox.value = suggestionDivs[i].innerHTML;
+                        });
+                    }
+                })
+                .catch(
+                    (error) => {
+                        console.error("Error:", error);
+                    }
+                );
             this.searchSuggestion.style.display = `block`;
         }
-        else{
+        else {
             this.searchSuggestion.style.display = `none`;
         }
     }
-    hideRecomendations(e){
+    hideRecomendations(e) {
         this.searchSuggestion.style.display = `none`;
     }
 
@@ -488,13 +488,13 @@ export default class Table {
 
         this.canvas.removeEventListener("pointerdown", this.selectionPointerDown);
         this.canvas.removeEventListener('dblclick', this.placeInputBox);
-        
+
         this.canvasTop.removeEventListener("pointerdown", this.resizeColumnPointerDown);
         this.canvasTop.removeEventListener('pointermove', this.topHeadingPointerMove);
 
         this.canvasLeft.removeEventListener("pointerdown", this.resizeRowPointerDown);
         this.canvasLeft.removeEventListener('pointermove', this.leftHeadingPointerMove);
-        
+
         window.removeEventListener('pointermove', this.windowPointerMove);
         window.removeEventListener('pointerup', this.windowPointerUp);
         window.removeEventListener('pointerleave', this.windowPointerUp);
@@ -504,14 +504,14 @@ export default class Table {
 
         this.ipBox.removeEventListener("keypress", this.ipBoxKeyDown);
 
-        
+
         this.barChartBtn.removeEventListener("click", this.createBarChart);
         this.lineChartBtn.removeEventListener("click", this.createLineChart);
         this.pieChartBtn.removeEventListener("click", this.createPieChart);
         this.scatterChartBtn.removeEventListener("click", this.createScatterChart);
         this.areaChartBtn.removeEventListener("click", this.createAreaChart);
 
-        
+
         this.uploadform.removeEventListener("submit", this.uploadFormSubmitFunc);
         this.canvasDivDiv.removeEventListener("scroll", this.handleScrollDataPagination);
 
@@ -519,8 +519,8 @@ export default class Table {
 
 
 
-        
-        document.removeEventListener('paste', function(e) {
+
+        document.removeEventListener('paste', function (e) {
             // console.log(e);
             // console.log(e.clipboardData);
             // e.clipboardData contains the data that is about to be pasted.
@@ -529,11 +529,11 @@ export default class Table {
                 var newData = '<b>Ha Ha!</b> ' + oldData;
                 console.log(oldData);
                 // console.log(newData);
-            
+
                 // Since we are canceling the paste operation, we need to manually
                 // paste the data into the document.
                 // pasteClipboardData(newData);
-            
+
                 // This is necessary to prevent the default paste action.
                 e.preventDefault();
             }
@@ -546,19 +546,19 @@ export default class Table {
     //     this.refresh();
     // }
 
-    makeChartDraggableOverWindow(divToBeDraggable){
-        
+    makeChartDraggableOverWindow(divToBeDraggable) {
+
         let offsetX, offsetY;
 
 
         divToBeDraggable.addEventListener('pointerdown', (e) => {
             e.preventDefault();
-            offsetX = e.clientX - divToBeDraggable.getBoundingClientRect().left 
-            // + this..getBoundingClientRect().left 
-            ;
-            offsetY = e.clientY  - divToBeDraggable.getBoundingClientRect().top 
-            // + this.canvasMainDiv.getBoundingClientRect().top
-            ;
+            offsetX = e.clientX - divToBeDraggable.getBoundingClientRect().left
+                // + this..getBoundingClientRect().left 
+                ;
+            offsetY = e.clientY - divToBeDraggable.getBoundingClientRect().top
+                // + this.canvasMainDiv.getBoundingClientRect().top
+                ;
 
             document.addEventListener('pointermove', moveElement);
             document.addEventListener('pointerup', stopMovingElement);
@@ -568,8 +568,8 @@ export default class Table {
             const x = e.clientX - offsetX;
             const y = e.clientY - offsetY;
 
-            divToBeDraggable.style.left = `${Math.max(x,0)}px`;
-            divToBeDraggable.style.top = `${Math.max(y,0)}px`;
+            divToBeDraggable.style.left = `${Math.max(x, 0)}px`;
+            divToBeDraggable.style.top = `${Math.max(y, 0)}px`;
         }
 
         function stopMovingElement() {
@@ -579,15 +579,15 @@ export default class Table {
     }
 
 
-    makeChartDraggable(chartDiv){
-        
+    makeChartDraggable(chartDiv) {
+
         let offsetX, offsetY;
 
 
         chartDiv.addEventListener('pointerdown', (e) => {
             e.preventDefault();
             this.selectedChart = chartDiv;
-            offsetX = e.clientX - chartDiv.getBoundingClientRect().left + this.canvasMainDiv.getBoundingClientRect().left ;
+            offsetX = e.clientX - chartDiv.getBoundingClientRect().left + this.canvasMainDiv.getBoundingClientRect().left;
             offsetY = e.clientY - chartDiv.getBoundingClientRect().top + this.canvasMainDiv.getBoundingClientRect().top;
 
             document.addEventListener('pointermove', moveElement);
@@ -598,8 +598,8 @@ export default class Table {
             const x = e.clientX - offsetX;
             const y = e.clientY - offsetY;
 
-            chartDiv.style.left = `${Math.max(x,0)}px`;
-            chartDiv.style.top = `${Math.max(y,0)}px`;
+            chartDiv.style.left = `${Math.max(x, 0)}px`;
+            chartDiv.style.top = `${Math.max(y, 0)}px`;
         }
 
         function stopMovingElement() {
@@ -607,19 +607,19 @@ export default class Table {
             document.removeEventListener('pointerup', stopMovingElement);
         }
     }
-    
-    setChartDivProperties(chartDiv){
+
+    setChartDivProperties(chartDiv) {
         chartDiv.style.height = `288px`;
         chartDiv.style.width = `480px`;
         chartDiv.style.position = `absolute`;
         chartDiv.style.top = `100px`;
         chartDiv.style.left = `100px`;
-        chartDiv.style.backgroundColor = `#fff`; 
+        chartDiv.style.backgroundColor = `#fff`;
         chartDiv.style.padding = `10px`;
         chartDiv.style.border = `1px solid rgb(210,210,210)`;
     }
 
-    setSQChartDivProperties(chartDiv){
+    setSQChartDivProperties(chartDiv) {
         chartDiv.style.height = `388px`;
         chartDiv.style.width = `388px`;
         chartDiv.style.position = `absolute`;
@@ -630,18 +630,18 @@ export default class Table {
         chartDiv.style.border = `1px solid rgb(210,210,210)`;
     }
 
-    setChartCanvasProperties(chartCanvas){
+    setChartCanvasProperties(chartCanvas) {
         chartCanvas.height = 288;
         chartCanvas.width = 480;
     }
 
-    handleMarchingAnts(){
+    handleMarchingAnts() {
         // console.log("joke");
-        if(this.isCellsCopyCut === 0) return;
+        if (this.isCellsCopyCut === 0) return;
 
         this.copyCutAnimationDiv = document.getElementById("copyCutAnimationDiv");
-            // console.log(copyCutAnimationDiv);
-        if(!this.copyCutAnimationDiv){
+        // console.log(copyCutAnimationDiv);
+        if (!this.copyCutAnimationDiv) {
             this.createCopyCutAnimationDiv();
         }
 
@@ -650,22 +650,22 @@ export default class Table {
         let selectionHeight = 0;
         let selectionWidth = 0;
 
-        let lx = Math.min(this.copyCutStartX,this.copyCutEndX);
-        let ly = Math.min(this.copyCutStartY,this.copyCutEndY);
-        let hx = Math.max(this.copyCutStartX,this.copyCutEndX);
-        let hy = Math.max(this.copyCutStartY,this.copyCutEndY);
+        let lx = Math.min(this.copyCutStartX, this.copyCutEndX);
+        let ly = Math.min(this.copyCutStartY, this.copyCutEndY);
+        let hx = Math.max(this.copyCutStartX, this.copyCutEndX);
+        let hy = Math.max(this.copyCutStartY, this.copyCutEndY);
 
-        for(let x = 0; x < lx; ++x){
+        for (let x = 0; x < lx; ++x) {
             selectionLeftSpace += this.columnWidth + (this.topSizeMap[x + 1] || 0);
         }
-        for(let y = 0; y < ly; ++y){
+        for (let y = 0; y < ly; ++y) {
             selectionTopSpace += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
         }
 
-        for(let x = lx; x <= hx ; ++x){
+        for (let x = lx; x <= hx; ++x) {
             selectionWidth += this.columnWidth + (this.topSizeMap[x + 1] || 0);
         }
-        for(let y = ly; y <= hy; ++y){
+        for (let y = ly; y <= hy; ++y) {
             selectionHeight += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
         }
         this.copyCutAnimationDiv.style.display = `block`
@@ -674,7 +674,7 @@ export default class Table {
         this.copyCutAnimationDiv.style.width = `${selectionWidth + 2}px`;
         this.copyCutAnimationDiv.style.height = `${selectionHeight + 2}px`;
 
-        
+
         const style = document.createElement('style');
         const keyframes = `
         @keyframes border-dance {
@@ -687,10 +687,10 @@ export default class Table {
         }`;
         style.textContent = keyframes;
         document.head.appendChild(style);
-        
+
         this.fixedOnFrame.append(this.copyCutAnimationDiv);
 
-        if(this.isCutFlag === 1){
+        if (this.isCutFlag === 1) {
             this.ctxCanvas.fillStyle = "rgba(255,255,255,0.7)";
             this.ctxCanvas.fillRect(
                 selectionLeftSpace,
@@ -701,48 +701,48 @@ export default class Table {
         }
     }
 
-    getSelectionDataForChart(){
+    getSelectionDataForChart() {
         let chartDataX = this.startCellsX;
         let chartDataY = this.startCellsY;
         let chartData = [];
         let chartLabel = [];
 
-        for(let i = 0; i < this.endCellsX - this.startCellsX + 1; ++i){
+        for (let i = 0; i < this.endCellsX - this.startCellsX + 1; ++i) {
             let isNum = true;
             let tempDataStore = [];
-            for(let j = 0; j < this.endCellsY - this.startCellsY + 1; ++j){
+            for (let j = 0; j < this.endCellsY - this.startCellsY + 1; ++j) {
                 let x = this.getCellValue(this.startCellsY + j, this.startCellsX + i);
-                if(isNaN(x)) isNum = false;
+                if (isNaN(x)) isNum = false;
                 tempDataStore.push(x);
             }
-            if(isNum === true) chartData.push({
-                data : tempDataStore,
-                label : `Series${chartData.length + 1}`
+            if (isNum === true) chartData.push({
+                data: tempDataStore,
+                label: `Series${chartData.length + 1}`
             });
             else chartLabel = tempDataStore;
         }
-        
 
-        return { data : chartData, label : chartLabel || chartData};
+
+        return { data: chartData, label: chartLabel || chartData };
     }
-    
+
     getRandomColorName() {
         const colorNames = [
-            "Red", "Green", "Blue", "Yellow", "Purple", "Orange", "Pink", 
+            "Red", "Green", "Blue", "Yellow", "Purple", "Orange", "Pink",
             "Brown", "Black", "White", "Gray", "Cyan", "Magenta", "Maroon",
-            "Olive", "Lime", "Navy", "Teal", "Aqua", "Fuchsia", "Gold", 
-            "Silver", "Bronze", "Coral", "Indigo", "Violet", "Salmon", 
+            "Olive", "Lime", "Navy", "Teal", "Aqua", "Fuchsia", "Gold",
+            "Silver", "Bronze", "Coral", "Indigo", "Violet", "Salmon",
             "Turquoise", "Khaki", "Lavender"
         ];
-    
+
         const randomIndex = Math.floor(Math.random() * colorNames.length);
         return colorNames[randomIndex];
     }
-    
-    
-    
-    createBarChart(){
-        let { data, label} = this.getSelectionDataForChart();
+
+
+
+    createBarChart() {
+        let { data, label } = this.getSelectionDataForChart();
         // console.log({
         //     "Data":data,
         //     "Label":label
@@ -753,9 +753,9 @@ export default class Table {
 
         this.setChartCanvasProperties(chartCanvas);
         this.setChartDivProperties(chartDiv);
-        
-        if(this.canvasMainDiv) this.canvasMainDiv.append(chartDiv);
-        if(chartDiv) chartDiv.append(chartCanvas);
+
+        if (this.canvasMainDiv) this.canvasMainDiv.append(chartDiv);
+        if (chartDiv) chartDiv.append(chartCanvas);
 
         let xChart = new Chart(chartCanvas, {
             type: 'bar',
@@ -775,21 +775,21 @@ export default class Table {
                 }
             }
         });
-        
+
         this.makeChartDraggable(chartDiv);
     }
 
-    createLineChart(){
-        let { data, label} = this.getSelectionDataForChart();
+    createLineChart() {
+        let { data, label } = this.getSelectionDataForChart();
         let chartCanvas = document.createElement("canvas");
         let chartDiv = document.createElement("div");
 
         this.setChartCanvasProperties(chartCanvas);
         this.setChartDivProperties(chartDiv);
-        
-        if(this.canvasMainDiv) this.canvasMainDiv.append(chartDiv);
-        if(chartDiv) chartDiv.append(chartCanvas);
-        
+
+        if (this.canvasMainDiv) this.canvasMainDiv.append(chartDiv);
+        if (chartDiv) chartDiv.append(chartCanvas);
+
 
         let xChart = new Chart(chartCanvas, {
             type: 'line',
@@ -805,21 +805,21 @@ export default class Table {
                 }
             }
         });
-        
+
         this.makeChartDraggable(chartDiv);
     }
 
-    createPieChart(){
-        let { data, label} = this.getSelectionDataForChart();
+    createPieChart() {
+        let { data, label } = this.getSelectionDataForChart();
         let chartCanvas = document.createElement("canvas");
         let chartDiv = document.createElement("div");
 
         this.setChartCanvasProperties(chartCanvas);
         this.setSQChartDivProperties(chartDiv);
-        
-        if(this.canvasMainDiv) this.canvasMainDiv.append(chartDiv);
-        if(chartDiv) chartDiv.append(chartCanvas);
-        
+
+        if (this.canvasMainDiv) this.canvasMainDiv.append(chartDiv);
+        if (chartDiv) chartDiv.append(chartCanvas);
+
 
         let xChart = new Chart(chartCanvas, {
             type: 'pie',
@@ -835,22 +835,22 @@ export default class Table {
                 }
             }
         });
-        
+
         this.makeChartDraggable(chartDiv);
     }
-    
-    createScatterChart(){
-        let { data, label} = this.getSelectionDataForChart();
+
+    createScatterChart() {
+        let { data, label } = this.getSelectionDataForChart();
         // console.log(data);
         let tempdata = [], cnt = 0;
-        for(let list = 0; list < data.length; ++list){
+        for (let list = 0; list < data.length; ++list) {
             tempdata = [];
             cnt = 0;
-            
-            for(let element = 0; element < data[list].data.length; ++element){
+
+            for (let element = 0; element < data[list].data.length; ++element) {
                 tempdata.push({
-                    x:++cnt,
-                    y:data[list].data[element]
+                    x: ++cnt,
+                    y: data[list].data[element]
                 });
             }
             data[list].data = tempdata;
@@ -859,7 +859,7 @@ export default class Table {
             data[list].border = 0;
         }
 
-        
+
 
 
         let chartCanvas = document.createElement("canvas");
@@ -867,10 +867,10 @@ export default class Table {
 
         this.setChartCanvasProperties(chartCanvas);
         this.setChartDivProperties(chartDiv);
-        
-        if(this.canvasMainDiv) this.canvasMainDiv.append(chartDiv);
-        if(chartDiv) chartDiv.append(chartCanvas);
-        
+
+        if (this.canvasMainDiv) this.canvasMainDiv.append(chartDiv);
+        if (chartDiv) chartDiv.append(chartCanvas);
+
 
         let xChart = new Chart(chartCanvas, {
             type: 'scatter',
@@ -886,18 +886,18 @@ export default class Table {
                 }
             }
         });
-        
+
         this.makeChartDraggable(chartDiv);
     }
 
-    createAreaChart(){
-        let { data, label} = this.getSelectionDataForChart();
+    createAreaChart() {
+        let { data, label } = this.getSelectionDataForChart();
 
         let tempdata = [], cnt = 0;
-        for(let list = 0; list < data.length; ++list){
+        for (let list = 0; list < data.length; ++list) {
             tempdata = [];
             cnt = 0;
-            
+
             // for(let element = 0; element < data[list].data.length; ++element){
             //     tempdata.push({
             //         x:++cnt,
@@ -906,7 +906,7 @@ export default class Table {
             // }
             // data[list].data = tempdata;
             // data[list].pointRadius = 4;
-            data[list].fill = true; 
+            data[list].fill = true;
             // data[list].backgroundColor = this.getRandomColorName(); 
             // this.getRandomColorName();
             // data[list].border = 0;
@@ -918,10 +918,10 @@ export default class Table {
 
         this.setChartCanvasProperties(chartCanvas);
         this.setChartDivProperties(chartDiv);
-        
-        if(this.canvasMainDiv) this.canvasMainDiv.append(chartDiv);
-        if(chartDiv) chartDiv.append(chartCanvas);
-        
+
+        if (this.canvasMainDiv) this.canvasMainDiv.append(chartDiv);
+        if (chartDiv) chartDiv.append(chartCanvas);
+
 
         let xChart = new Chart(chartCanvas, {
             type: 'line',
@@ -937,7 +937,7 @@ export default class Table {
                 }
             }
         });
-        
+
         this.makeChartDraggable(chartDiv);
     }
 
@@ -945,70 +945,70 @@ export default class Table {
         let pixelCount = 0;
         let pre = 0;
         let end = 0;
-        for(let i = 0; i < clickX + 10 ; ++i){
-            
+        for (let i = 0; i < clickX + 10; ++i) {
+
             pre = end;
             end += this.columnWidth + (this.topSizeMap[i + 1] || 0);
 
-            if((pre <= clickX) && (clickX <= end)){ 
+            if ((pre <= clickX) && (clickX <= end)) {
                 return i;
             }
         }
         return 0;
     }
 
-    getRowNumber(clickY){
+    getRowNumber(clickY) {
         let pre = 0;
         let end = 0;
-        for(let i = 0; i < clickY + 10; ++i){
+        for (let i = 0; i < clickY + 10; ++i) {
             pre = end;
             end += this.rowHeight + (this.leftSizeMap[i + 1] || 0);
-            
-            if((pre <= clickY) && (clickY <= end)){ 
+
+            if ((pre <= clickY) && (clickY <= end)) {
                 return i;
             }
         }
         return 0;
     }
 
-    getTopHeight(cellNo = 0){
+    getTopHeight(cellNo = 0) {
         // console.log(cellNo);
         let heightAns = this.rowHeight * (cellNo);
-        for(var i in this.leftSizeMap){
-            if(i <= cellNo) heightAns += this.leftSizeMap[i];
+        for (var i in this.leftSizeMap) {
+            if (i <= cellNo) heightAns += this.leftSizeMap[i];
         }
         return heightAns;
     }
 
-    getLeftWidth(cellNo = 0){
+    getLeftWidth(cellNo = 0) {
         // console.log(cellNo);
         let widthAns = this.columnWidth * (cellNo);
-        for(var i in this.topSizeMap){
-            if(i <= cellNo) widthAns += this.topSizeMap[i];
+        for (var i in this.topSizeMap) {
+            if (i <= cellNo) widthAns += this.topSizeMap[i];
         }
         return widthAns;
     }
 
-    isIntersectRegionTop(clickX){
+    isIntersectRegionTop(clickX) {
         let pixelCount = 0;
 
-        for(let i = 1; pixelCount - this.columnWidth < this.defaultTableWidth ; ++i){
-            pixelCount+= this.columnWidth + (this.topSizeMap[i] || 0);
+        for (let i = 1; pixelCount - this.columnWidth < this.defaultTableWidth; ++i) {
+            pixelCount += this.columnWidth + (this.topSizeMap[i] || 0);
             // console.log(i,pixelCount);
-            if(((pixelCount-10) <= clickX) && (clickX <= (pixelCount + 10))) return true;
+            if (((pixelCount - 10) <= clickX) && (clickX <= (pixelCount + 10))) return true;
 
             // if(pixelCount >= clickX) return false;
         }
         return false;
     }
-    
-    isIntersectRegionLeft(clickY){
+
+    isIntersectRegionLeft(clickY) {
         let pixelCount = 0;
 
-        for(let i = 1; pixelCount - this.rowHeight < clickY + 3 ; ++i){
-            pixelCount+= this.rowHeight + (this.leftSizeMap[i] || 0);
+        for (let i = 1; pixelCount - this.rowHeight < clickY + 3; ++i) {
+            pixelCount += this.rowHeight + (this.leftSizeMap[i] || 0);
             // console.log(i,pixelCount);
-            if(((pixelCount-2) <= clickY) && (clickY <= (pixelCount + 2))) return true;
+            if (((pixelCount - 2) <= clickY) && (clickY <= (pixelCount + 2))) return true;
         }
 
         return false;
@@ -1025,37 +1025,37 @@ export default class Table {
 
     async setCellValue(row, col, value) {
         var cellData = [{
-            "MatrixName" : this.sheetID,
-            "RowNo" : row + 1,
-            "ColNo" : col + 1,
+            "MatrixName": this.sheetID,
+            "RowNo": row + 1,
+            "ColNo": col + 1,
             "CellValue": value
         }];
-        
+
         // console.log(cellData);
         await axios.post(`http://localhost:5163/api/setCellData`, cellData)
-        .then((response) => {
-            // console.log(response);
-            if (!this.data.has(row)) {
-                this.data.set(row, new Map());
-            }
-            this.data.get(row).set(col, value);
-        })
-        .catch(
-            (error) => {
-                console.error("Error:", error);
-            }
-        );
+            .then((response) => {
+                // console.log(response);
+                if (!this.data.has(row)) {
+                    this.data.set(row, new Map());
+                }
+                this.data.get(row).set(col, value);
+            })
+            .catch(
+                (error) => {
+                    console.error("Error:", error);
+                }
+            );
 
         // this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        
+
         // // this.drawTableData();
         this.selection = 1;
         this.drawSelection();
         this.selection = 0;
-       
+
     }
 
-    getIdNum(stringID){
+    getIdNum(stringID) {
         let helpString = stringID.split('_');
         return +helpString[helpString.length - 1];
     }
@@ -1072,37 +1072,37 @@ export default class Table {
             const rowMap = this.data.get(row);
             rowMap.delete(col);
             if (rowMap.size === 0) {
-                this.data.delete(row); 
+                this.data.delete(row);
             }
         }
     }
 
     async deleteCell(row, col) {
-        var cellData =[ {
-            "MatrixName" : this.sheetID,
-            "RowNo" : row + 1,
-            "ColNo" : col + 1
+        var cellData = [{
+            "MatrixName": this.sheetID,
+            "RowNo": row + 1,
+            "ColNo": col + 1
         }];
-        await axios.delete(`http://localhost:5163/api/deleteCellData`,{
-            data:cellData
+        await axios.delete(`http://localhost:5163/api/deleteCellData`, {
+            data: cellData
         })
-        .then((response) => {
-            // console.log(response);
-            if (this.data.has(row)) {
-                const rowMap = this.data.get(row);
-                rowMap.delete(col);
-                if (rowMap.size === 0) {
-                    this.data.delete(row); 
+            .then((response) => {
+                // console.log(response);
+                if (this.data.has(row)) {
+                    const rowMap = this.data.get(row);
+                    rowMap.delete(col);
+                    if (rowMap.size === 0) {
+                        this.data.delete(row);
+                    }
                 }
-            }
-        })
-        .catch(
-            (error) => {
-                console.error("Error:", error);
-            }
-        );
+            })
+            .catch(
+                (error) => {
+                    console.error("Error:", error);
+                }
+            );
         this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        
+
         // this.drawTableData();
         this.selection = 1;
         this.drawSelection();
@@ -1112,7 +1112,7 @@ export default class Table {
 
 
 
-    createCopyCutAnimationDiv(){
+    createCopyCutAnimationDiv() {
         this.copyCutAnimationDiv = document.createElement("div");
         this.copyCutAnimationDiv.classList.add("copyCutAnimationDiv");
         this.copyCutAnimationDiv.id = "copyCutAnimationDiv";
@@ -1123,30 +1123,30 @@ export default class Table {
 
         // copyCutAnimationDiv.style.border = "black 2px solid";
 
-        this.copyCutAnimationDiv.style.background = 
-        `linear-gradient(90deg, #217346 70%, #fff 30%), 
+        this.copyCutAnimationDiv.style.background =
+            `linear-gradient(90deg, #217346 70%, #fff 30%), 
         linear-gradient(90deg, #217346 70%, #fff 30%), 
         linear-gradient(0deg, #217346 70%, #fff 30%), 
         linear-gradient(0deg, #217346 70%, #fff 30%)`;
 
-        this.copyCutAnimationDiv.style.backgroundRepeat = 
-        `repeat-x, repeat-x, repeat-y, repeat-y`;
-        
+        this.copyCutAnimationDiv.style.backgroundRepeat =
+            `repeat-x, repeat-x, repeat-y, repeat-y`;
+
         this.copyCutAnimationDiv.style.backgroundSize = `6px 2px, 6px 2px, 2px 6px, 2px 6px`;
         this.copyCutAnimationDiv.style.padding = `10px`;
         this.copyCutAnimationDiv.style.animation = `border-dance 4s infinite linear`;
 
     }
 
-    resizeColumnPointerDown(e){
+    resizeColumnPointerDown(e) {
         // if(this.ipBox.style.display != "none"){
         //     console.log(ipBox.value);
         //     this.ipBox.value = "";
-        
+
         this.ipBox.style.display = "none";
         this.isSelectedAll = false;
         // }
-        
+
         this.selectedChart = null;
 
         this.isClickedOnTopHeadingCanvas = 1;
@@ -1161,12 +1161,12 @@ export default class Table {
 
         let offset = this.canvasTop.getBoundingClientRect();
 
-        if(this.isIntersectRegionTop(e.clientX - offset.x)){
-            
+        if (this.isIntersectRegionTop(e.clientX - offset.x)) {
+
             // this.startColX = -1;
             // this.endColX = -1;
 
-            
+
             this.moveStartX = this.getColumnNumber(e.clientX - offset.x - 10);
             this.startTopX = e.clientX - offset.x;
             this.selectionTop = 1;
@@ -1174,7 +1174,7 @@ export default class Table {
 
 
             let selectionLeftSpace = 0;
-            for(let x = 0; x < this.moveStartX; ++x){
+            for (let x = 0; x < this.moveStartX; ++x) {
                 selectionLeftSpace += this.columnWidth + (this.topSizeMap[x + 1] || 0);
             }
             let selectionWidth = this.columnWidth + (this.topSizeMap[this.moveStartX + 1] || 0);
@@ -1182,7 +1182,7 @@ export default class Table {
             this.ctxCanvas.lineWidth = 2;
             this.ctxCanvas.strokeStyle = "rgb(16,124,65)";
             this.ctxCanvas.strokeRect(
-                selectionLeftSpace - 1 ,
+                selectionLeftSpace - 1,
                 -2,
                 selectionWidth + 2,
                 this.canvas.height + 4
@@ -1193,7 +1193,7 @@ export default class Table {
             //     selectionWidth + 2,
             //     this.canvas.height);
         }
-        else{
+        else {
             let clickX = this.getColumnNumber(e.clientX - offset.x);
             this.startColX = clickX;
             this.endColX = clickX;
@@ -1214,22 +1214,22 @@ export default class Table {
             this.selection = 0;
             // this.drawTableData();
         }
-        
+
 
     }
 
-    resizeColumnPointerMove(e){
+    resizeColumnPointerMove(e) {
         // console.log("hell");
         // console.log(e.clientX, e.clientY)
         let offset = this.canvasTop.getBoundingClientRect();
         // console.log(this.selectionTop);
-        if(this.selectionTop === 1){
+        if (this.selectionTop === 1) {
             // Math.min((this.startTopX - e.offsetX),20);
             const newWidth = Math.max(
-                40 -  this.columnWidth,
+                40 - this.columnWidth,
                 e.clientX - offset.x - this.startTopX + this.prevSizeX
             );
-            
+
             // + (this.topSizeMap[this.startCellsX + 1] || 0)
             ;
             this.topSizeMap[this.moveStartX + 1] = newWidth;
@@ -1247,13 +1247,13 @@ export default class Table {
 
             this.dottedVerticalLineDiv.style.display = "block";
             // this.canvasDiv.append(this.dottedVerticalLineDiv);
-            
+
             this.ctxCanvasTop.clearRect(0, 0, this.canvasTop.width, this.canvasTop.height);
             this.drawTopHeadingsGrid();
             this.drawTableTopHeading();
 
         }
-        if(this.colSelection === 1){
+        if (this.colSelection === 1) {
             // console.log(e.clientY ,offset.x);
             let clickX = this.getColumnNumber(e.clientX - offset.x);
             this.endColX = clickX;
@@ -1270,32 +1270,32 @@ export default class Table {
         }
     }
 
-    resizeColumnPointerUp(e){
-        
+    resizeColumnPointerUp(e) {
+
         let offset = this.canvasTop.getBoundingClientRect();
         // this.dottedVerticalLineDiv.style.display = `none`;
         // if(this.dottedVerticalLineDiv) this.dottedVerticalLineDiv.remove();
-        if(this.selectionTop === 1){
+        if (this.selectionTop === 1) {
             let x = e.clientX;
             x -= offset.x;
             x -= this.startTopX;
             x += this.prevSizeX;
             const newWidth = Math.max(
-                40 -  this.columnWidth,x
+                40 - this.columnWidth, x
             );
-            
+
             this.prevSizeX = 0;
             this.topSizeMap[this.moveStartX + 1] = newWidth;
             // if()
-            if(this.startColX <= this.moveStartX && this.moveStartX <= this.endColX){
-                for(let i = this.startColX; i <= this.endColX; ++i){
+            if (this.startColX <= this.moveStartX && this.moveStartX <= this.endColX) {
+                for (let i = this.startColX; i <= this.endColX; ++i) {
                     this.topSizeMap[i + 1] = newWidth;
                 }
             }
-            
-            
+
+
             this.selectionTop = 0;
-            
+
             // console.log("A", e.clientX,e.clientY);
 
             this.ctxCanvasTop.clearRect(0, 0, this.canvasTop.width, this.canvasTop.height);
@@ -1307,25 +1307,25 @@ export default class Table {
             this.drawSelection();
             this.selection = 0;
             this.ipBox.focus();
-            
+
             this.dottedVerticalLineDiv.style.display = "none";
             // console.log(this.moveStartX,this.moveStartY);
-            
+
             this.moveStartX = -1;
             // console.log(this.topSizeMap);
         }
         else this.colSelection = 0;
     }
 
-    resizeRowPointerDown(e){
+    resizeRowPointerDown(e) {
 
         // if(this.ipBox.style.display != "none"){
         //     console.log(ipBox.value);
-        
+
         this.isSelectedAll = false;
         this.ipBox.style.display = "none";
         // }
-        
+
         this.selectedChart = null;
 
         this.isClickedOnLeftHeadingCanvas = 1;
@@ -1340,14 +1340,14 @@ export default class Table {
         // console.log(e.offsetY);
         let offset = this.canvasLeft.getBoundingClientRect();
 
-        if(this.isIntersectRegionLeft(e.clientY - offset.y + this.scrollYaxisValue)){
+        if (this.isIntersectRegionLeft(e.clientY - offset.y + this.scrollYaxisValue)) {
             this.moveStartY = this.getRowNumber(e.clientY - offset.y + this.scrollYaxisValue - 2);
             this.startLeftY = e.clientY - offset.y + this.scrollYaxisValue;
             this.selectionLeft = 1;
             this.prevSizeY = (this.leftSizeMap[this.moveStartY + 1] || 0);
             // console.log("hel")
             let selectionTopSpace = 0;
-            for(let y = 0; y < this.moveStartY; ++y){
+            for (let y = 0; y < this.moveStartY; ++y) {
                 selectionTopSpace += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
             }
             let selectionHeight = this.rowHeight + (this.leftSizeMap[this.moveStartY + 1] || 0);
@@ -1361,7 +1361,7 @@ export default class Table {
                 selectionHeight
             );
         }
-        else{
+        else {
             let clickY = this.getRowNumber(e.clientY - offset.y + this.scrollYaxisValue);
             this.startRowY = clickY;
             this.endRowY = clickY;
@@ -1386,17 +1386,17 @@ export default class Table {
 
     }
 
-    resizeRowPointerMove(e){
+    resizeRowPointerMove(e) {
         let offset = this.canvasLeft.getBoundingClientRect();
 
-        if(this.selectionLeft === 1){
+        if (this.selectionLeft === 1) {
             const newHeight = Math.max(
                 10 - this.rowHeight,
-                e.clientY - offset.y + this.scrollYaxisValue - this.startLeftY + this.prevSizeY 
+                e.clientY - offset.y + this.scrollYaxisValue - this.startLeftY + this.prevSizeY
             )
-            ;
+                ;
 
-            this.leftSizeMap[this.moveStartY + 1] =  newHeight;
+            this.leftSizeMap[this.moveStartY + 1] = newHeight;
 
             this.dottedHorizontalLineDiv.style.display = "block";
 
@@ -1404,14 +1404,14 @@ export default class Table {
             this.drawLeftHeadingsGrid();
             this.drawTableLeftHeading();
         }
-        if(this.rowSelection === 1){
+        if (this.rowSelection === 1) {
             let clickY = this.getRowNumber(e.clientY - offset.y + this.scrollYaxisValue);
             this.endRowY = clickY;
             this.endCellsY = this.endRowY;
             this.ctxCanvasLeft.clearRect(0, 0, this.canvasLeft.width, this.canvasLeft.height);
             this.drawLeftHeadingsGrid();
             this.drawTableLeftHeading();
-            
+
             this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.selection = 1;
             this.drawSelection();
@@ -1419,21 +1419,21 @@ export default class Table {
         }
     }
 
-    resizeRowPointerUp(e){
-        if(this.selectionLeft === 1){
+    resizeRowPointerUp(e) {
+        if (this.selectionLeft === 1) {
             const newHeight = Math.max(
                 10 - this.rowHeight,
-                e.offsetY - this.startLeftY + this.scrollYaxisValue + this.prevSizeY 
+                e.offsetY - this.startLeftY + this.scrollYaxisValue + this.prevSizeY
             )
-            ;
+                ;
 
-            this.leftSizeMap[this.moveStartY + 1] =  newHeight;
-            if(this.startRowY <= this.moveStartY && this.moveStartY <= this.endRowY){
-                for(let i = this.startRowY; i <= this.endRowY; ++i){
+            this.leftSizeMap[this.moveStartY + 1] = newHeight;
+            if (this.startRowY <= this.moveStartY && this.moveStartY <= this.endRowY) {
+                for (let i = this.startRowY; i <= this.endRowY; ++i) {
                     this.leftSizeMap[i + 1] = newHeight;
                 }
             }
-            
+
             this.selectionLeft = 0;
 
             this.ctxCanvasLeft.clearRect(0, 0, this.canvasLeft.width, this.canvasLeft.height);
@@ -1455,48 +1455,48 @@ export default class Table {
         }
     }
 
-    placeInputBox(e){
-        
+    placeInputBox(e) {
+
         this.selectedChart = null;
 
         this.copyCutAnimationDiv = document.getElementById("copyCutAnimationDiv");
-        if(this.copyCutAnimationDiv) this.copyCutAnimationDiv.remove(); 
+        if (this.copyCutAnimationDiv) this.copyCutAnimationDiv.remove();
         this.isCellsCopyCut = 0;
-        
+
         this.ipBox.style.display = "none";
 
         const ipBoxCellX = this.startCellsX;
         const ipBoxCellY = this.startCellsY;
-        
+
 
         let ipBoxX = this.canvasLeft.width;
         let ipBoxY = this.canvasTop.height;
 
-        for(let x = 0; x < ipBoxCellX; ++x){
+        for (let x = 0; x < ipBoxCellX; ++x) {
             ipBoxX += this.columnWidth + (this.topSizeMap[x + 1] || 0);
         }
-        for(let y = 0; y < ipBoxCellY; ++y){
+        for (let y = 0; y < ipBoxCellY; ++y) {
             ipBoxY += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
         }
 
-        this.ipBox.style.width = `${this.columnWidth - 2 + (this.topSizeMap[this.startCellsX + 1] || 0)}px`;        
-        this.ipBox.style.height = `${this.rowHeight - 2 + (this.leftSizeMap[this.startCellsY + 1] || 0)}px`;      
+        this.ipBox.style.width = `${this.columnWidth - 2 + (this.topSizeMap[this.startCellsX + 1] || 0)}px`;
+        this.ipBox.style.height = `${this.rowHeight - 2 + (this.leftSizeMap[this.startCellsY + 1] || 0)}px`;
 
         this.ipBox.style.top = `${ipBoxY + 2 - this.scrollYaxisValue}px`;
         this.ipBox.style.left = `${ipBoxX + 2 - this.scrollXaxisValue}px`;
         Text
         this.ipBox.style.display = "block";
-        if(this.getCellValue(this.startCellsY, this.startCellsX))
-        this.ipBox.value = this.getCellValue(this.startCellsY, this.startCellsX);
+        if (this.getCellValue(this.startCellsY, this.startCellsX))
+            this.ipBox.value = this.getCellValue(this.startCellsY, this.startCellsX);
         // console.log(this.getCellValue(this.startCellsY, this.startCellsX));
         this.ipBox.focus();
     }
 
-    ipBoxKeyDown(e){
-        
+    ipBoxKeyDown(e) {
+
         this.setCellValue(this.startCellsY, this.startCellsX, ipBox.value);
         // console.log(isNaN("111"));
-        if(e.key === "Enter"){
+        if (e.key === "Enter") {
             // console.log(ipBox.value);
             // this.data[][] = ;
             // this.setCellValue(this.startCellsY, this.startCellsX, ipBox.value);
@@ -1505,7 +1505,7 @@ export default class Table {
             this.startCellsY = Math.min(this.maxCountRow, this.startCellsY + 1);
             this.endCellsY = this.startCellsY;
             this.endCellsX = this.startCellsX;
-            
+
         }
         // else if(e.key === "Shift") e.preventDefault();
 
@@ -1514,35 +1514,35 @@ export default class Table {
         this.selection = 0;
     }
 
-    async handleDeleteAll(){
+    async handleDeleteAll() {
         var cellData = {
-            "MatrixName" : this.sheetID,
-            "RowNo" : 0,
-            "ColNo" : 0,
-            "CellValue" : ""
+            "MatrixName": this.sheetID,
+            "RowNo": 0,
+            "ColNo": 0,
+            "CellValue": ""
         }
-        await axios.delete(`http://localhost:5163/api/deleteAllCellData`,{
-            data:cellData
+        await axios.delete(`http://localhost:5163/api/deleteAllCellData`, {
+            data: cellData
         })
-        .then((response) => {
-        })
-        .catch(
-            (error) => {
-                console.error("Error:", error);
-            }
-        );
+            .then((response) => {
+            })
+            .catch(
+                (error) => {
+                    console.error("Error:", error);
+                }
+            );
     }
 
-    async mainCanvasKeyDown(e){
+    async mainCanvasKeyDown(e) {
         // e.preventDefault();
         // if(this.ipBox.style.display != "none"){
         //     console.log(ipBox.value);
         //     this.data[this.startCellsY][this.startCellsX] = ipBox.value;
-            
+
         //     this.ipBox.value = "";
         // }
-        if(e.ctrlKey){ 
-            if(e.key === 'C' || e.key === 'c'){
+        if (e.ctrlKey) {
+            if (e.key === 'C' || e.key === 'c') {
 
                 this.copyCutStartX = this.startCellsX;
                 this.copyCutStartY = this.startCellsY;
@@ -1553,10 +1553,10 @@ export default class Table {
                 this.handleMarchingAnts();
                 // console.log('c');
             }
-            else if(e.key === 'v' || e.key === 'V'){
+            else if (e.key === 'v' || e.key === 'V') {
                 this.getClipboardData();
             }
-            else if(e.key === 'x' || e.key === 'X'){
+            else if (e.key === 'x' || e.key === 'X') {
                 this.copyCutStartX = this.startCellsX;
                 this.copyCutStartY = this.startCellsY;
                 this.copyCutEndX = this.endCellsX;
@@ -1566,41 +1566,41 @@ export default class Table {
                 this.handleCopy();
                 this.handleMarchingAnts();
             }
-            else if(e.key === 'f' || e.key === 'F'){
+            else if (e.key === 'f' || e.key === 'F') {
                 e.preventDefault();
                 this.handleFindReplace();
             }
-            else if(e.key === 'd' || e.key === 'D'){
+            else if (e.key === 'd' || e.key === 'D') {
                 e.preventDefault();
                 // console.log("del row strt");
-                if(this.isSelectedRow === 1){
+                if (this.isSelectedRow === 1) {
                     var data = {
-                        "MatrixName" : this.sheetID,
-                        "Start" : this.startRowY + 1,
-                        "End" : this.endRowY + 1
+                        "MatrixName": this.sheetID,
+                        "Start": this.startRowY + 1,
+                        "End": this.endRowY + 1
                     };
                     // console.log(this.startRowY + 1, this.endRowY + 1);
                     // return;
-                    await axios.delete(`http://localhost:5163/api/deleteRow`,{
-                        data : data
+                    await axios.delete(`http://localhost:5163/api/deleteRow`, {
+                        data: data
                     })
-                    .then(async(response) => {
-                        // console.log("del row success");
-                        this.data.clear();
-                        await this.loadData();
-                        this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
-                        this.selection = 1;
-                        this.drawSelection();
-                        this.selection = 0;
-                    })
-                    .catch(
-                        (error) => {
-                            console.error("Error:", error);
-                        }
-                    );
+                        .then(async (response) => {
+                            // console.log("del row success");
+                            this.data.clear();
+                            await this.loadData();
+                            this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                            this.selection = 1;
+                            this.drawSelection();
+                            this.selection = 0;
+                        })
+                        .catch(
+                            (error) => {
+                                console.error("Error:", error);
+                            }
+                        );
                 }
             }
-            else if(e.key === 'a' || e.key === 'A'){
+            else if (e.key === 'a' || e.key === 'A') {
                 e.preventDefault();
                 this.startCellsX = this.minCountRow;
                 this.startCellsY = this.minCountCol;
@@ -1612,49 +1612,150 @@ export default class Table {
                 this.selection = 0;
             }
         }
-        else{
+        else {
             this.endColX = -1;
             this.startColX = -1;
             this.endRowY = -1;
             this.startRowY = -1;
         }
-        
+
 
         if (e.key === 'Delete') {
             // console.log('Delete key pressed!');
-            if(this.selectedChart !== null){
+            if (this.selectedChart !== null) {
                 this.selectedChart.remove();
                 this.selectedChart = null;
             }
-            else{
-                if(this.isSelectedAll === true){
-                    
+            else {
+                if (this.isSelectedAll === true) {
+
                     this.data.clear();
                     this.selection = 1;
                     this.drawSelection();
                     this.selection = 0;
-                    await this.handleDeleteAll();                    
+                    await this.handleDeleteAll();
                     return;
                 }
-                let lx= Math.min(this.startCellsX,this.endCellsX);
-                let ly= Math.min(this.startCellsY,this.endCellsY);
-                let hx= Math.max(this.startCellsX,this.endCellsX);
-                let hy= Math.max(this.startCellsY,this.endCellsY);
+                let lx = Math.min(this.startCellsX, this.endCellsX);
+                let ly = Math.min(this.startCellsY, this.endCellsY);
+                let hx = Math.max(this.startCellsX, this.endCellsX);
+                let hy = Math.max(this.startCellsY, this.endCellsY);
                 var listA = [];
-                for(let i = lx; i <= hx; ++i){
-                    for(let j = ly; j <= hy; ++j){
-                        this.deleteOnlyCell(j ,i);
+                for (let i = lx; i <= hx; ++i) {
+                    for (let j = ly; j <= hy; ++j) {
+                        this.deleteOnlyCell(j, i);
                         var cellData = {
-                            "MatrixName" : this.sheetID,
-                            "RowNo" : j + 1,
-                            "ColNo" : i + 1,
+                            "MatrixName": this.sheetID,
+                            "RowNo": j + 1,
+                            "ColNo": i + 1,
                         }
                         listA.push(cellData);
                     }
                 }
-                await axios.delete(`http://localhost:5163/api/deleteCellData`,{
-                    data:listA
+                await axios.delete(`http://localhost:5163/api/deleteCellData`, {
+                    data: listA
                 })
+                    .then((response) => {
+                    })
+                    .catch(
+                        (error) => {
+                            console.error("Error:", error);
+                        }
+                    );
+            }
+        }
+        else if (e.shiftKey) {
+            if (this.ipBox.style.display === `block`) {
+                this.ipBox.focus();
+                return;
+            }
+            if (e.key === "ArrowUp") {
+                // console.log("U");
+                if (this.endCellsY !== -1) this.endCellsY = Math.max(this.minCountRow, this.endCellsY - 1);
+            }
+            else if (e.key === "ArrowDown") {
+                // console.log("D");
+                if (this.endCellsY !== -1) this.endCellsY = Math.min(this.maxCountRow, this.endCellsY + 1);
+            }
+            else if (e.key === "ArrowLeft") {
+                // console.log("L");
+                if (this.endCellsX !== -1) this.endCellsX = Math.max(this.minCountCol, this.endCellsX - 1);
+            }
+            else if (e.key === "ArrowRight") {
+                // console.log("R");
+                if (this.endCellsX !== -1) this.endCellsX = Math.min(this.maxCountCol, this.endCellsX + 1);
+            }
+            this.ipBox.style.display = "none";
+        }
+        else if (e.key === "ArrowUp") {
+            // console.log("U");
+            this.startCellsY = Math.max(this.minCountRow, this.startCellsY - 1);
+            this.endCellsY = this.startCellsY;
+            this.endCellsX = this.startCellsX;
+            this.ipBox.style.display = "none";
+        }
+        else if (e.key === "ArrowDown") {
+            // console.log("D");
+            this.startCellsY = Math.min(this.maxCountRow, this.startCellsY + 1);
+            this.endCellsY = this.startCellsY;
+            this.endCellsX = this.startCellsX;
+            this.ipBox.style.display = "none";
+        }
+        else if (e.key === "ArrowLeft") {
+            // console.log("L");
+            this.startCellsX = Math.max(this.minCountCol, this.startCellsX - 1);
+            this.endCellsY = this.startCellsY;
+            this.endCellsX = this.startCellsX;
+            this.ipBox.style.display = "none";
+        }
+        else if (e.key === "ArrowRight") {
+            // console.log("R");
+            this.startCellsX = Math.min(this.maxCountCol, this.startCellsX + 1);
+            this.endCellsY = this.startCellsY;
+            this.endCellsX = this.startCellsX;
+            this.ipBox.style.display = "none";
+        }
+        else if (e.key === "Enter" && this.ipBox.style.display === "none") {
+
+            this.startCellsY = Math.min(this.maxCountRow, this.startCellsY + 1);
+            this.endCellsY = this.startCellsY;
+            this.endCellsX = this.startCellsX;
+            this.ipBox.style.display = "none";
+        }
+
+        this.selection = 1;
+        this.drawSelection();
+        this.selection = 0;
+
+
+
+
+    }
+
+    async handlePaste() {
+
+        this.canvasMainDiv.style.cursor = "progress";
+        if (this.isCutFlag === 1) {
+            let lx = Math.min(this.copyCutStartX, this.copyCutEndX);
+            let ly = Math.min(this.copyCutStartY, this.copyCutEndY);
+            let hx = Math.max(this.copyCutStartX, this.copyCutEndX);
+            let hy = Math.max(this.copyCutStartY, this.copyCutEndY);
+            var listA = [];
+            for (let i = lx; i <= hx; ++i) {
+                for (let j = ly; j <= hy; ++j) {
+                    this.deleteOnlyCell(j, i);
+                    var cellData = {
+                        "MatrixName": this.sheetID,
+                        "RowNo": j + 1,
+                        "ColNo": i + 1,
+                    }
+                    listA.push(cellData);
+                }
+            }
+
+            await axios.delete(`http://localhost:5163/api/deleteCellData`, {
+                data: listA
+            })
                 .then((response) => {
                 })
                 .catch(
@@ -1662,100 +1763,45 @@ export default class Table {
                         console.error("Error:", error);
                     }
                 );
-            }
-        }
-        else if(e.shiftKey){
-            if(this.ipBox.style.display === `block`){
-                this.ipBox.focus();
-                return;
-            }
-            if(e.key === "ArrowUp"){
-                // console.log("U");
-                if(this.endCellsY !== -1) this.endCellsY = Math.max(this.minCountRow, this.endCellsY - 1);
-            }
-            else if(e.key === "ArrowDown"){
-                // console.log("D");
-                if(this.endCellsY !== -1) this.endCellsY = Math.min(this.maxCountRow, this.endCellsY + 1);
-            }
-            else if(e.key === "ArrowLeft"){
-                // console.log("L");
-                if(this.endCellsX !== -1) this.endCellsX = Math.max(this.minCountCol, this.endCellsX - 1);
-            }
-            else if(e.key === "ArrowRight"){
-                // console.log("R");
-                if(this.endCellsX !== -1) this.endCellsX = Math.min(this.maxCountCol, this.endCellsX + 1);
-            }
-            this.ipBox.style.display = "none";
-        }
-        else if(e.key === "ArrowUp"){
-            // console.log("U");
-            this.startCellsY = Math.max(this.minCountRow, this.startCellsY - 1);
-            this.endCellsY = this.startCellsY;
-            this.endCellsX = this.startCellsX;
-            this.ipBox.style.display = "none";
-        }
-        else if(e.key === "ArrowDown"){
-            // console.log("D");
-            this.startCellsY = Math.min(this.maxCountRow, this.startCellsY + 1);
-            this.endCellsY = this.startCellsY;
-            this.endCellsX = this.startCellsX;
-            this.ipBox.style.display = "none";
-        }
-        else if(e.key === "ArrowLeft"){
-            // console.log("L");
-            this.startCellsX = Math.max(this.minCountCol, this.startCellsX - 1);
-            this.endCellsY = this.startCellsY;
-            this.endCellsX = this.startCellsX;
-            this.ipBox.style.display = "none";
-        }
-        else if(e.key === "ArrowRight"){
-            // console.log("R");
-            this.startCellsX = Math.min(this.maxCountCol, this.startCellsX + 1);
-            this.endCellsY = this.startCellsY;
-            this.endCellsX = this.startCellsX;
-            this.ipBox.style.display = "none";
-        }
-        else if(e.key === "Enter" && this.ipBox.style.display === "none"){
-            
-            this.startCellsY = Math.min(this.maxCountRow, this.startCellsY + 1);
-            this.endCellsY = this.startCellsY;
-            this.endCellsX = this.startCellsX;
-            this.ipBox.style.display = "none";
-        }
-        
-        this.selection = 1;
-        this.drawSelection();
-        this.selection = 0;
 
-        
-        
-        
-    }
+            this.isCutFlag = 0;
+            this.isCellsCopyCut = 0;
+            this.copyCutAnimationDiv = document.getElementById("copyCutAnimationDiv");
+            if (this.copyCutAnimationDiv) this.copyCutAnimationDiv.remove();
+        }
 
-    async handlePaste(){
-        
-        this.canvasMainDiv.style.cursor = "progress";
-        if(this.isCutFlag === 1){
-            let lx= Math.min(this.copyCutStartX,this.copyCutEndX);
-            let ly= Math.min(this.copyCutStartY,this.copyCutEndY);
-            let hx= Math.max(this.copyCutStartX,this.copyCutEndX);
-            let hy= Math.max(this.copyCutStartY,this.copyCutEndY);
-            var listA = [];
-            for(let i = lx; i <= hx; ++i){
-                for(let j = ly; j <= hy; ++j){
-                    this.deleteOnlyCell(j ,i);
-                    var cellData = {
-                        "MatrixName" : this.sheetID,
-                        "RowNo" : j + 1,
-                        "ColNo" : i + 1,
-                    }
-                    listA.push(cellData);
+        let lx = Math.min(this.startCellsX, this.endCellsX);
+        let ly = Math.min(this.startCellsY, this.endCellsY);
+        // console.log(this.copyCutData);
+        let transfromToMatrixHelper = this.copyCutData.split('\n');
+        this.copyCutData = [];
+        for (let rowIndex = 0; rowIndex + 1 < transfromToMatrixHelper.length; ++rowIndex) {
+            let temp = transfromToMatrixHelper[rowIndex].split("	");
+            this.copyCutData.push(temp);
+        }
+
+        this.startCellsX = lx;
+        this.startCellsY = ly;
+        if (this.copyCutData.length) this.endCellsY = ly + this.copyCutData.length - 1;
+        this.endCellsX = lx;
+        if (this.copyCutData[0]) this.endCellsX = lx + this.copyCutData[0].length - 1;
+
+        var listA = [];
+        for (let j = 0; j < this.copyCutData.length; ++j) {
+            for (let i = 0; i < this.copyCutData[0].length; ++i) {
+                // this.data[j + ly][i + lx] = this.copyCutData[j][i];
+                this.setOnlyCellValue(j + ly, i + lx, this.copyCutData[j][i])
+                var cellData = {
+                    "MatrixName": this.sheetID,
+                    "RowNo": j + ly + 1,
+                    "ColNo": i + lx + 1,
+                    "CellValue": this.copyCutData[j][i]
                 }
+                listA.push(cellData);
             }
+        }
 
-            await axios.delete(`http://localhost:5163/api/deleteCellData`,{
-                data:listA
-            })
+        await axios.post(`http://localhost:5163/api/setCellData`, listA)
             .then((response) => {
             })
             .catch(
@@ -1764,52 +1810,6 @@ export default class Table {
                 }
             );
 
-            this.isCutFlag = 0;
-            this.isCellsCopyCut = 0;
-            this.copyCutAnimationDiv = document.getElementById("copyCutAnimationDiv");
-            if(this.copyCutAnimationDiv) this.copyCutAnimationDiv.remove(); 
-        }
-
-        let lx = Math.min(this.startCellsX,this.endCellsX);
-        let ly = Math.min(this.startCellsY,this.endCellsY);
-        // console.log(this.copyCutData);
-        let transfromToMatrixHelper = this.copyCutData.split('\n');
-        this.copyCutData = [];
-        for(let rowIndex = 0; rowIndex + 1 < transfromToMatrixHelper.length ; ++rowIndex){
-            let temp = transfromToMatrixHelper[rowIndex].split("	");
-            this.copyCutData.push(temp);
-        }
-        
-        this.startCellsX = lx;
-        this.startCellsY = ly;
-        if(this.copyCutData.length) this.endCellsY = ly + this.copyCutData.length - 1;
-        this.endCellsX = lx;
-        if(this.copyCutData[0]) this.endCellsX = lx + this.copyCutData[0].length - 1;
-
-        var listA = [];
-        for(let j = 0; j < this.copyCutData.length ; ++j){
-            for(let i = 0; i < this.copyCutData[0].length ; ++i){
-                // this.data[j + ly][i + lx] = this.copyCutData[j][i];
-                this.setOnlyCellValue(j + ly, i + lx, this.copyCutData[j][i])
-                var cellData = {
-                    "MatrixName" : this.sheetID,
-                    "RowNo" : j + ly + 1,
-                    "ColNo" : i + lx + 1,
-                    "CellValue": this.copyCutData[j][i]
-                }
-                listA.push(cellData);
-            }
-        }
-
-        await axios.post(`http://localhost:5163/api/setCellData`, listA)
-        .then((response) => {
-        })
-        .catch(
-            (error) => {
-                console.error("Error:", error);
-            }
-        );
-
         this.drawGrid();
         this.selection = 1;
         this.drawSelection();
@@ -1817,10 +1817,10 @@ export default class Table {
         this.canvasMainDiv.style.cursor = "cell";
     }
 
-    handleCopy(){
+    handleCopy() {
         // this.copyCutAnimationDiv = document.getElementById("copyCutAnimationDiv");
         // if(this.copyCutAnimationDiv) return;
-        if(this.isCellsCopyCut === 0) return;
+        if (this.isCellsCopyCut === 0) return;
 
         // this.copyCutAnimationDiv = document.getElementById("copyCutAnimationDiv");
         //     // console.log(copyCutAnimationDiv);
@@ -1834,10 +1834,10 @@ export default class Table {
         // let selectionHeight = 0;
         // let selectionWidth = 0;
 
-        let lx = Math.min(this.copyCutStartX,this.copyCutEndX);
-        let ly = Math.min(this.copyCutStartY,this.copyCutEndY);
-        let hx = Math.max(this.copyCutStartX,this.copyCutEndX);
-        let hy = Math.max(this.copyCutStartY,this.copyCutEndY);
+        let lx = Math.min(this.copyCutStartX, this.copyCutEndX);
+        let ly = Math.min(this.copyCutStartY, this.copyCutEndY);
+        let hx = Math.max(this.copyCutStartX, this.copyCutEndX);
+        let hy = Math.max(this.copyCutStartY, this.copyCutEndY);
 
 
         // if(
@@ -1846,11 +1846,11 @@ export default class Table {
         //     this.copyCutEndX !== hx &&
         //     this.copyCutEndY !== hy
         // ){
-            
+
         // }
 
-        
-        
+
+
         // for(let x = 0; x < lx; ++x){
         //     selectionLeftSpace += this.columnWidth + (this.topSizeMap[x + 1] || 0);
         // }
@@ -1870,7 +1870,7 @@ export default class Table {
         // this.copyCutAnimationDiv.style.width = `${selectionWidth + 2}px`;
         // this.copyCutAnimationDiv.style.height = `${selectionHeight + 2}px`;
 
-        
+
         // const style = document.createElement('style');
         // const keyframes = `
         // @keyframes border-dance {
@@ -1887,15 +1887,15 @@ export default class Table {
         let copyToClipboardString = "";
         // this.copyCutData = [];
 
-        for(let j = ly; j <= hy ; ++j){
+        for (let j = ly; j <= hy; ++j) {
             // let tempRow = [];
-            for(let i = lx; i <= hx ; ++i){
+            for (let i = lx; i <= hx; ++i) {
                 // tempRow.push(this.data[j][i]);
-                copyToClipboardString += (this.getCellValue(j, i) || "") + ((i===hx) ?"\n": "	" );
+                copyToClipboardString += (this.getCellValue(j, i) || "") + ((i === hx) ? "\n" : "	");
             }
         }
         // console.log('hi');
-        
+
         this.copyToClipboard(copyToClipboardString);
     }
 
@@ -1911,8 +1911,8 @@ export default class Table {
         );
     }
 
-    
-    
+
+
     async getClipboardData() {
         await navigator.clipboard.readText().then(
             (text) => {
@@ -1927,9 +1927,9 @@ export default class Table {
         );
     }
 
-    handleFindReplace(){
+    handleFindReplace() {
         var findReplaceDiv = document.getElementById("findReplaceDiv");
-        if(!findReplaceDiv){
+        if (!findReplaceDiv) {
             // console.log("object");
             findReplaceDiv = document.createElement('div');
             findReplaceDiv.classList.add("findReplaceDiv");
@@ -1940,13 +1940,22 @@ export default class Table {
 
             // findReplaceDiv.style.width = `${100}px`;
             // findReplaceDiv.style.height = `${100}px`;
-            findReplaceDiv.style.left = `${600}px`;
-            findReplaceDiv.style.top = `${300}px`;
+            findReplaceDiv.style.left = `${500}px`;
+            findReplaceDiv.style.top = `${200}px`;
             // findReplaceDiv.style.backgroundColor = "lightblue";
 
 
-            findReplaceDiv.innerHTML = `
-            <div class="find-replace-container">
+            findReplaceDiv.innerHTML = `<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - Find And Replace Div _ V1</title>
+  <link rel="stylesheet" href="./style.css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<div class="find-replace-container">
   <div class="find-replace-header">
     <span>Find and Replace</span>
     <button class="close-button">&times;</button>
@@ -2026,6 +2035,83 @@ export default class Table {
         </button>
         <label class="ms-Label root-425">Search options</label>
       </div>
+      <div class="searchOptionsDiv" id="searchOptions">
+        <div>
+          <input type="checkbox" class="searchOptions" name="optionsToSearch" value="Email" id="Email_option">
+          <label for="Email_option">Email</label>
+        </div>
+
+        <div>
+          <input type="checkbox" class="searchOptions" name="optionsToSearch" value="Name" id="Name_option">
+          <label for="Name_option">Name</label>
+        </div>
+
+        <div>
+          <input type="checkbox" class="searchOptions" name="optionsToSearch" value="Telephone" id="Telephone_option">
+          <label for="Telephone_option">Telephone</label>
+        </div>
+
+        <div>
+          <input type="checkbox" class="searchOptions" name="optionsToSearch" value="Address1" id="Address1_option">
+          <label for="Address1_option">Address1</label>
+        </div>
+
+        <div>
+          <input type="checkbox" class="searchOptions" name="optionsToSearch" value="DOB" id="DOB_option">
+          <label for="DOB_option">DOB</label>
+        </div>
+
+        <div>
+          <input type="checkbox" class="searchOptions" name="optionsToSearch" value="State" id="State_option">
+          <label for="State_option">State</label>
+        </div>
+
+        <div>
+          <input type="checkbox" class="searchOptions" name="optionsToSearch" value="City" id="City_option">
+          <label for="City_option">City</label>
+        </div>
+
+        <div>
+          <input type="checkbox" class="searchOptions" name="optionsToSearch" value="Country" id="Country_option">
+          <label for="Country_option">Country</label>
+        </div>
+
+        <div>
+          <input type="checkbox" class="searchOptions" name="optionsToSearch" value="Address2" id="Address2_option">
+          <label for="Address2_option">Address2</label>
+        </div>
+
+        <div>
+          <input type="checkbox" class="searchOptions" name="optionsToSearch" value="FY_19_20" id="FY_19_20_option">
+          <label for="FY_19_20_option">FY_19_20</label>
+        </div>
+
+        <div>
+          <input type="checkbox" class="searchOptions" name="optionsToSearch" value="FY_20_21" id="FY_20_21_option">
+          <label for="FY_20_21_option">FY_20_21</label>
+        </div>
+
+        <div>
+          <input type="checkbox" class="searchOptions" name="optionsToSearch" value="FY_21_22" id="FY_21_22_option">
+          <label for="FY_21_22_option">FY_21_22</label>
+        </div>
+
+        <div>
+          <input type="checkbox" class="searchOptions" name="optionsToSearch" value="FY_22_23" id="FY_22_23_option">
+          <label for="FY_22_23_option">FY_22_23</label>
+        </div>
+
+        <div>
+          <input type="checkbox" class="searchOptions" name="optionsToSearch" value="FY_23_24" id="FY_23_24_option">
+          <label for="FY_23_24_option">FY_23_24</label>
+        </div>
+
+      </div>
+      <div class="findResult" id="findResult">
+        <div class="findScroll" id="findScroll">
+          
+        </div>
+      </div>
       <!-- Bottom buttons Part  -->
       <div class="ms-Dialog-actions actions-426">
         <div class="ms-Dialog-actionsRight actionsRight-428">
@@ -2084,10 +2170,16 @@ export default class Table {
 
   </div>
 </div>
-            `;
+<!-- partial -->
+  <script  src="./script.js"></script>
+
+</body>
+</html>
+`;
+
 
             // findReplaceDiv.draggable();
-            this.makeChartDraggableOverWindow(findReplaceDiv,true);
+            this.makeChartDraggableOverWindow(findReplaceDiv, true);
             document.body.appendChild(findReplaceDiv);
             this.FindipBox = document.getElementById("findTextId");
             this.FindipBox.focus();
@@ -2134,7 +2226,7 @@ export default class Table {
             replaceBtn.addEventListener("click", (e) => {
                 this.handleReplace(findTextipBox.value, replaceTextipBox.value);
             });
-            
+
             this.FindipBox = document.getElementById("findTextId");
             this.FindipBox.addEventListener("keyup", this.getRecomendations);
             this.FindipBox.addEventListener("blur", this.hideRecomendations);
@@ -2142,7 +2234,7 @@ export default class Table {
         }
     }
 
-    async handleFind(findText){
+    async handleFind(findText) {
         this.isFindActive = true;
         this.findStrData = findText;
         console.log("findBtn", findText);
@@ -2152,31 +2244,45 @@ export default class Table {
         this.selection = 0;
     }
 
-    async handleReplace(findText, replaceText){
-        console.log("replaceBtn",findText, replaceText);
+    async handleReplace(findText, replaceText) {
+        console.log("replaceBtn", findText, replaceText);
     }
 
-    async handleFindAll(findText){
+    async handleFindAll(findText) {
         console.log("findAllBtn", findText);
-        
+
         var findReplaceDiv = document.getElementById("findReplaceDiv");
         findReplaceDiv.style.cursor = "progress";
         this.canvasDivDiv.style.cursor = "progress";
 
-        if(findText === ""){
+        if (findText === "") {
             alert("Enter Text in Find Field");
             return;
         }
         this.isFindActive = true;
         this.findStrData = findText;
+        var searchQuery = {};
+        searchQuery["SearchQuery"] = findText;
+        var nothingSelected = true;
 
-        var findData = {
-            findStr: `${findText}`
-        };
+        var checks = document.getElementsByClassName("searchOptions");
+        for(let i = 0; i < checks.length; ++i){
+            // console.log(checks[i].checked, checks[i].value);
+            searchQuery[`${checks[i].value}`] = checks[i].checked;
+            // if(checks[i].checked)
+        }
+        // console.log(searchQuery);
 
-        await axios.post(`http://localhost:5163/api/findAll`, findData)
+        await axios.post(`http://localhost:5163/api/_searchrow`, searchQuery)
         .then((response) => {
-            alert(`Results found (first ${response.data.length })`)
+            console.log(response.data);
+            let findScroll = document.getElementById("findScroll");
+
+            // Convert the response data to a formatted JSON string
+            const formattedResponse = JSON.stringify(response.data, null, 2); // 'null' and '2' add pretty-print formatting
+            
+            findScroll.innerHTML = `<pre><code class="language-javascript">${formattedResponse}</code></pre>`;
+            alert(`Results found (first ${response.data.length})`);
         })
         .catch(
             (error) => {
@@ -2184,19 +2290,35 @@ export default class Table {
             }
         );
 
+
+        // var findData = {
+        //     findStr: `${findText}`
+        // };
+
+        // await axios.post(`http://localhost:5163/api/findAll`, findData)
+        //     .then((response) => {
+        //         alert(`Results found (first ${response.data.length})`)
+        //     })
+        //     .catch(
+        //         (error) => {
+        //             console.error("Error:", error);
+        //         }
+        //     );
+        
+
         findReplaceDiv.style.cursor = "auto";
         this.canvasDivDiv.style.cursor = "auto";
-        await this.loadData();
-        this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.selection = 1;
-        this.drawSelection();
-        this.selection = 0;
+        // await this.loadData();
+        // this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        // this.selection = 1;
+        // this.drawSelection();
+        // this.selection = 0;
     }
 
-    async handleReplaceAll(findText, replaceText){
-        console.log("replaceAllBtn",findText, replaceText);
+    async handleReplaceAll(findText, replaceText) {
+        console.log("replaceAllBtn", findText, replaceText);
 
-        if(findText === ""){
+        if (findText === "") {
             alert("Enter Text in Find Field");
             return;
         }
@@ -2211,16 +2333,16 @@ export default class Table {
         };
 
         await axios.post(`http://localhost:5163/api/replaceAll`, findReplaceData)
-        .then((response) => {
-            // console.log(response);
-            if(response.data == 0) alert("We can't find any matches to replace");
-            else alert(`Matches replaced (${response.data})`)
-        })
-        .catch(
-            (error) => {
-                console.error("Error:", error);
-            }
-        );
+            .then((response) => {
+                // console.log(response);
+                if (response.data == 0) alert("We can't find any matches to replace");
+                else alert(`Matches replaced (${response.data})`)
+            })
+            .catch(
+                (error) => {
+                    console.error("Error:", error);
+                }
+            );
         this.canvasDivDiv.style.cursor = "auto";
         findReplaceDiv.style.cursor = "auto";
         await this.loadData();
@@ -2229,15 +2351,15 @@ export default class Table {
         this.drawSelection();
         this.selection = 0;
     }
-      
-      
-      
 
-    
 
-    mainCanvasKeyUp(e){
+
+
+
+
+    mainCanvasKeyUp(e) {
         this.isDeleteKeyDown = false;
-        if(this.ipBox.style.display != "none"){
+        if (this.ipBox.style.display != "none") {
             // console.log(ipBox.value,this.ipBox.style.display);
             // this.data[this.startCellsY][this.startCellsX] = ipBox.value;
             this.setCellValue(this.startCellsY, this.startCellsX, ipBox.value);
@@ -2246,8 +2368,8 @@ export default class Table {
         }
     }
 
-    selectionPointerDown(e){
-        
+    selectionPointerDown(e) {
+
         this.isClickedOnMainCanvas = 1;
         this.selectedChart = null;
 
@@ -2268,7 +2390,7 @@ export default class Table {
         this.drawTableLeftHeading();
         this.isSelectedAll = false;
 
-        if(this.ipBox.style.display !== "none"){
+        if (this.ipBox.style.display !== "none") {
             // this.data[this.startCellsY][this.startCellsX] = ipBox.value;
             this.setCellValue(this.startCellsY, this.startCellsX, ipBox.value);
             this.ipBox.style.display = "none";
@@ -2283,7 +2405,7 @@ export default class Table {
         this.endCellsX = this.startCellsX;
         this.endCellsY = this.startCellsY;
 
-        if(this.ipBox.style.display != "none"){
+        if (this.ipBox.style.display != "none") {
             // console.log(ipBox.value);
             // this.data[this.startCellsY][this.startCellsX] = ipBox.value;
             this.setCellValue(this.startCellsY, this.startCellsX, ipBox.value);
@@ -2293,17 +2415,17 @@ export default class Table {
 
         const ipBoxCellX = this.startCellsX;
         const ipBoxCellY = this.startCellsY;
-        
+
 
         let ipBoxX = 0;
         // this.canvasLeft.width;
         let ipBoxY = 0;
         // this.canvasTop.height;
 
-        for(let x = 0; x < ipBoxCellX; ++x){
+        for (let x = 0; x < ipBoxCellX; ++x) {
             ipBoxX += this.columnWidth + (this.topSizeMap[x + 1] || 0);
         }
-        for(let y = 0; y < ipBoxCellY; ++y){
+        for (let y = 0; y < ipBoxCellY; ++y) {
             ipBoxY += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
         }
 
@@ -2314,24 +2436,24 @@ export default class Table {
         // this.ipBox.style.left = `${ipBoxX}px`;
         this.startAbsX = ipBoxX;
         this.startAbsY = ipBoxY;
-        
+
         // this.ipBox.type = "text";
         // this.selectionDiv.style = "block";
-        
+
         // console.log(this.startCellsX, this.startCellsY);
         this.drawSelection();
         this.ctxCanvas.fillStyle = "#fff";
-        
+
 
         // this.drawTableData();
 
 
     }
 
-    selectionPointerMove(e){
-        if( this.selection === 1){
+    selectionPointerMove(e) {
+        if (this.selection === 1) {
             // this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
-     
+
             let offset = this.canvas.getBoundingClientRect();
             this.endCellsX = this.getColumnNumber(e.clientX - offset.x + this.scrollXaxisValue);
             this.endCellsY = this.getRowNumber(e.clientY - offset.y + this.scrollYaxisValue);
@@ -2339,10 +2461,10 @@ export default class Table {
             // console.log('Viewport Coordinates:', e.clientX, e.clientY);
             // console.log('Screen Coordinates:', e.screenX, e.screenY);
             // console.log(x);
-            
+
             this.drawSelection();
             this.ctxCanvas.fillStyle = "#fff";
-            
+
             // this.ctxCanvas.fillRect(
             //     this.startAbsX,
             //     this.startAbsY,
@@ -2353,32 +2475,32 @@ export default class Table {
             // this.drawTableData();
         }
     }
-    isNumber(n) { 
-        return !isNaN(parseFloat(n)) && !isNaN(n - 0) 
+    isNumber(n) {
+        return !isNaN(parseFloat(n)) && !isNaN(n - 0)
     }
 
-    selectionPointerUp(e){
+    selectionPointerUp(e) {
         // console.log("hiyeyeyeyeye")
         this.selection = 0;
         this.isClickedOnLeftHeadingCanvas = 0;
         this.isClickedOnMainCanvas = 0;
         this.isClickedOnTopHeadingCanvas = 0;
         // this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        
+
         // this.drawTableData();
-        
+
         this.statCalRef[0].resetAll();
 
-        let lx= Math.min(this.startCellsX,this.endCellsX);
-        let ly= Math.min(this.startCellsY,this.endCellsY);
-        let hx= Math.max(this.startCellsX,this.endCellsX);
-        let hy= Math.max(this.startCellsY,this.endCellsY);
+        let lx = Math.min(this.startCellsX, this.endCellsX);
+        let ly = Math.min(this.startCellsY, this.endCellsY);
+        let hx = Math.max(this.startCellsX, this.endCellsX);
+        let hy = Math.max(this.startCellsY, this.endCellsY);
 
-        for(let i = lx; i <= hx; ++i){
-            for(let j = ly; j <= hy; ++j){
+        for (let i = lx; i <= hx; ++i) {
+            for (let j = ly; j <= hy; ++j) {
                 let x = this.getCellValue(j, i);
-                if(x === undefined  || x === "") continue;
-                if(this.isNumber(x)){
+                if (x === undefined || x === "") continue;
+                if (this.isNumber(x)) {
                     this.statCalRef[0].anyIntExist = true;
 
                     this.statCalRef[0].sum += +x;
@@ -2391,22 +2513,22 @@ export default class Table {
         }
         this.statCalRef[0].avg = (this.statCalRef[0].sum / this.statCalRef[0].countInt).toFixed(2);
         this.statCalRef[0].display();
-        
+
 
     }
 
-    windowPointerMove(e){
+    windowPointerMove(e) {
         e.preventDefault();
         // console.log("X", e.clientX,e.clientY)
         // console.log(e.clientX, e.clientY);
-        if(this.isClickedOnLeftHeadingCanvas === 1){
+        if (this.isClickedOnLeftHeadingCanvas === 1) {
             this.resizeRowPointerMove(e);
             // console.log("Clicked on top");
         }
-        else if(this.isClickedOnMainCanvas === 1){
+        else if (this.isClickedOnMainCanvas === 1) {
             this.selectionPointerMove(e);
         }
-        else if(this.isClickedOnTopHeadingCanvas === 1){
+        else if (this.isClickedOnTopHeadingCanvas === 1) {
             this.resizeColumnPointerMove(e);
         }
         // else{
@@ -2417,71 +2539,71 @@ export default class Table {
 
     }
 
-    windowPointerUp(e){
+    windowPointerUp(e) {
         e.preventDefault();
         this.ipBox.style.display = `none`;
         this.selection = 0;
-        
-        if(this.isClickedOnLeftHeadingCanvas === 1) this.resizeRowPointerUp(e);
-        if(this.isClickedOnTopHeadingCanvas === 1) this.resizeColumnPointerUp(e);
-        if(this.isClickedOnMainCanvas === 1)this.selectionPointerUp(e);
+
+        if (this.isClickedOnLeftHeadingCanvas === 1) this.resizeRowPointerUp(e);
+        if (this.isClickedOnTopHeadingCanvas === 1) this.resizeColumnPointerUp(e);
+        if (this.isClickedOnMainCanvas === 1) this.selectionPointerUp(e);
         this.resetDivSel();
-        
+
         this.isClickedOnLeftHeadingCanvas = 0;
         this.isClickedOnMainCanvas = 0;
         this.isClickedOnTopHeadingCanvas = 0;
 
 
     }
-    
-    topHeadingPointerMove(e){
+
+    topHeadingPointerMove(e) {
         // console.log("K")
-        
+
         e.preventDefault();
         let offset = this.canvasTop.getBoundingClientRect();
-        if(this.isClickedOnTopHeadingCanvas === 0){
-            if(this.isIntersectRegionTop(e.offsetX)){
+        if (this.isClickedOnTopHeadingCanvas === 0) {
+            if (this.isIntersectRegionTop(e.offsetX)) {
                 this.canvasTop.style.cursor = "ew-resize";
             }
-            else{
+            else {
                 this.canvasTop.style.cursor = "s-resize";
             }
         }
     }
 
-    leftHeadingPointerMove(e){
+    leftHeadingPointerMove(e) {
         // console.log(this.isIntersectRegionLeft(e.offsetY));
         e.preventDefault();
-        if(this.isClickedOnLeftHeadingCanvas === 0){
-            if(this.isIntersectRegionLeft(e.offsetY)){
+        if (this.isClickedOnLeftHeadingCanvas === 0) {
+            if (this.isIntersectRegionLeft(e.offsetY)) {
                 this.canvasLeft.style.cursor = "ns-resize";
             }
-            else{
+            else {
                 this.canvasLeft.style.cursor = "w-resize";
             }
         }
     }
     drawSelection() {
-        if(this.selection === 1 && this.startCellsX != -1){
+        if (this.selection === 1 && this.startCellsX != -1) {
 
             let selectionLeftSpace = -(this.scrollXaxisValue);;
             // this.canvasLeft.width;
-            let selectionTopSpace = -(this.scrollYaxisValue);; 
+            let selectionTopSpace = -(this.scrollYaxisValue);;
             // this.canvasTop.height;
 
-            let lx= Math.min(this.startCellsX,this.endCellsX);
-            let ly= Math.min(this.startCellsY,this.endCellsY);
-            let hx= Math.max(this.startCellsX,this.endCellsX);
-            let hy= Math.max(this.startCellsY,this.endCellsY);
+            let lx = Math.min(this.startCellsX, this.endCellsX);
+            let ly = Math.min(this.startCellsY, this.endCellsY);
+            let hx = Math.max(this.startCellsX, this.endCellsX);
+            let hy = Math.max(this.startCellsY, this.endCellsY);
             // console.log(
             //     this.startCellsX,this.endCellsX,
             //     this.startCellsY,this.endCellsY
             // )
             // console.log(lx,ly,hx,hy);
-            for(let x = 0; x < lx; ++x){
+            for (let x = 0; x < lx; ++x) {
                 selectionLeftSpace += this.columnWidth + (this.topSizeMap[x + 1] || 0);
             }
-            for(let y = 0; y < ly; ++y){
+            for (let y = 0; y < ly; ++y) {
                 selectionTopSpace += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
             }
             // console.log(selectionLeftSpace,selectionTopSpace);
@@ -2492,16 +2614,16 @@ export default class Table {
             let selectionHeight = 0;
             let selectionWidth = 0;
 
-            for(let x = lx; x <= hx ; ++x){
+            for (let x = lx; x <= hx; ++x) {
                 selectionWidth += this.columnWidth + (this.topSizeMap[x + 1] || 0);
             }
-            for(let y = ly; y <= hy; ++y){
+            for (let y = ly; y <= hy; ++y) {
                 selectionHeight += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
             }
 
             // this.selectionDiv.style.height = `${selectionHeight}px`;
             // this.selectionDiv.style.width = `${selectionWidth}px`;
-            
+
             // this.drawBorder(
             //     this.ctxCanvas, 
             //     selectionLeftSpace,
@@ -2511,7 +2633,7 @@ export default class Table {
             //     2,
             //     "rgba(19,126,67,1)"
             // );
-            
+
 
 
             // ----------- Left Heading Canvas Selection -------------
@@ -2525,7 +2647,7 @@ export default class Table {
             // );
             this.drawLeftHeadingsGrid();
             this.drawTableLeftHeading();
-            
+
 
 
             // ----------- Top Heading Canvas Selection -------------
@@ -2551,7 +2673,7 @@ export default class Table {
             // ----------- Main Canvas Selection -------------
             this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.ctxCanvas.fillStyle = "#e7f1ec";
-            if(this.isSelectedAll){
+            if (this.isSelectedAll) {
                 this.ctxCanvas.fillRect(
                     selectionLeftSpace,
                     selectionTopSpace,
@@ -2559,7 +2681,7 @@ export default class Table {
                     selectionHeight
                 );
             }
-            else{
+            else {
                 this.ctxCanvas.fillRect(
                     selectionLeftSpace,
                     selectionTopSpace,
@@ -2567,25 +2689,25 @@ export default class Table {
                     selectionHeight
                 );
             }
-            
+
             this.drawWhiteSelectionBlock();
             this.drawTableData();
 
-            
+
             this.ctxCanvas.lineWidth = 2;
             this.ctxCanvas.strokeStyle = "rgb(16,124,65)";
 
-            
+
             this.ctxCanvas.strokeRect(
                 selectionLeftSpace - 1,
                 selectionTopSpace - 1,
                 selectionWidth + 2,
                 selectionHeight + 2
             );
-            
+
             this.handleMarchingAnts();
         }
-        else{
+        else {
             this.drawTableData();
             this.drawGrid();
         }
@@ -2593,7 +2715,7 @@ export default class Table {
         // console.log(deltaTime);
         // selectionAnimation = 
         // requestAnimationFrame(this.drawSelection(1));
-        
+
 
         // this.ctxCanvas.fillRect(
         //     this.startAbsX,
@@ -2602,7 +2724,7 @@ export default class Table {
         //     this.rowHeight + (this.topSizeMap[this.startCellsY ] || 0)
         // );
 
-        
+
 
         // this.ctxCanvas.fillStyle = "#fff";
         // this.ctxCanvas.fillRect(
@@ -2612,15 +2734,15 @@ export default class Table {
         //     this.rowHeight + (this.topSizeMap[this.startCellsY ] || 0)
         // );
         // console.log(this.selection);
-        
+
         // if(this.selection === 1){
-            
+
         // }
 
-        
 
-        
-        
+
+
+
         // console.log(
         //     this.startCellsX, 
         //     this.startCellsY, 
@@ -2629,19 +2751,19 @@ export default class Table {
         // );
     }
 
-    drawWhiteSelectionBlock(){
+    drawWhiteSelectionBlock() {
         // ----------- White Space during Main Selection -------------
         let leftSpace = -(this.scrollXaxisValue);;
         let topSpace = -(this.scrollYaxisValue);;
 
-        for(let x = 0; x < this.startCellsX; ++x){
+        for (let x = 0; x < this.startCellsX; ++x) {
             leftSpace += this.columnWidth + (this.topSizeMap[x + 1] || 0);
         }
-        for(let y = 0; y < this.startCellsY; ++y){
+        for (let y = 0; y < this.startCellsY; ++y) {
             topSpace += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
         }
 
-        if(this.isSelectedRow === 0 && this.isSelectedCol === 0){
+        if (this.isSelectedRow === 0 && this.isSelectedCol === 0) {
             this.ctxCanvas.fillStyle = "#fff";
             this.ctxCanvas.fillRect(
                 leftSpace,
@@ -2657,15 +2779,15 @@ export default class Table {
         let selectionLeftSpace = this.canvasLeft.width;
         let selectionTopSpace = this.canvasTop.height;
 
-        let lx= Math.min(this.startCellsX,this.endCellsX);
-        let ly= Math.min(this.startCellsY,this.endCellsY);
-        let hx= Math.max(this.startCellsX,this.endCellsX);
-        let hy= Math.max(this.startCellsY,this.endCellsY);
+        let lx = Math.min(this.startCellsX, this.endCellsX);
+        let ly = Math.min(this.startCellsY, this.endCellsY);
+        let hx = Math.max(this.startCellsX, this.endCellsX);
+        let hy = Math.max(this.startCellsY, this.endCellsY);
 
-        for(let x = 0; x < lx; ++x){
+        for (let x = 0; x < lx; ++x) {
             selectionLeftSpace += this.columnWidth + (this.topSizeMap[x + 1] || 0);
         }
-        for(let y = 0; y < ly; ++y){
+        for (let y = 0; y < ly; ++y) {
             selectionTopSpace += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
         }
 
@@ -2675,10 +2797,10 @@ export default class Table {
         let selectionHeight = 0;
         let selectionWidth = 0;
 
-        for(let x = lx; x <= hx ; ++x){
+        for (let x = lx; x <= hx; ++x) {
             selectionWidth += this.columnWidth + (this.topSizeMap[x + 1] || 0);
         }
-        for(let y = ly; y <= hy; ++y){
+        for (let y = ly; y <= hy; ++y) {
             selectionHeight += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
         }
 
@@ -2693,48 +2815,51 @@ export default class Table {
         // );
     }
 
-    async loadData(startX = 0 , startY = 0){
-        this.startX=startX;
-        this.startY=startY;
+    async loadData(startX = 0, startY = 0) {
+        this.startX = startX;
+        this.startY = startY;
         // console.log(this.sheetID,startX,startY);
         // await axios.get("http://localhost:5003/userDetail")
+        // console.log("X ",startX);
         await axios.get(`http://localhost:5163/api/_getPageData?matrixName=${this.sheetID}&rowNo=${startY}&colNo=${startX}`)
-        .then((response) => {
-            
-            for(let j = 0; j < response.data.length; ++j){
-                // if (!this.data.has(response.data[j].rowNo - 1)) {
-                //     this.data.set(response.data[j].rowNo - 1, new Map());
-                // }
-                // this.data.get(response.data[j].rowNo - 1).set(response.data[j].colNo - 1, response.data[j].cellValue);
-
-                this.dataRow.push(response.data[j]);
-            }
-            // console.log(response.data);
-            // this.drawTableData();
-        })
-        .catch(
-            (error) => {
-                console.error("Error:", error);
-            }
-        );
+            .then((response) => {
+                // console.log(response.data);
+                for (let j = 0; j < response.data.length; ++j) {
+                    // if (!this.data.has(response.data[j].rowNo - 1)) {
+                    //     this.data.set(response.data[j].rowNo - 1, new Map());
+                    // }
+                    // this.data.get(response.data[j].rowNo - 1).set(response.data[j].colNo - 1, response.data[j].cellValue);
+                    // console.log(response.data[j].rowNo);
+                    this.dataRow[response.data[j].rowNo] = response.data[j]
+                    // this.dataRow.push(response.data[j]);
+                }
+                // console.log(this.dataRow);
+                // console.log(response.data);
+                // this.drawTableData();
+            })
+            .catch(
+                (error) => {
+                    console.error("Error:", error);
+                }
+            );
     }
 
-    shortenText(textToBeShort, length){
-        if(isNaN(textToBeShort)){
-            if(textToBeShort.length < length ) return textToBeShort;
-            return textToBeShort.substring(0,length) 
-            + "..."
-            ;
+    shortenText(textToBeShort, length) {
+        if (isNaN(textToBeShort)) {
+            if (textToBeShort.length < length) return textToBeShort;
+            return textToBeShort.substring(0, length)
+                + "..."
+                ;
         }
-        else{
-            if(textToBeShort.length < length ) return textToBeShort;
+        else {
+            if (textToBeShort.length < length) return textToBeShort;
             return '#'.repeat(length);
         }
-        
+
     }
 
-    
-    
+
+
 
     convertToTitle(columnNumber) {
         let res = '';
@@ -2745,7 +2870,7 @@ export default class Table {
                 r = 26;
                 q--;
             }
-    
+
             res = String.fromCharCode(64 + r) + res;
             columnNumber = q;
         }
@@ -2762,18 +2887,18 @@ export default class Table {
     drawTopHeadingsGrid() {
         let selectionLeftSpace = this.leftSpaceCache - this.scrollXaxisValue;
         let selectionWidth = 0;
-        let lx= Math.min(this.startCellsX,this.endCellsX);
-        let hx= Math.max(this.startCellsX,this.endCellsX);
+        let lx = Math.min(this.startCellsX, this.endCellsX);
+        let hx = Math.max(this.startCellsX, this.endCellsX);
         let startX = this.leftCellCache;
 
-        for(let x = startX; x < lx; ++x){
+        for (let x = startX; x < lx; ++x) {
             selectionLeftSpace += this.columnWidth + (this.topSizeMap[x + 1] || 0);
         }
-        for(let x = lx; x <= hx ; ++x){
-            if(startX < x + 1 && x <= startX + 39) selectionWidth += this.columnWidth + (this.topSizeMap[x + 1] || 0);
+        for (let x = lx; x <= hx; ++x) {
+            if (startX < x + 1 && x <= startX + 39) selectionWidth += this.columnWidth + (this.topSizeMap[x + 1] || 0);
         }
 
-        if(this.startCellsX !== -1 && this.startCellsY !== -1){
+        if (this.startCellsX !== -1 && this.startCellsY !== -1) {
             this.ctxCanvasTop.clearRect(0, 0, this.canvasTop.width, this.canvasTop.height);
             this.ctxCanvasTop.fillStyle = "#caead8";
             this.ctxCanvasTop.fillRect(
@@ -2789,14 +2914,14 @@ export default class Table {
         lx = Math.min(this.startColX, this.endColX);
         hx = Math.max(this.startColX, this.endColX);
 
-        
-        let lowX = Math.min(this.startCellsX,this.endCellsX);
-        let highX = Math.max(this.startCellsX,this.endCellsX);
 
-        
+        let lowX = Math.min(this.startCellsX, this.endCellsX);
+        let highX = Math.max(this.startCellsX, this.endCellsX);
 
-        if(this.startColX != -1 && this.endColX != -1){
-            
+
+
+        if (this.startColX != -1 && this.endColX != -1) {
+
             this.ctxCanvasTop.fillStyle = "#107c41";
             this.ctxCanvasTop.fillRect(
                 selectionLeftSpace,
@@ -2811,101 +2936,101 @@ export default class Table {
                 this.canvasTop.height / 2
             );
         }
-        
+
 
         let cellPositionX = this.leftSpaceCache - this.scrollXaxisValue;;
-        for(let x = this.leftCellCache; cellPositionX <= this.canvasTop.width; x++){
-            
-            cellPositionX += this.columnWidth + (this.topSizeMap[x+1] || 0);
+        for (let x = this.leftCellCache; cellPositionX <= this.canvasTop.width; x++) {
+
+            cellPositionX += this.columnWidth + (this.topSizeMap[x + 1] || 0);
             this.ctxCanvasTop.save();
             this.ctxCanvasTop.beginPath();
-            this.ctxCanvasTop.moveTo(cellPositionX + 0.5 ,this.canvasTop.height / 2);
-            this.ctxCanvasTop.lineTo(cellPositionX + 0.5 , this.canvasTop.height);
-            
-            if(lx-1 == x){
-                this.ctxCanvasTop.lineWidth=5;
+            this.ctxCanvasTop.moveTo(cellPositionX + 0.5, this.canvasTop.height / 2);
+            this.ctxCanvasTop.lineTo(cellPositionX + 0.5, this.canvasTop.height);
+
+            if (lx - 1 == x) {
+                this.ctxCanvasTop.lineWidth = 5;
                 this.ctxCanvasTop.strokeStyle = "#107c41";
-                
+
             }
-            else if(x == hx){
-                this.ctxCanvasTop.lineWidth=3;
+            else if (x == hx) {
+                this.ctxCanvasTop.lineWidth = 3;
                 this.ctxCanvasTop.strokeStyle = "#107c41";
             }
-            else if(lx <= x && x < hx){
-                this.ctxCanvasTop.lineWidth=1;
+            else if (lx <= x && x < hx) {
+                this.ctxCanvasTop.lineWidth = 1;
                 this.ctxCanvasTop.strokeStyle = "#a0d8b9";
-                
+
             }
-            else if(lowX - 1 <= x && x <= highX){
-                
-                this.ctxCanvasTop.lineWidth=1;
+            else if (lowX - 1 <= x && x <= highX) {
+
+                this.ctxCanvasTop.lineWidth = 1;
                 this.ctxCanvasTop.strokeStyle = "#a0d8b9";
             }
-            else{
-                this.ctxCanvasTop.lineWidth=1;
+            else {
+                this.ctxCanvasTop.lineWidth = 1;
                 this.ctxCanvasTop.strokeStyle = "#ccc";
-                
+
             }
             this.ctxCanvasTop.stroke();
             this.ctxCanvasTop.restore();
 
-            if(x === this.moveStartX) {
-            //     // console.log(9821,100, offset.y);
+            if (x === this.moveStartX) {
+                //     // console.log(9821,100, offset.y);
                 this.dottedVerticalLineDiv.style.top = `${0}px`;
                 this.dottedVerticalLineDiv.style.height = `${this.canvas.height}px`;
                 this.dottedVerticalLineDiv.style.left = `${cellPositionX + 0}px`;
             }
-            
+
         }
 
         this.ctxCanvasTop.save();
         this.ctxCanvasTop.beginPath();
-        this.ctxCanvasTop.moveTo(0,this.canvasTop.height - 0.5);
-        this.ctxCanvasTop.lineTo(this.canvasTop.width, this.canvasTop.height - 0.5 );
-        this.ctxCanvasTop.lineWidth=0.5;
+        this.ctxCanvasTop.moveTo(0, this.canvasTop.height - 0.5);
+        this.ctxCanvasTop.lineTo(this.canvasTop.width, this.canvasTop.height - 0.5);
+        this.ctxCanvasTop.lineWidth = 0.5;
         this.ctxCanvasTop.strokeStyle = "#555";
         this.ctxCanvasTop.stroke();
         this.ctxCanvasTop.restore();
 
 
-        if(this.startCellsX !== -1 && this.startCellsY !== -1){
+        if (this.startCellsX !== -1 && this.startCellsY !== -1) {
             this.ctxCanvasTop.lineWidth = 2;
             this.ctxCanvasTop.strokeStyle = "rgb(16,124,65)";
             this.ctxCanvasTop.strokeRect(
-                selectionLeftSpace - 1 ,
+                selectionLeftSpace - 1,
                 this.canvasTop.height - 1,
                 selectionWidth + 2,
                 2
             );
         }
-        
-        
+
+
     }
 
-    drawLeftHeadingsGrid(canvasLeft = this.canvasLeft){
+    drawLeftHeadingsGrid(canvasLeft = this.canvasLeft) {
         let ctxCanvasLeft = canvasLeft.getContext("2d");
 
         let canvasID = this.getIdNum(canvasLeft.id);
         // let startY = 0 ;
         // console.log(startY);
 
-        let ly= Math.min(this.startCellsY,this.endCellsY);
-        let hy= Math.max(this.startCellsY,this.endCellsY);
+        let ly = Math.min(this.startCellsY, this.endCellsY);
+        let hy = Math.max(this.startCellsY, this.endCellsY);
 
         let startY = this.topCellCache;
         let STORE_topSpace = this.topSpaceCache - this.scrollYaxisValue;
         let selectionTopSpace = this.topSpaceCache - this.scrollYaxisValue;
-        
-        let selectionHeight = 0; 
 
-        for(let y = startY ; y < ly; ++y){
+        let selectionHeight = 0;
+
+        for (let y = startY; y < ly; ++y) {
             selectionTopSpace += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
         }
-        for(let y = ly; y <= hy; ++y){
-            if(startY < y+1 && y <= startY + 44) selectionHeight += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
+        for (let y = ly; y <= hy; ++y) {
+            if (startY < y + 1 && y <= startY + 44) selectionHeight += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
         }
 
-        if(this.startCellsX !== -1 && this.startCellsY !== -1){
+        if (this.startCellsX !== -1 && this.startCellsY !== -1) {
             ctxCanvasLeft.clearRect(0, 0, this.canvasLeft.width, this.canvasLeft.height);
             ctxCanvasLeft.fillStyle = "#caead8";
             ctxCanvasLeft.fillRect(
@@ -2923,13 +3048,13 @@ export default class Table {
 
         let offset = this.canvasLeft.getBoundingClientRect();
 
-        let lowY = Math.min(this.startCellsY,this.endCellsY);
-        let highY = Math.max(this.startCellsY,this.endCellsY);
+        let lowY = Math.min(this.startCellsY, this.endCellsY);
+        let highY = Math.max(this.startCellsY, this.endCellsY);
 
-        if(this.startRowY != -1 && this.endRowY != -1){
+        if (this.startRowY != -1 && this.endRowY != -1) {
             // let topSpace = 0;
             // let selectionHeight = 0;
-            
+
             // for(let y = 0; y < ly; ++y){
             //     topSpace += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
             // }
@@ -2944,41 +3069,41 @@ export default class Table {
                 selectionHeight
             );
         }
-        
+
 
 
         let cellPositionY = STORE_topSpace;
-        for(let y = startY; cellPositionY <= this.canvasLeft.height; y++){
-            cellPositionY += this.rowHeight + (this.leftSizeMap[y+1] || 0);
+        for (let y = startY; cellPositionY <= this.canvasLeft.height; y++) {
+            cellPositionY += this.rowHeight + (this.leftSizeMap[y + 1] || 0);
             ctxCanvasLeft.save();
             ctxCanvasLeft.beginPath();
-            ctxCanvasLeft.moveTo(0,cellPositionY + 0.5 );
-            ctxCanvasLeft.lineTo(this.canvasLeft.width, cellPositionY + 0.5 );
+            ctxCanvasLeft.moveTo(0, cellPositionY + 0.5);
+            ctxCanvasLeft.lineTo(this.canvasLeft.width, cellPositionY + 0.5);
             // this.ctxCanvasLeft.lineWidth=1;
             // this.ctxCanvasLeft.strokeStyle = "rgb(200,200,200)";
-            
 
-            if(ly-1 == y){
+
+            if (ly - 1 == y) {
                 ctxCanvasLeft.lineWidth = 5;
                 ctxCanvasLeft.strokeStyle = "#107c41";
             }
-            else if(y == hy){
-                ctxCanvasLeft.lineWidth=3;
+            else if (y == hy) {
+                ctxCanvasLeft.lineWidth = 3;
                 ctxCanvasLeft.strokeStyle = "#107c41";
             }
-            else if(ly <= y && y < hy){
-                ctxCanvasLeft.lineWidth=1;
+            else if (ly <= y && y < hy) {
+                ctxCanvasLeft.lineWidth = 1;
                 ctxCanvasLeft.strokeStyle = "#fff";
             }
-            else if(lowY-1 <= y && y <= highY){
-                ctxCanvasLeft.lineWidth=1;
+            else if (lowY - 1 <= y && y <= highY) {
+                ctxCanvasLeft.lineWidth = 1;
                 ctxCanvasLeft.strokeStyle = "#a0d8b9";
             }
-            else{
-                ctxCanvasLeft.lineWidth=1;
+            else {
+                ctxCanvasLeft.lineWidth = 1;
                 ctxCanvasLeft.strokeStyle = "#ccc";
             }
-            if(y === this.moveStartY){
+            if (y === this.moveStartY) {
                 // console.log(cellPositionY , offset.y)
                 this.dottedHorizontalLineDiv.style.top = `${cellPositionY + 0}px`;
                 this.dottedHorizontalLineDiv.style.width = `${this.canvas.width}px`;
@@ -2992,7 +3117,7 @@ export default class Table {
         ctxCanvasLeft.beginPath();
         ctxCanvasLeft.moveTo(this.canvasLeft.width - 0.5, 0);
         ctxCanvasLeft.lineTo(this.canvasLeft.width - 0.5, this.canvasLeft.height);
-        ctxCanvasLeft.lineWidth=0.5;
+        ctxCanvasLeft.lineWidth = 0.5;
         ctxCanvasLeft.strokeStyle = "#555";
         ctxCanvasLeft.stroke();
         ctxCanvasLeft.restore();
@@ -3005,7 +3130,7 @@ export default class Table {
         // this.ctxCanvas.strokeStyle = "#555";
         // this.ctxCanvas.stroke();
         // this.ctxCanvas.restore();
-        if(this.startCellsX !== -1 && this.startCellsY !== -1){
+        if (this.startCellsX !== -1 && this.startCellsY !== -1) {
             ctxCanvasLeft.lineWidth = 2;
             ctxCanvasLeft.strokeStyle = "rgb(16,124,65)";
             ctxCanvasLeft.strokeRect(
@@ -3015,11 +3140,11 @@ export default class Table {
                 selectionHeight + 2
             )
         }
-        
+
     }
 
     drawGrid(canvas = this.canvas) {
-        
+
         let ctxCanvas = canvas.getContext("2d");
 
         let startX = this.topCellCache;
@@ -3030,13 +3155,13 @@ export default class Table {
 
         let cellPositionY = this.topSpaceCache - this.scrollYaxisValue;
 
-        for(let i = startY + 1; cellPositionX <= canvas.width; ++i){
+        for (let i = startY + 1; cellPositionX <= canvas.width; ++i) {
             cellPositionX += this.columnWidth + (this.topSizeMap[i] || 0);
             ctxCanvas.save();
             ctxCanvas.beginPath();
             ctxCanvas.moveTo(cellPositionX + 0.5, 0);
             ctxCanvas.lineTo(cellPositionX + 0.5, canvas.height);
-            ctxCanvas.lineWidth=1;
+            ctxCanvas.lineWidth = 1;
             ctxCanvas.strokeStyle = "rgb(225,225,225)";
             ctxCanvas.stroke();
             ctxCanvas.restore();
@@ -3046,63 +3171,63 @@ export default class Table {
         // cellPositionY -= canvas.height;
 
 
-        for(let j = startX + 1; cellPositionY <= canvas.height + 1; ++j){
+        for (let j = startX + 1; cellPositionY <= canvas.height + 1; ++j) {
             cellPositionY += this.rowHeight + (this.leftSizeMap[j] || 0);
             ctxCanvas.save();
             ctxCanvas.beginPath();
-            ctxCanvas.moveTo(0,cellPositionY + 0.5);
+            ctxCanvas.moveTo(0, cellPositionY + 0.5);
             ctxCanvas.lineTo(canvas.width, cellPositionY + 0.5);
-            ctxCanvas.lineWidth=1;
+            ctxCanvas.lineWidth = 1;
             ctxCanvas.strokeStyle = "rgb(225,225,225)";
             ctxCanvas.stroke();
             ctxCanvas.restore();
         }
     }
-    
+
 
     drawTableTopHeading(ctxCanvasTop = this.ctxCanvasTop) {
         // this.ctxCanvasTop.clearRect(0, 0, this.canvasTop.width, this.canvasTop.height);
-        
+
         // this.ctxCanvasTop.fillStyle = "rgba(110,110,110,1)";
         let lx = Math.min(this.startColX, this.endColX);
         let hx = Math.max(this.startColX, this.endColX);
 
-        let lowX = Math.min(this.startCellsX,this.endCellsX);
-        let highX = Math.max(this.startCellsX,this.endCellsX);
+        let lowX = Math.min(this.startCellsX, this.endCellsX);
+        let highX = Math.max(this.startCellsX, this.endCellsX);
 
         let x = this.leftSpaceCache - this.scrollXaxisValue;
-        
+
         for (let i = this.leftCellCache; x <= this.defaultTableWidth; i++) {
             const columnWidth = this.columnWidth + (this.topSizeMap[i + 1] || 0);
-            if(lx <= i && i <= hx){
+            if (lx <= i && i <= hx) {
                 ctxCanvasTop.font = "bold 16px Calibri";
                 ctxCanvasTop.fillStyle = "#fff";
             }
-            else if(lowX <= i && i <= highX){
+            else if (lowX <= i && i <= highX) {
                 ctxCanvasTop.font = "15px Calibri";
                 ctxCanvasTop.fillStyle = "#0f703b";
             }
-            else{
+            else {
                 ctxCanvasTop.font = "15px Calibri";
                 ctxCanvasTop.fillStyle = "rgba(110,110,110,1)";
             }
-            
+
             ctxCanvasTop.fillText(
                 this.headermap[i],
                 // this.convertToTitle(i + 1),
                 x + columnWidth / 2,
-                this.canvasTop.height *3 / 4
+                this.canvasTop.height * 3 / 4
             );
             x += columnWidth;
         }
 
     }
 
-    drawTableLeftHeading(ctxCanvasLeft = this.ctxCanvasLeft ,startX = 0 , startY = 0){
-        
-        
-        let lowY = Math.min(this.startCellsY,this.endCellsY);
-        let highY = Math.max(this.startCellsY,this.endCellsY);
+    drawTableLeftHeading(ctxCanvasLeft = this.ctxCanvasLeft, startX = 0, startY = 0) {
+
+
+        let lowY = Math.min(this.startCellsY, this.endCellsY);
+        let highY = Math.max(this.startCellsY, this.endCellsY);
         var start = startX;
         var end = startX + Math.floor((this.defaultTableHeight + this.rowHeight - 1) / this.rowHeight);
 
@@ -3113,17 +3238,17 @@ export default class Table {
 
         for (var j = this.topCellCache; y <= this.defaultTableHeight; j++, start++) {
             const rowHeight = this.rowHeight + (this.leftSizeMap[j + 1] || 0);
-            
+
             y += rowHeight;
-            if(ly <= j && j <= hy){
+            if (ly <= j && j <= hy) {
                 ctxCanvasLeft.font = "bold 15px Calibri";
                 ctxCanvasLeft.fillStyle = "#fff";
             }
-            else if(lowY <= j && j <= highY){
+            else if (lowY <= j && j <= highY) {
                 ctxCanvasLeft.font = "15px Calibri";
                 ctxCanvasLeft.fillStyle = "#0f703b";
             }
-            else{
+            else {
                 ctxCanvasLeft.font = "15px Calibri";
                 ctxCanvasLeft.fillStyle = "rgba(110,110,110,1)";
             }
@@ -3137,10 +3262,10 @@ export default class Table {
             );
         }
     }
-    
 
 
-    drawTableData(startX = 0 , startY = 0) {
+
+    drawTableData(startX = 0, startY = 0) {
         // this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.drawGrid();
         this.ctxCanvas.fillStyle = "#000";
@@ -3149,105 +3274,111 @@ export default class Table {
         this.ctxCanvas.textBaseline = "Top";
         this.ctxCanvas.lineWidth = 1;
 
-        this.startX=startX;
-        this.startY=startY;
+        this.startX = startX;
+        this.startY = startY;
         // this.data=tableData;
         // console.log(this.data);
         let cellPositionX = 0;
         let cellPositionY = 0;
 
         startY = this.leftCellCache
-        startX = this.topCellCache; 
+        startX = this.topCellCache;
+        // console.log(startX);
 
         this.startY = startY;
         this.startX = startX;
 
         this.endY = this.startY + 50;
-        this.endX = this.startX + 50;; 
-        
-        
-        
-        let STORE_X = this.leftSpaceCache  - this.scrollXaxisValue;;
+        this.endX = this.startX + 50;;
+
+
+
+        let STORE_X = this.leftSpaceCache - this.scrollXaxisValue;;
         let x = STORE_X;
         let y = this.topSpaceCache - this.scrollYaxisValue;
-        
+
 
         // console.log(this.dataRow);
-        for (var i = startX; this.startX < this.endX; i++,this.startX++) {
+        for (var i = startX; this.startX < this.endX; i++, this.startX++) {
             // ctx.fillText(columnHeaders[i], columnWidth * i + columnWidth / 2, rowHeight / 2);
-            y += (this.rowHeight / 2) + (this.leftSizeMap[i+1]/2  || 0);
-            for (var j = startY; this.startY < this.endY ;j++,this.startY++) {
+            y += (this.rowHeight / 2) + (this.leftSizeMap[i + 1] / 2 || 0);
+            for (var j = startY; this.startY < this.endY; j++, this.startY++) {
 
                 // let cellData = this.getCellValue(this.startX, this.startY);
-                let cellData = this.dataRow[this.startX][this.headermapLower[this.startY]] || "";
+                // console.log(startX);
+                let cellData = (this.dataRow[this.startX + 1])
+                    ?
+                    this.dataRow[this.startX + 1][this.headermapLower[this.startY]]
+                    : "";
                 // console.log(cellData);
-                
+
                 // console.log(this.ctxCanvas.measureText(cellData).width / 12);
                 // ((((this.columnWidth / 2) + (this.topSizeMap[j+1]/2  || 0))/4)-3);
                 // console.log(this.isFindActive);
-                
-                if(cellData){
-                    if(this.isFindActive === true && cellData.toUpperCase().includes(this.findStrData.toUpperCase())){
+
+                if (cellData) {
+                    if (this.isFindActive === true && cellData.toUpperCase().includes(this.findStrData.toUpperCase())) {
                         this.ctxCanvas.fillStyle = "#caead8";
                         this.ctxCanvas.fillRect(
-                            x, 
-                            y - (this.rowHeight / 2) + (this.leftSizeMap[i+1]/2  || 0), 
-                            ((this.columnWidth) + (this.topSizeMap[j+1]  || 0)),
-                            (this.rowHeight) + (this.leftSizeMap[i+1]  || 0)
+                            x,
+                            y - (this.rowHeight / 2) + (this.leftSizeMap[i + 1] / 2 || 0),
+                            ((this.columnWidth) + (this.topSizeMap[j + 1] || 0)),
+                            (this.rowHeight) + (this.leftSizeMap[i + 1] || 0)
                         );
 
                         this.ctxCanvas.lineWidth = 1;
                         this.ctxCanvas.strokeStyle = "rgb(16,124,65,100)";
                         this.ctxCanvas.strokeRect(
-                            x, 
-                            y - (this.rowHeight / 2) + (this.leftSizeMap[i+1]/2  || 0), 
-                            ((this.columnWidth) + (this.topSizeMap[j+1]  || 0)),
-                            (this.rowHeight) + (this.leftSizeMap[i+1]  || 0)
+                            x,
+                            y - (this.rowHeight / 2) + (this.leftSizeMap[i + 1] / 2 || 0),
+                            ((this.columnWidth) + (this.topSizeMap[j + 1] || 0)),
+                            (this.rowHeight) + (this.leftSizeMap[i + 1] || 0)
                         );
-    
+
                         this.ctxCanvas.fillStyle = "#000";
                     }
 
-                    let textLength = ((((this.columnWidth / 2) + (this.topSizeMap[j+1]/2  || 0))/4));
-                    if(isNaN(cellData)){
-                        let textLength = ((((this.columnWidth / 2) + (this.topSizeMap[j+1]/2  || 0))/4)-3);
+                    let textLength = ((((this.columnWidth / 2) + (this.topSizeMap[j + 1] / 2 || 0)) / 4));
+                    if (isNaN(cellData)) {
+                        let textLength = ((((this.columnWidth / 2) + (this.topSizeMap[j + 1] / 2 || 0)) / 4) - 3);
                         this.ctxCanvas.textAlign = "left";
                         this.ctxCanvas.fillText(
                             this.shortenText(cellData, textLength),
+                            // cellData,
                             // j * this.columnWidth + this.columnWidth / 2,
                             x + 3,
                             // i * this.rowHeight + (this.rowHeight / 2) + 6
                             y + 6
                         );
                     }
-                    else{
-                        let textLength = ((((this.columnWidth / 2) + (this.topSizeMap[j+1]/2  || 0))/4));
+                    else {
+                        let textLength = ((((this.columnWidth / 2) + (this.topSizeMap[j + 1] / 2 || 0)) / 4));
                         this.ctxCanvas.textAlign = "right";
                         this.ctxCanvas.fillText(
                             this.shortenText(cellData, textLength),
                             // j * this.columnWidth + this.columnWidth / 2,
-                            x + (this.columnWidth) + (this.topSizeMap[j+1]  || 0) - 3,
+                            x + (this.columnWidth) + (this.topSizeMap[j + 1] || 0) - 3,
                             // i * this.rowHeight + (this.rowHeight / 2) + 6
                             y + 6
                         );
                     }
 
-                    
+
                 }
-                
-                x += (this.columnWidth / 2) + (this.topSizeMap[j+1]/2  || 0);
-                x += (this.columnWidth / 2) + (this.topSizeMap[j+1]/2  || 0);
-                
+
+                x += (this.columnWidth / 2) + (this.topSizeMap[j + 1] / 2 || 0);
+                x += (this.columnWidth / 2) + (this.topSizeMap[j + 1] / 2 || 0);
+
             }
-            y += (this.rowHeight / 2) + (this.leftSizeMap[i+1]/2  || 0);
+            y += (this.rowHeight / 2) + (this.leftSizeMap[i + 1] / 2 || 0);
             this.startY = startY;
             x = STORE_X;
         }
     }
 
 
-    async show(){
-        
+    async show() {
+
         this.canvas = document.createElement(`canvas`);
         this.canvasTop = document.createElement(`canvas`);
         this.canvasLeft = document.createElement(`canvas`);
@@ -3256,7 +3387,7 @@ export default class Table {
             console.error("No element found with ID 'canvas'");
             return;
         }
-        
+
         this.canvas.id = `canvasMain_${this.sheetID}_${this.verticalMainCanvasID++}`;
         this.canvas.classList.add(`canvas`);
         this.canvas.height = this.defaultTableHeight;
@@ -3271,8 +3402,8 @@ export default class Table {
         this.canvasTopDiv.append(this.canvasTop);
 
 
-        
-        this.canvasLeft.id = `canvasLeft_${this.sheetID}_${this.verticalMainCanvasID-1}`;
+
+        this.canvasLeft.id = `canvasLeft_${this.sheetID}_${this.verticalMainCanvasID - 1}`;
         this.canvasLeft.classList.add(`canvasLeft`);
         this.canvasLeft.height = this.defaultTableHeight;
         this.canvasLeft.width = 40;
@@ -3286,7 +3417,7 @@ export default class Table {
         this.ctxCanvasLeft = this.canvasLeft.getContext("2d");
         // this.ctxCanvasTop.stroke();
 
-        
+
 
         this.ctxCanvasTop.font = "16px Calibri";
         this.ctxCanvasTop.textAlign = "center";
@@ -3298,7 +3429,7 @@ export default class Table {
         this.ctxCanvasLeft.textBaseline = "middle";
         this.ctxCanvasLeft.lineWidth = 1;
 
-        
+
         await this.loadData();
         this.handleUploadBar();
         this.addEventListeners();
@@ -3322,8 +3453,8 @@ export default class Table {
         // this.scrollXaxis();
     }
 
-    hide(){
-        
+    hide() {
+
         this.removeEventListeners();
         this.ipBox.style.display = `none`;
         // this.copyCutStartX = -1;
@@ -3331,12 +3462,12 @@ export default class Table {
         // this.copyCutEndX = -1;
         // this.copyCutEndY = -1;
         // console.log(2);
-        
+
         this.ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctxCanvasTop.clearRect(0, 0, this.canvasTop.width, this.canvasTop.height);
         this.ctxCanvasLeft.clearRect(0, 0, this.canvasLeft.width, this.canvasLeft.height);
         // this.isCellsCopyCut = 0;
-        if(this.copyCutAnimationDiv){
+        if (this.copyCutAnimationDiv) {
             this.copyCutAnimationDiv.remove();
         }
         this.data.clear();
@@ -3351,5 +3482,5 @@ export default class Table {
         this.statCalRef[0].resetAll();
         this.statCalRef.pop();
     }
-        
+
 }

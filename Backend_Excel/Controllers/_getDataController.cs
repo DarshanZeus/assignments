@@ -34,7 +34,7 @@ namespace Backend_Excel.Controllers
                 await _connection.OpenAsync();
 
                 using var command = _connection.CreateCommand();
-                string query = $"SELECT * FROM excel_clone.staticdb LIMIT 0,50";
+                string query = $"SELECT * FROM excel_clone.staticdb WHERE ({rowNo} <= RowNo AND RowNo < {rowNo + 100})";
 
                 command.CommandText = query;
                 using var reader = await command.ExecuteReaderAsync();
@@ -45,6 +45,7 @@ namespace Backend_Excel.Controllers
                 {
                     var cell = new RowModel
                     {
+                        RowNo = (int)reader["RowNo"],
                         Email = (string)reader["Email"],
                         Name = (string)reader["Name"],
                         Country = (string)reader["Country"],

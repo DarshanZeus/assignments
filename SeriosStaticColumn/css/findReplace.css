@@ -380,7 +380,7 @@
 
 .suggestion{
     height: 30px;
-    width: 420px;
+    width: 400px;
     font-weight: 400;
     list-style-type: none;
     padding-left: 20px;
@@ -403,5 +403,31 @@
   color: #107c41;
   background: #80ffc0b9;
   font-size: 12px;
-  font-weight: 600;
+}
+
+.searchOptionsDiv{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  align-items:first flex-start;
+  padding: 0px 0px 12px 16px;
+  font-size: 16px;
+  
+}
+
+.findResult{
+  max-height: 200px;
+  overflow-y: scroll;
+}
+
+pre {
+  background-color: #f5f5f5; /* Light grey background */
+  padding: 15px;             /* Adds padding around the code */
+  border-radius: 5px;        /* Rounded corners */
+  overflow-x: auto;          /* Adds a scrollbar for long lines */
+}
+
+code {
+  font-family: 'Courier New', Courier, monospace; /* Monospaced font for code */
+  color: #d63384; /* A nice color for the text */
 }
