@@ -22,7 +22,7 @@ namespace Backend_Excel.Controllers
 
         public SendChunksInQueue(MySqlConnection connection)
         {
-            var settings = new ConnectionSettings(new Uri("https://localhost:9200"))
+            var settings = new ConnectionSettings(new Uri("https://172.29.209.92:9200"))
                 .DefaultIndex("cellData")
                 .BasicAuthentication("elastic", "WzB*7FBu-cVHcU39MIC6")
                 .ServerCertificateValidationCallback((o, certificate, chain, errors) => true);

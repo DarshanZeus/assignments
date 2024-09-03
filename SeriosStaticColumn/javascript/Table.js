@@ -15,6 +15,22 @@ export default class Table {
 
     headermapLower = ["email", "name", "country", "state", "city", "telephone", "address1", "address2", "dob", "fY_19_20", "fY_20_21", "fY_21_22", "fY_22_23", "fY_23_24"]
 
+    headermapShorten = {
+        "email" : "Mail" ,
+        "name" : "Name" , 
+        "country" : "Co." , 
+        "state" : "St." , 
+        "city" : "City" , 
+        "telephone" : "Tel" , 
+        "address1" : "Add1" , 
+        "address2" : "Add2" , 
+        "dob" : "DOB" , 
+        "fY_19_20" : "19.20" , 
+        "fY_20_21" : "20.21" , 
+        "fY_21_22" : "21.22" , 
+        "fY_22_23" : "22.23" , 
+        "fY_23_24" : "23.24" 
+    }
 
 
     ctxCanvas;
@@ -442,21 +458,29 @@ export default class Table {
             }
         });
     }
+    handleRecommendation(data){
+        for (let j = 0; j < data.length; ++j) {
+            this.headermapLower.forEach(element => {
+                // console.log(data[j][element]);
+                if(data[j][element].toUpperCase().includes(this.FindipBox.value.toUpperCase())){
+                    this.searchSuggestion.innerHTML += `
+                            <li class="suggestion"> 
+                                <div class="suggestionText"> ${data[j][element]} </div>
+                                <div class="suggestionPosition"> ${data[j]["rowNo"] - 1} : ${this.headermapShorten[element]} </div>
+                            </li>
+                        `;
+                }
+            });
+        }
+    }
     async getRecomendations(e) {
         this.searchSuggestion = document.getElementById("searchSuggestion");
         if (this.FindipBox.value.length >= 2 && this.FindipBox === document.activeElement) {
             this.searchSuggestion.innerHTML = ``;
-            await axios.post(`http://localhost:5163/api/getRecomendation?query=${this.FindipBox.value}`)
+            await axios.post(`http://localhost:5163/api/_searchrow?query=${this.FindipBox.value}`)
                 .then((response) => {
 
-                    for (let j = 0; j < response.data.length; ++j) {
-                        this.searchSuggestion.innerHTML += `
-                    <li class="suggestion"> 
-                        <div class="suggestionText"> ${response.data[j]["cellValue"]} </div>
-                        <div class="suggestionPosition"> ${this.convertToTitle(response.data[j]["colNo"])}${response.data[j]["rowNo"]} </div>
-                    </li>
-                    `
-                    }
+                    this.handleRecommendation(response.data);
                     // console.log("object");
 
                     var suggestionDivs = document.getElementsByClassName('suggestionText');
@@ -1945,16 +1969,7 @@ export default class Table {
             // findReplaceDiv.style.backgroundColor = "lightblue";
 
 
-            findReplaceDiv.innerHTML = `<!DOCTYPE html>
-<html lang="en" >
-<head>
-  <meta charset="UTF-8">
-  <title>CodePen - Find And Replace Div _ V1</title>
-  <link rel="stylesheet" href="./style.css">
-
-</head>
-<body>
-<!-- partial:index.partial.html -->
+            findReplaceDiv.innerHTML = `
 <div class="find-replace-container">
   <div class="find-replace-header">
     <span>Find and Replace</span>
@@ -2170,11 +2185,6 @@ export default class Table {
 
   </div>
 </div>
-<!-- partial -->
-  <script  src="./script.js"></script>
-
-</body>
-</html>
 `;
 
 
@@ -2273,7 +2283,7 @@ export default class Table {
         }
         // console.log(searchQuery);
 
-        await axios.post(`http://localhost:5163/api/_searchrow`, searchQuery)
+        await axios.post(`http://localhost:5163/api/_searchrow?query=${findText}`)
         .then((response) => {
             console.log(response.data);
             let findScroll = document.getElementById("findScroll");

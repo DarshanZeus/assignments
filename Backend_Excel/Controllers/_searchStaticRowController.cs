@@ -37,12 +37,12 @@ namespace Backend_Excel.Controllers
 
         [HttpPost("_searchrow")]
         public async Task<ActionResult> _searchStaticRowDataAsync(
-            [FromBody] RowModelSearch query
+            [FromQuery] string query
         )
         {
 
-            int page = 1;
-            int pageSize = 20;
+            // int page = 1;
+            // int pageSize = 20;
             try
             {
                 // var searchResponse = await _elasticClient.SearchAsync<cellModel>(
@@ -137,14 +137,14 @@ namespace Backend_Excel.Controllers
         //     return Ok(results);
         // }
 
-        public async Task<ActionResult> SearchRowModelAsync(RowModelSearch query, int page = 1, int pageSize = 10)
+        public async Task<ActionResult> SearchRowModelAsync(string query, int page = 1, int pageSize = 10)
         {
-            var searchQuery = query.SearchQuery.ToLower();
+            var searchQuery = query.ToLower();
 
             var searchDescriptor = new SearchDescriptor<RowModel>()
                 .From((page - 1) * pageSize)
                 .Size(pageSize)
-                .Query(q => q.Bool(b => b.Should(BuildFieldQueries(query, searchQuery))));
+                .Query(q => q.Bool(b => b.Should(BuildFieldQueries(searchQuery))));
 
             var searchResponse = await _elasticClient.SearchAsync<RowModel>(searchDescriptor);
 
@@ -158,165 +158,81 @@ namespace Backend_Excel.Controllers
             return Ok(results);
         }
 
-        private Func<QueryContainerDescriptor<RowModel>, QueryContainer>[] BuildFieldQueries(RowModelSearch query, string searchQuery)
+        private static Func<QueryContainerDescriptor<RowModel>, QueryContainer>[] BuildFieldQueries(string searchQuery)
         {
-            var queries = new List<Func<QueryContainerDescriptor<RowModel>, QueryContainer>>();
-
-            if (query.Email)
+            var queries = new List<Func<QueryContainerDescriptor<RowModel>, QueryContainer>>
             {
-                Console.WriteLine($"Email");
-                
-                queries.Add(q => q.Wildcard(wc => wc
+                q => q.Wildcard(wc => wc
                     .Field(f => f.Email.Suffix("keyword"))
                     .Value($"*{searchQuery}*")
                     .CaseInsensitive(true)
-                ));
-            }
-
-            if (query.Name)
-            {
-                Console.WriteLine($"Name");
-                
-                queries.Add(q => q.Wildcard(wc => wc
+                ),
+                q => q.Wildcard(wc => wc
                     .Field(f => f.Name.Suffix("keyword"))
                     .Value($"*{searchQuery}*")
                     .CaseInsensitive(true)
-                ));
-            }
-
-            if (query.Telephone)
-            {
-                Console.WriteLine($"Telephone");
-                
-                queries.Add(q => q.Wildcard(wc => wc
+                ),
+                q => q.Wildcard(wc => wc
                     .Field(f => f.Telephone.Suffix("keyword"))
                     .Value($"*{searchQuery}*")
                     .CaseInsensitive(true)
-                ));
-            }
-
-            if (query.Address1)
-            {
-                Console.WriteLine($"Address1");
-                
-                queries.Add(q => q.Wildcard(wc => wc
+                ),
+                q => q.Wildcard(wc => wc
                     .Field(f => f.Address1.Suffix("keyword"))
                     .Value($"*{searchQuery}*")
                     .CaseInsensitive(true)
-                ));
-            }
-
-            if (query.DOB)
-            {
-                Console.WriteLine($"DOB");
-                
-                queries.Add(q => q.Wildcard(wc => wc
+                ),
+                q => q.Wildcard(wc => wc
                     .Field(f => f.DOB.Suffix("keyword"))
                     .Value($"*{searchQuery}*")
                     .CaseInsensitive(true)
-                ));
-            }
-
-            if (query.State)
-            {
-                Console.WriteLine($"State");
-                
-                queries.Add(q => q.Wildcard(wc => wc
+                ),
+                q => q.Wildcard(wc => wc
                     .Field(f => f.State.Suffix("keyword"))
                     .Value($"*{searchQuery}*")
                     .CaseInsensitive(true)
-                ));
-            }
-
-            if (query.City)
-            {
-                Console.WriteLine($"City");
-                
-                queries.Add(q => q.Wildcard(wc => wc
+                ),
+                q => q.Wildcard(wc => wc
                     .Field(f => f.City.Suffix("keyword"))
                     .Value($"*{searchQuery}*")
                     .CaseInsensitive(true)
-                ));
-            }
-
-            if (query.Country)
-            {
-                Console.WriteLine($"Country");
-                
-                queries.Add(q => q.Wildcard(wc => wc
+                ),
+                q => q.Wildcard(wc => wc
                     .Field(f => f.Country.Suffix("keyword"))
                     .Value($"*{searchQuery}*")
                     .CaseInsensitive(true)
-                ));
-            }
-
-            if (query.Address2)
-            {
-                Console.WriteLine($"Address2");
-                
-                queries.Add(q => q.Wildcard(wc => wc
+                ),
+                q => q.Wildcard(wc => wc
                     .Field(f => f.Address2.Suffix("keyword"))
                     .Value($"*{searchQuery}*")
                     .CaseInsensitive(true)
-                ));
-            }
-
-            // Repeat the above pattern for all other fields
-            // For example:
-            if (query.FY_19_20)
-            {
-                Console.WriteLine($"FY_19_20");
-                
-                queries.Add(q => q.Wildcard(wc => wc
+                ),
+                q => q.Wildcard(wc => wc
                     .Field(f => f.FY_19_20.Suffix("keyword"))
                     .Value($"*{searchQuery}*")
                     .CaseInsensitive(true)
-                ));
-            }
-
-            if (query.FY_20_21)
-            {
-                Console.WriteLine($"FY_20_21");
-                
-                queries.Add(q => q.Wildcard(wc => wc
+                ),
+                q => q.Wildcard(wc => wc
                     .Field(f => f.FY_20_21.Suffix("keyword"))
                     .Value($"*{searchQuery}*")
                     .CaseInsensitive(true)
-                ));
-            }
-
-            if (query.FY_21_22)
-            {
-                Console.WriteLine($"FY_21_22");
-                
-                queries.Add(q => q.Wildcard(wc => wc
+                ),
+                q => q.Wildcard(wc => wc
                     .Field(f => f.FY_21_22.Suffix("keyword"))
                     .Value($"*{searchQuery}*")
                     .CaseInsensitive(true)
-                ));
-            }
-
-            if (query.FY_22_23)
-            {
-                Console.WriteLine($"FY_22_23");
-                
-                queries.Add(q => q.Wildcard(wc => wc
+                ),
+                q => q.Wildcard(wc => wc
                     .Field(f => f.FY_22_23.Suffix("keyword"))
                     .Value($"*{searchQuery}*")
                     .CaseInsensitive(true)
-                ));
-            }
-
-            if (query.FY_23_24)
-            {
-                Console.WriteLine($"FY_23_24");
-                
-                queries.Add(q => q.Wildcard(wc => wc
+                ),
+                q => q.Wildcard(wc => wc
                     .Field(f => f.FY_23_24.Suffix("keyword"))
                     .Value($"*{searchQuery}*")
                     .CaseInsensitive(true)
-                ));
-            }
+                )
+            };
 
             return queries.ToArray();
         }

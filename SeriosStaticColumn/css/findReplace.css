@@ -403,16 +403,16 @@
   color: #107c41;
   background: #80ffc0b9;
   font-size: 12px;
+  border-radius: 2px;
 }
 
 .searchOptionsDiv{
-  display: grid;
+  display: none;
   grid-template-columns: repeat(2, 1fr);
   gap: 8px;
   align-items:first flex-start;
   padding: 0px 0px 12px 16px;
   font-size: 16px;
-  
 }
 
 .findResult{

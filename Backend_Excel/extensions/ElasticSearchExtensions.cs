@@ -18,9 +18,9 @@ namespace Backend_Excel.extensions
             var url = configuration["ELKConfiguration:url"];
             var defaultIndex = configuration["ELKConfiguration:index"];
 
-            var settings = new ConnectionSettings(new Uri("https://localhost:9200/"))
+            var settings = new ConnectionSettings(new Uri("https://172.29.209.92:9200/"))
                 .ServerCertificateValidationCallback(CertificateValidations.AllowAll)
-                .BasicAuthentication("elastic", "WzB*7FBu-cVHcU39MIC6")
+                .BasicAuthentication("elastic", "hqOYi-*Sskgz1jpHRiLX")
                 .PrettyJson()
                 .DisablePing()
                 .DisableDirectStreaming() // This will capture the request and response for logging
