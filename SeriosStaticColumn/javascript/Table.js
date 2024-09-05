@@ -466,7 +466,7 @@ export default class Table {
                     this.searchSuggestion.innerHTML += `
                             <li class="suggestion"> 
                                 <div class="suggestionText"> ${data[j][element]} </div>
-                                <div class="suggestionPosition"> ${data[j]["rowNo"] - 1} : ${this.headermapShorten[element]} </div>
+                                <div class="suggestionPosition"> ${data[j]["rowNo"]} : ${this.headermapShorten[element]} </div>
                             </li>
                         `;
                 }
@@ -482,6 +482,12 @@ export default class Table {
 
                     this.handleRecommendation(response.data);
                     // console.log("object");
+                    // console.log(kuchnai);
+                    
+                    
+                    
+                    
+                    
 
                     var suggestionDivs = document.getElementsByClassName('suggestionText');
                     var FindipBox = document.getElementById('findTextId');
@@ -489,13 +495,14 @@ export default class Table {
                         suggestionDivs[i].addEventListener('click', function () {
                             FindipBox.value = suggestionDivs[i].innerHTML;
                         });
-                    }
+                    }                    
                 })
                 .catch(
                     (error) => {
                         console.error("Error:", error);
                     }
                 );
+                // console.log(sabkuch);
             this.searchSuggestion.style.display = `block`;
         }
         else {

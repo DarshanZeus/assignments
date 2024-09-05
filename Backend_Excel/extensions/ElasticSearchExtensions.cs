@@ -20,12 +20,12 @@ namespace Backend_Excel.extensions
 
             var settings = new ConnectionSettings(new Uri("https://172.29.209.92:9200/"))
                 .ServerCertificateValidationCallback(CertificateValidations.AllowAll)
-                .BasicAuthentication("elastic", "hqOYi-*Sskgz1jpHRiLX")
+                .BasicAuthentication("elastic", "_LgtSp8k4HPR3gj3DfEn")
                 .PrettyJson()
                 .DisablePing()
                 .DisableDirectStreaming() // This will capture the request and response for logging
                 .EnableApiVersioningHeader()
-                .DefaultIndex("rowmodel");
+                .DefaultIndex("static_row_model");
 
             AddDefaultMappings(settings);
 
@@ -42,7 +42,7 @@ namespace Backend_Excel.extensions
                 .DefaultMappingFor<RowModel>(m => m);
         }
 
-        private static void CreateIndex(IElasticClient client, string indexName = "rowmodel")
+        private static void CreateIndex(IElasticClient client, string indexName = "static_row_model")
         {
             var indexExistsResponse = client.Indices.Exists(indexName);
     

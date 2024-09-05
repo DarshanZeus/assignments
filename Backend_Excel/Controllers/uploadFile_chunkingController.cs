@@ -212,7 +212,7 @@ namespace Backend_Excel.Controllers
             foreach (var cell in data)
             {
                 bulkDescriptor.Index<cellModel>(op => op
-                    .Index("rowmodel")  
+                    .Index("cellModel")  
                     .Document(cell)
                 );
             }
