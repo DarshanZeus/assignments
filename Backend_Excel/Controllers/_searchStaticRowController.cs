@@ -69,7 +69,7 @@ namespace Backend_Excel.Controllers
 
                 // Return only the documents found, not the entire response
                 // var results = searchResponse.Hits.Select(hit => hit.Source).ToList();
-                return await SearchRowModelAsync(query, page: 1, pageSize: 10); ;
+                return await SearchRowModelAsyncV2(query, page: 1, pageSize: 10); ;
             }
             catch (Exception ex)
             {
@@ -87,6 +87,37 @@ namespace Backend_Excel.Controllers
                 //     Console.WriteLine("Connection is Already Closed");
                 // }
             }
+        }
+        public async Task<ActionResult> SearchRowModelAsyncV2(string query, int page = 1, int pageSize = 10)
+        {
+            var searchResponse = await _elasticClient.SearchAsync<RowModel>(s => s
+                .From((page - 1) * pageSize)
+                .Size(pageSize)
+                .Query(q => q.MultiMatch(m => m
+                    .Fields(f => f
+                        .Field(p => p.Email)
+                        .Field(p => p.Name)
+                        .Field(p => p.Telephone)
+                        .Field(p => p.Address1)
+                        .Field(p => p.DOB)
+                        .Field(p => p.State)
+                        .Field(p => p.City)
+                        .Field(p => p.Country)
+                        .Field(p => p.Address2)
+                        .Field(p => p.FY_19_20)
+                        .Field(p => p.FY_20_21)
+                        .Field(p => p.FY_21_22)
+                        .Field(p => p.FY_22_23)
+                        .Field(p => p.FY_23_24)
+                    )
+                    .Query(query)
+                    .Type(TextQueryType.PhrasePrefix)
+                ))
+            );
+
+            return searchResponse.IsValid 
+                ? Ok(searchResponse.Hits.Select(hit => hit.Source))
+                : BadRequest($"Search failed: {searchResponse.DebugInformation}");
         }
         // public async Task<ActionResult> SearchRowModelAsync(string query, int page = 1, int pageSize = 10)
         // {
@@ -137,7 +168,7 @@ namespace Backend_Excel.Controllers
         //     return Ok(results);
         // }
 
-        public async Task<ActionResult> SearchRowModelAsync(string query, int page = 1, int pageSize = 10)
+        public async Task<ActionResult> SearchRowModelAsyncV0(string query, int page = 1, int pageSize = 10)
         {
             var searchQuery = query.ToLower();
 
@@ -237,5 +268,86 @@ namespace Backend_Excel.Controllers
             return queries.ToArray();
         }
 
+        public async Task<ActionResult> SearchRowModelAsyncV3(string query, int page = 1, int pageSize = 10)
+        {
+            var searchResponse = await _elasticClient.SearchAsync<RowModel>(s => s
+                .From((page - 1) * pageSize)
+                .Size(pageSize)
+                .Query(q => q
+                    .Bool(b => b
+                        .Should(
+                            FieldQueries(query)
+                        )
+                    )
+                )
+                .Source(src => src.Includes(i => i.Field(f => f.RowNo)))
+                .Highlight(h => h
+                    .Fields(
+                        HighlightedFields()
+                    )
+                )
+            );
+
+            if (!searchResponse.IsValid)
+            {
+                return BadRequest($"Search failed: {searchResponse.DebugInformation}");
+            }
+
+            var results = searchResponse.Hits.SelectMany(hit => 
+                hit.Highlight.Select(highlight => new SearchResult
+                {
+                    FieldName = highlight.Key,
+                    FieldValue = highlight.Value.FirstOrDefault() ?? string.Empty,
+                    RowNo = hit.Source.RowNo
+                })
+            ).ToList();
+
+            return Ok(results);
+        }
+
+        private static Func<QueryContainerDescriptor<RowModel>, QueryContainer>[] FieldQueries(string query)
+        {
+            return new Func<QueryContainerDescriptor<RowModel>, QueryContainer>[]
+            {
+                q => q.Match(m => m.Field(f => f.Email).Query(query)),
+                q => q.Match(m => m.Field(f => f.Name).Query(query)),
+                q => q.Match(m => m.Field(f => f.Country).Query(query)),
+                q => q.Match(m => m.Field(f => f.State).Query(query)),
+                q => q.Match(m => m.Field(f => f.City).Query(query)),
+                q => q.Match(m => m.Field(f => f.Telephone).Query(query)),
+                q => q.Match(m => m.Field(f => f.Address1).Query(query)),
+                q => q.Match(m => m.Field(f => f.Address2).Query(query)),
+                q => q.Match(m => m.Field(f => f.DOB).Query(query)),
+                q => q.Match(m => m.Field(f => f.FY_19_20).Query(query)),
+                q => q.Match(m => m.Field(f => f.FY_20_21).Query(query)),
+                q => q.Match(m => m.Field(f => f.FY_21_22).Query(query)),
+                q => q.Match(m => m.Field(f => f.FY_22_23).Query(query)),
+                q => q.Match(m => m.Field(f => f.FY_23_24).Query(query))
+            };
+        }
+
+        private static Func<HighlightFieldDescriptor<RowModel>, IHighlightField>[] HighlightedFields()
+        {
+            return new Func<HighlightFieldDescriptor<RowModel>, IHighlightField>[]
+            {
+                f => f.Field(p => p.Email),
+                f => f.Field(p => p.Name),
+                f => f.Field(p => p.Country),
+                f => f.Field(p => p.State),
+                f => f.Field(p => p.City),
+                f => f.Field(p => p.Telephone),
+                f => f.Field(p => p.Address1),
+                f => f.Field(p => p.Address2),
+                f => f.Field(p => p.DOB),
+                f => f.Field(p => p.FY_19_20),
+                f => f.Field(p => p.FY_20_21),
+                f => f.Field(p => p.FY_21_22),
+                f => f.Field(p => p.FY_22_23),
+                f => f.Field(p => p.FY_23_24)
+            };
+        }
+
     }
 }
+
+

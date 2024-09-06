@@ -22,11 +22,6 @@ namespace Backend_Excel.Models
         public string FY_22_23 { get; set; } = string.Empty;
         public string FY_23_24 { get; set; } = string.Empty;
         public int RowNo { get; set; }
-
-        internal object Field(object v)
-        {
-            throw new NotImplementedException();
-        }
     }
 
     public class RowModelSearch
@@ -46,5 +41,11 @@ namespace Backend_Excel.Models
         public bool FY_22_23 { get; set; }
         public bool FY_23_24 { get; set; }
         public string SearchQuery { get; set; } = string.Empty;
+    }
+    public class SearchResult
+    {
+        public required string FieldName { get; set; }
+        public required string FieldValue { get; set; }
+        public int RowNo { get; set; }
     }
 }
