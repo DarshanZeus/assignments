@@ -21,7 +21,7 @@ namespace Backend_Excel.extensions
             var settings = new ConnectionSettings(new Uri("https://172.29.209.92:9200/"))
                 .ServerCertificateValidationCallback(CertificateValidations.AllowAll)
                 .BasicAuthentication("elastic", "_LgtSp8k4HPR3gj3DfEn")
-                .PrettyJson()
+                .PrettyJson() // This will prettify JSON format of response
                 .DisablePing()
                 .DisableDirectStreaming() // This will capture the request and response for logging
                 .EnableApiVersioningHeader()
