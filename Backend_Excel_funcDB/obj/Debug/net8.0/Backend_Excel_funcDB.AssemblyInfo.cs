@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Backend_Excel_funcDB")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+260f751b42759358c000b612313e8b71fac20da6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+742a60bb4e6499d1b5702ebbf453adabe726043b")]
 [assembly: System.Reflection.AssemblyProductAttribute("Backend_Excel_funcDB")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Backend_Excel_funcDB")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

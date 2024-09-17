@@ -48,4 +48,11 @@ namespace Backend_Excel.Models
         public required string FieldValue { get; set; }
         public int RowNo { get; set; }
     }
+
+    public class UpdateCellRow
+    {
+        public required string FieldName { get; set; }
+        public required string FieldValue { get; set; }
+        public int RowNo { get; set; }
+    }
 }

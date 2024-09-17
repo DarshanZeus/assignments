@@ -205,6 +205,7 @@ export default class Table {
 
         this.placeInputBox = this.placeInputBox.bind(this);
         this.ipBoxKeyDown = this.ipBoxKeyDown.bind(this);
+        this.ipBoxKeyUp = this.ipBoxKeyUp.bind(this);
         this.getRecomendations = this.getRecomendations.bind(this);
         this.hideRecomendations = this.hideRecomendations.bind(this);
         this.copyToClipboard = this.copyToClipboard.bind(this);
@@ -433,6 +434,7 @@ export default class Table {
         window.addEventListener('keyup', this.mainCanvasKeyUp);
 
         this.ipBox.addEventListener("keypress", this.ipBoxKeyDown);
+        this.ipBox.addEventListener("keyup", this.ipBoxKeyUp);
 
 
         this.barChartBtn.addEventListener("click", this.createBarChart);
@@ -1515,17 +1517,48 @@ export default class Table {
 
         this.ipBox.style.top = `${ipBoxY + 2 - this.scrollYaxisValue}px`;
         this.ipBox.style.left = `${ipBoxX + 2 - this.scrollXaxisValue}px`;
-        Text
+        // Text
         this.ipBox.style.display = "block";
-        if (this.getCellValue(this.startCellsY, this.startCellsX))
-            this.ipBox.value = this.getCellValue(this.startCellsY, this.startCellsX);
+        if (this.dataRow[this.startCellsY + 1 ][this.headermapLower[this.startCellsX]]){
+            console.log(
+                this.dataRow[this.startCellsY + 1]["rowNo"],
+                this.headermap[this.startCellsX],
+                this.dataRow[this.startCellsY + 1][this.headermapLower[this.startCellsX]]
+            );
+            this.ipBox.value = this.dataRow[this.startCellsY + 1][this.headermapLower[this.startCellsX]];
+        }
+        // if (this.getCellValue(this.startCellsY, this.startCellsX))
+        //     this.ipBox.value = this.getCellValue(this.startCellsY, this.startCellsX);
         // console.log(this.getCellValue(this.startCellsY, this.startCellsX));
         this.ipBox.focus();
     }
+    async ipBoxKeyDown(e){
 
-    ipBoxKeyDown(e) {
+    }
 
-        this.setCellValue(this.startCellsY, this.startCellsX, ipBox.value);
+    async ipBoxKeyUp(e) {
+
+        // this.setCellValue(this.startCellsY, this.startCellsX, ipBox.value);
+        var data = {
+            "RowNo": this.startCellsY + 1,
+            "FieldName": this.headermapLower[this.startCellsX],
+            "FieldValue": this.ipBox.value
+        }
+        await axios.post(`http://localhost:5163/api/_setCellData`, data)
+            .then((response) => {
+                // console.log(response);
+                // if (!this.data.has(row)) {
+                //     this.data.set(row, new Map());
+                // }
+                // this.data.get(row).set(col, value);
+                console.log(response.data);
+            })
+            .catch(
+                (error) => {
+                    console.error("Error:", error);
+                }
+            );
+        this.dataRow[this.startCellsY + 1][this.headermapLower[this.startCellsX]] = this.ipBox.value;
         // console.log(isNaN("111"));
         if (e.key === "Enter") {
             // console.log(ipBox.value);
@@ -1544,6 +1577,7 @@ export default class Table {
         this.drawSelection();
         this.selection = 0;
     }
+    
 
     async handleDeleteAll() {
         var cellData = {
@@ -2851,7 +2885,7 @@ export default class Table {
                     // this.dataRow.push(response.data[j]);
                 }
                 // console.log(this.dataRow);
-                // console.log(response.data);
+                console.log(response.data);
                 // this.drawTableData();
             })
             .catch(
