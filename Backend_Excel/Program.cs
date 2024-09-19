@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
-        policy => policy.WithOrigins("http://127.0.0.1:5501") // Add the URL of your frontend application
+        policy => policy.WithOrigins("http://127.0.0.1:5501","http://192.168.15.169:5501") // Add the URL of your frontend application
                         .AllowAnyHeader()
                         .AllowAnyMethod());
 });
